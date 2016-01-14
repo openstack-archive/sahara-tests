@@ -18,9 +18,8 @@ import os
 from oslo_concurrency import processutils
 import paramiko
 import six
+from tempest_lib import exceptions as ex
 
-from sahara import exceptions as ex
-from sahara.i18n import _
 from sahara.utils import tempfiles
 
 
@@ -48,12 +47,12 @@ def generate_key_pair(key_length=2048):
             args.extend(['-b', key_length])
         processutils.execute(*args)
         if not os.path.exists(keyfile):
-            raise ex.SystemError(_("Private key file hasn't been created"))
+            raise ex.TempestException("Private key file hasn't been created")
         with open(keyfile) as keyfile_fd:
             private_key = keyfile_fd.read()
         public_key_path = keyfile + '.pub'
         if not os.path.exists(public_key_path):
-            raise ex.SystemError(_("Public key file hasn't been created"))
+            raise ex.TempestException("Public key file hasn't been created")
         with open(public_key_path) as public_key_path_fd:
             public_key = public_key_path_fd.read()
 
