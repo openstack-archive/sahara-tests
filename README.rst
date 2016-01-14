@@ -13,14 +13,14 @@ YAML files with a scenario for the specific plugin:
 
 .. sourcecode:: console
 
-    $ tox -e scenario etc/scenario/sahara-ci/simple-testcase.yaml
+    $ tox -e venv -- sahara-scenario etc/scenario/sahara-ci/simple-testcase.yaml
 ..
 
 or, if the file is a YAML Mako template:
 
 .. sourcecode:: console
 
-    $ tox -e scenario -- -V templatevars.ini etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
 ..
 
 where templatevars.ini contains the values of the variables referenced
@@ -33,7 +33,7 @@ and use the following tox env:
 
 .. sourcecode:: console
 
-    $ tox -e scenario -- -V templatevars.ini etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
 ..
 
 If you want to run scenario tests for a few plugins or their versions, you
@@ -41,14 +41,14 @@ should use the several YAML and/or YAML Mako template files:
 
 .. sourcecode:: console
 
-    $ tox -e scenario -- -V templatevars.ini etc/scenario/sahara-ci/cdh-5.4.0.yaml.mako etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako ...
+    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/sahara-ci/cdh-5.4.0.yaml.mako etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako ...
 ..
 
 Here are a few more examples.
 
 .. sourcecode:: console
 
-    $ tox -e scenario -- -V templatevars.ini etc/scenario/sahara-ci/credentials.yaml.mako etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/sahara-ci/credentials.yaml.mako etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
 
 ..
 
@@ -59,13 +59,13 @@ included into ``vanilla-2.7.1.yaml.mako`` with the values defined into
 For more information about writing scenario YAML files, see the section
 section `How to write scenario files`_.
 
-``tox -e scenario etc/scenario/sahara-ci`` will run tests from the test directory.
+``tox -e venv -- sahara-scenario etc/scenario/sahara-ci`` will run tests from the test directory.
 
 Also, you can validate your yaml-files using flag ``--validate`` via command:
 
 .. sourcecode:: console
 
-    $ tox -e scenario -- --validate -V templatevars.ini etc/scenario/sahara-ci/credantials.yaml.mako etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario --validate -V templatevars.ini etc/scenario/sahara-ci/credantials.yaml.mako etc/scenario/sahara-ci/vanilla-2.7.1.yaml.mako
 
 ..
 

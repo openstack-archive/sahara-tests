@@ -31,16 +31,16 @@ from tempest_lib import base
 from tempest_lib.common import ssh as connection
 from tempest_lib import exceptions as exc
 
-from sahara.tests.scenario import clients
-from sahara.tests.scenario import timeouts
-from sahara.tests.scenario import utils
-from sahara.utils import crypto as ssh
+from sahara_tests.scenario import clients
+from sahara_tests.scenario import timeouts
+from sahara_tests.scenario import utils
+from sahara_tests.utils import crypto as ssh
 
 logger = logging.getLogger('swiftclient')
 logger.setLevel(logging.CRITICAL)
 
 DEFAULT_TEMPLATES_PATH = (
-    'sahara/tests/scenario/templates/%(plugin_name)s/%(hadoop_version)s')
+    'sahara_tests/scenario/templates/%(plugin_name)s/%(hadoop_version)s')
 CHECK_OK_STATUS = "OK"
 CHECK_FAILED_STATUS = "FAILED"
 CLUSTER_STATUS_ACTIVE = "Active"

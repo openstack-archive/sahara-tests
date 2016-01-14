@@ -16,12 +16,12 @@
 import testtools
 import yaml
 
-from sahara.tests.scenario import validation
+from sahara_tests.scenario import validation
 
 
 class TestValidation(testtools.TestCase):
     def test_validation(self):
-        with open("sahara/tests/scenario_unit/vanilla2_7_1.yaml",
+        with open("sahara_tests/unit/scenario/vanilla2_7_1.yaml",
                   "r") as yaml_file:
             config = yaml.load(yaml_file)
         self.assertIsNone(validation.validate(config))

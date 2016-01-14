@@ -28,7 +28,7 @@ from swiftclient import client as swift_client
 from swiftclient import exceptions as swift_exc
 from tempest_lib import exceptions as exc
 
-from sahara.tests.scenario import utils
+from sahara_tests.scenario import utils
 
 
 def get_session(auth_url=None, username=None, password=None,
@@ -41,7 +41,7 @@ def get_session(auth_url=None, username=None, password=None,
                                 project_domain_name='default')
     return session.Session(auth=auth, verify=verify, cert=cert)
 
-from sahara.tests.scenario import timeouts
+from sahara_tests.scenario import timeouts
 
 
 class Client(object):

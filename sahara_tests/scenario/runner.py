@@ -27,10 +27,10 @@ from oslo_utils import fileutils
 import six
 import yaml
 
-from sahara.tests.scenario import validation
+from sahara_tests.scenario import validation
 
 
-TEST_TEMPLATE_PATH = 'sahara/tests/scenario/testcase.py.mako'
+TEST_TEMPLATE_PATH = 'sahara_tests/scenario/testcase.py.mako'
 
 
 def set_defaults(config):

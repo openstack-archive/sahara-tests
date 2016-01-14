@@ -20,7 +20,7 @@ import paramiko
 import six
 from tempest_lib import exceptions as ex
 
-from sahara.utils import tempfiles
+from sahara_tests.utils import tempfiles
 
 
 def to_paramiko_private_key(pkey):

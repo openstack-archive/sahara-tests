@@ -18,7 +18,7 @@ import sys
 import mock
 import testtools
 
-from sahara.tests.scenario import runner
+from sahara_tests.scenario import runner
 
 
 class RunnerUnitTest(testtools.TestCase):
@@ -130,7 +130,7 @@ class RunnerUnitTest(testtools.TestCase):
                         "additional_libs": [
                             {
                                 "type": "database",
-                                "source": "sahara/tests/integration/tests/"
+                                "source": "sahara_tests/integration/tests/"
                                           "resources/"
                             }],
                         "configs": "edp.java.main_class: org.apache.hadoop."
@@ -144,7 +144,7 @@ class RunnerUnitTest(testtools.TestCase):
                         "additional_libs": [
                             {
                                 "type": "database",
-                                "source": "sahara/tests/integration/tests/"
+                                "source": "sahara_tests/integration/tests/"
                                           "resources/"
                             }],
                         "configs": "edp.java.main_class: org.apache.hadoop."
@@ -209,7 +209,7 @@ class RunnerUnitTest(testtools.TestCase):
                             'type': 'Java',
                             'additional_libs': [
                                 {
-                                    'source': 'sahara/tests/integration/'
+                                    'source': 'sahara_tests/integration/'
                                               'tests/resources/',
                                     'type': 'database'
                                 }]
@@ -232,49 +232,49 @@ class RunnerUnitTest(testtools.TestCase):
     @mock.patch('sys.exit', return_value=None)
     @mock.patch('subprocess.call', return_value=None)
     def test_runner_main(self, mock_sub, mock_sys):
-        sys.argv = ['sahara/tests/scenario/runner.py',
-                    'sahara/tests/scenario_unit/vanilla2_7_1.yaml']
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml']
         runner.main()
 
     @mock.patch('sys.exit', return_value=None)
     @mock.patch('subprocess.call', return_value=None)
     def test_runner_template_missing_varfile(self, mock_sub, mock_sys):
-        sys.argv = ['sahara/tests/scenario/runner.py',
-                    'sahara/tests/scenario_unit/vanilla2_7_1.yaml.mako']
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako']
         self.assertRaises(NameError, runner.main)
 
     @mock.patch('sys.exit', return_value=None)
     @mock.patch('subprocess.call', return_value=None)
     def test_runner_template_wrong_varfile(self, mock_sub, mock_sys):
-        sys.argv = ['sahara/tests/scenario/runner.py',
+        sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
-                    'sahara/tests/scenario_unit/templatevars_nodefault.ini',
-                    'sahara/tests/scenario_unit/vanilla2_7_1.yaml.mako']
+                    'sahara_tests/unit/scenario/templatevars_nodefault.ini',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako']
         self.assertRaises(NameError, runner.main)
 
     @mock.patch('sys.exit', return_value=None)
     @mock.patch('subprocess.call', return_value=None)
     def test_runner_template_incomplete_varfile(self, mock_sub, mock_sys):
-        sys.argv = ['sahara/tests/scenario/runner.py',
+        sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
-                    'sahara/tests/scenario_unit/templatevars_incomplete.ini',
-                    'sahara/tests/scenario_unit/vanilla2_7_1.yaml.mako']
+                    'sahara_tests/unit/scenario/templatevars_incomplete.ini',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako']
         self.assertRaises(NameError, runner.main)
 
     @mock.patch('sys.exit', return_value=None)
     @mock.patch('subprocess.call', return_value=None)
     def test_runner_template_working(self, mock_sub, mock_sys):
-        sys.argv = ['sahara/tests/scenario/runner.py',
+        sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
-                    'sahara/tests/scenario_unit/templatevars_complete.ini',
-                    'sahara/tests/scenario_unit/vanilla2_7_1.yaml.mako']
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako']
         runner.main()
 
     @mock.patch('sys.exit', return_value=None)
     def test_runner_validate(self, mock_sys):
-        sys.argv = ['sahara/tests/scenario/runner.py',
+        sys.argv = ['sahara_tests/scenario/runner.py',
                     '--validate',
                     '-V',
-                    'sahara/tests/scenario_unit/templatevars_complete.ini',
-                    'sahara/tests/scenario_unit/vanilla2_7_1.yaml.mako']
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako']
         runner.main()
