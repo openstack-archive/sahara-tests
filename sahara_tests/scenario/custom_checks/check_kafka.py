@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sahara.tests.scenario import base as base_scenario
-from sahara.tests.scenario import utils
+from sahara_tests.scenario import base as base_scenario
+from sahara_tests.scenario import utils
 
 
 class CustomCheckKafka(object):

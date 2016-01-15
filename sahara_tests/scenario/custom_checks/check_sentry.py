@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-from sahara.tests.scenario import base
+from sahara_tests.scenario import base
 
 
 @base.track_result("Check sentry")
