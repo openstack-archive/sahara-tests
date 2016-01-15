@@ -78,6 +78,7 @@ The format of the config file is an INI-style file, as accepted by the Python
 ConfigParser module. The key/values must be specified in the DEFAULT section.
 
 Example of template variables file:
+
 .. sourcecode:: ini
 
     [DEFAULT]
