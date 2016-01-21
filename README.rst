@@ -91,6 +91,15 @@ Example of template variables file:
 
 ..
 
+Also, you can define variables via flag ``--args``. For example:
+.. sourcecode:: console
+
+    tox -e scenario -- etc/scenario/credentials.yaml.mako etc/scenario/vanilla-2.7.1.yaml.mako --args OS_USERNAME:admin OS_TENANT_NAME:demo ...
+
+..
+
+Values from .ini file will be replaced.
+
 Variables and sahara-ci templates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following variables are currently used by sahara-ci templates:

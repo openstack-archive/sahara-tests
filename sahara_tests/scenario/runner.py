@@ -17,6 +17,7 @@
 
 from __future__ import print_function
 import argparse
+import collections
 import os
 import subprocess
 import sys
@@ -97,14 +98,18 @@ def recursive_walk(directory):
     return list_of_files
 
 
-def read_template_variables(variable_file, verbose=False):
+def read_template_variables(variable_file=None, verbose=False,
+                            scenario_args=None):
     variables = {}
     try:
         cp = six.moves.configparser.ConfigParser()
         # key-sensitive keys
-        cp.optionxform = lambda option: option
-        cp.readfp(open(variable_file))
+        if variable_file:
+            cp.optionxform = lambda option: option
+            cp.readfp(open(variable_file))
         variables = cp.defaults()
+        if scenario_args:
+            variables.update(scenario_args)
     except IOError as ioe:
         print("WARNING: the input contains at least one template, but "
               "the variable configuration file '%s' is not valid: %s" %
@@ -148,6 +153,16 @@ def read_scenario_config(scenario_config, template_vars=None,
     return yaml_file
 
 
+def parse_args(array):
+    args = collections.OrderedDict()
+    for pair in array:
+        arg_dict = pair.split(':')
+        if len(arg_dict) < 2:
+            return args
+        args[arg_dict[0]] = "\'%s\'" % arg_dict[1]
+    return args
+
+
 def main():
     # parse args
     parser = argparse.ArgumentParser(description="Scenario tests runner.")
@@ -159,11 +174,14 @@ def main():
                         help='Increase output verbosity')
     parser.add_argument('--validate', default=False, action='store_true',
                         help='Validate yaml-files, tests will not be runned')
+    parser.add_argument('--args', default='', nargs='+',
+                        help='Pairs of arguments key:value')
 
     args = parser.parse_args()
     scenario_arguments = args.scenario_arguments
     variable_file = args.variable_file
     verbose_run = args.verbose
+    scenario_args = parse_args(args.args)
 
     # parse config
     config = {'credentials': {},
@@ -180,7 +198,11 @@ def main():
     template_variables = {}
     if any(is_template_file(config_file) for config_file in files):
         template_variables = read_template_variables(variable_file,
-                                                     verbose_run)
+                                                     verbose_run,
+                                                     scenario_args)
+    elif scenario_args:
+        template_variables = read_template_variables(
+            verbose=verbose_run, scenario_args=scenario_args)
 
     for scenario_argument in files:
         test_scenario = read_scenario_config(scenario_argument,

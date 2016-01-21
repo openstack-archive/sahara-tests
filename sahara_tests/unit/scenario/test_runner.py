@@ -15,6 +15,7 @@
 
 import sys
 
+from jsonschema import exceptions
 import mock
 import testtools
 
@@ -278,3 +279,37 @@ class RunnerUnitTest(testtools.TestCase):
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
                     'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako']
         runner.main()
+
+    @mock.patch('sahara_tests.scenario.validation.validate')
+    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('sys.exit', return_value=None)
+    def test_runner_from_args(self, mock_sys, mock_sub, mock_validate):
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako',
+                    '--args', 'OS_USERNAME:demo', 'OS_PASSWORD:demopwd',
+                    'OS_TENANT_NAME:demo', 'network_type:neutron',
+                    'network_private_name:private',
+                    'network_public_name:public',
+                    'vanilla_two_six_image:hadoop_2_6_latest',
+                    'ci_flavor_id:2', 'OS_AUTH_URL:localhost']
+        runner.main()
+        expected = {
+            'os_username': 'demo',
+            'os_password': 'demopwd',
+            'os_tenant': 'demo',
+            'os_auth_url': 'localhost'
+        }
+        self.assertTrue(self._isDictContainSubset(
+            expected, mock_validate.call_args_list[0][0][0]['credentials']))
+
+    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('sys.exit', return_value=None)
+    def test_replace_value_args(self, mock_sys, mock_sub):
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako',
+                    '--args',
+                    'network_type:test']
+        with testtools.ExpectedException(exceptions.ValidationError):
+            runner.main()
