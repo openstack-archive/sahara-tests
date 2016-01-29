@@ -31,4 +31,3 @@ clusters:
         size: 1
     edp_jobs_flow:
       - spark_pi
-      - spark_wordcount
