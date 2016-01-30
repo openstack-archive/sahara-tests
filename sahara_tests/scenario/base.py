@@ -114,7 +114,7 @@ class BaseTestCase(base.BaseTestCase):
         auth_url = self.credentials['os_auth_url']
         sahara_service_type = self.credentials['sahara_service_type']
         sahara_url = self.credentials['sahara_url']
-
+        auth_version = '3.0' if 'v3' in auth_url else '2.0'
         session = clients.get_session(auth_url, username, password,
                                       tenant_name,
                                       self.credentials['ssl_verify'],
@@ -127,6 +127,7 @@ class BaseTestCase(base.BaseTestCase):
         self.neutron = clients.NeutronClient(session=session)
         # swiftclient doesn't support keystone sessions
         self.swift = clients.SwiftClient(
+            auth_version=auth_version,
             authurl=auth_url,
             user=username,
             key=password,

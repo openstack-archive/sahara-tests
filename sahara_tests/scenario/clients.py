@@ -240,8 +240,7 @@ class NeutronClient(Client):
 
 class SwiftClient(Client):
     def __init__(self, *args, **kwargs):
-        self.swift_client = swift_client.Connection(auth_version='2.0',
-                                                    *args, **kwargs)
+        self.swift_client = swift_client.Connection(*args, **kwargs)
 
     def create_container(self, container_name):
         return self.swift_client.put_container(container_name)
