@@ -25,8 +25,9 @@ edp_jobs_flow:
         - type: database
           source:  etc/edp-examples/edp-mapreduce/edp-mapreduce.jar
       configs:
-        mapred.mapper.class: org.apache.oozie.example.SampleMapper
-        mapred.reducer.class: org.apache.oozie.example.SampleReducer
+        mapred.map.class: org.apache.oozie.example.SampleMapper
+        mapred.reduce.class: org.apache.oozie.example.SampleReducer
+        mapreduce.framework.name: yarn
   mapreduce_streaming_job:
     - type: MapReduce.Streaming
       input_datasource:
