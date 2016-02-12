@@ -104,7 +104,6 @@ class BaseTestCase(base.BaseTestCase):
         }
         self.template_path = DEFAULT_TEMPLATES_PATH % self.plugin_opts
         self.cinder = True
-        self.proxy_ng_name = False
         self.proxy = False
 
     def _init_clients(self):
@@ -147,15 +146,19 @@ class BaseTestCase(base.BaseTestCase):
             self.cinder = False
         self._poll_cluster_status_tracked(self.cluster_id)
         cluster = self.sahara.get_cluster(self.cluster_id, show_progress=True)
-        if self.proxy_ng_name:
-            for ng in cluster.node_groups:
-                if ng['name'] == self.proxy_ng_name:
-                    self.proxy = ng['instances'][0]['management_ip']
-
+        self._get_proxy(cluster)
         self.check_cinder()
         if not getattr(cluster, "provision_progress", None):
             return
         self._check_event_logs(cluster)
+
+    def _get_proxy(self, cluster):
+        for ng in cluster.node_groups:
+            if ng['is_proxy_gateway']:
+                for instance in ng['instances']:
+                    if instance['management_ip'] != (
+                            instance['internal_ip']):
+                        self.proxy = instance['management_ip']
 
     @track_result("Check transient")
     def check_transient(self):
@@ -492,23 +495,13 @@ class BaseTestCase(base.BaseTestCase):
                 with open(template_file) as data:
                     node_groups.append(json.load(data))
 
-        check_indirect_access = False
-        for ng in node_groups:
-            if ng.get('is_proxy_gateway'):
-                check_indirect_access = True
-
         for ng in node_groups:
             kwargs = dict(ng)
             kwargs.update(self.plugin_opts)
             kwargs['flavor_id'] = self._get_flavor_id(kwargs['flavor'])
             del kwargs['flavor']
             kwargs['name'] = utils.rand_name(kwargs['name'])
-            if (not kwargs.get('is_proxy_gateway',
-                               False)) and (check_indirect_access):
-                kwargs['floating_ip_pool'] = None
-                self.proxy_ng_name = kwargs['name']
-            else:
-                kwargs['floating_ip_pool'] = floating_ip_pool
+            kwargs['floating_ip_pool'] = floating_ip_pool
             ng_id = self.__create_node_group_template(**kwargs)
             ng_id_map[ng['name']] = ng_id
         return ng_id_map
@@ -613,7 +606,11 @@ class BaseTestCase(base.BaseTestCase):
         host_ip = node_ip
         if self.proxy:
             host_ip = self.proxy
-            command = "ssh %s %s" % (node_ip, command)
+            command = ("echo '{pkey}' > {filename} && chmod 600 {filename} && "
+                       "ssh {ip} -i {filename} '{cmd}' && "
+                       "rm {filename}".format(
+                           pkey=self.private_key, filename='scenario.pem',
+                           ip=node_ip, cmd=command))
         ssh_session = connection.Client(host_ip, self.testcase['ssh_username'],
                                         pkey=self.private_key)
         return ssh_session.exec_command(command)

@@ -49,9 +49,10 @@ class FakeSaharaClient(object):
 
 
 class FakeCluster(object):
-    def __init__(self, is_transient, provision_progress):
+    def __init__(self, is_transient=False, provision_progress=[], ng=[]):
         self.is_transient = is_transient
         self.provision_progress = provision_progress
+        self.node_groups = ng
 
 
 class FakeResponse(object):
@@ -351,6 +352,8 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('sahara_tests.scenario.clients.SaharaClient.get_cluster_id',
                 return_value='cluster_id')
+    @mock.patch('sahara_tests.scenario.clients.SaharaClient.get_cluster',
+                return_value=FakeCluster(ng=[]))
     @mock.patch('sahara_tests.scenario.base.BaseTestCase.check_cinder',
                 return_value=None)
     @mock.patch('sahara_tests.scenario.clients.SaharaClient.get_job_status',
@@ -383,7 +386,7 @@ class TestBase(testtools.TestCase):
                             mock_job_binaries, mock_job,
                             mock_node_group_template, mock_cluster_template,
                             mock_cluster, mock_cluster_status, mock_create,
-                            mock_get, mock_client, mock_cinder,
+                            mock_get, mock_client, mock_cinder, mock_get_cl,
                             mock_get_cluster_id):
         self.base_scenario._init_clients()
         self.base_scenario.create_cluster()
