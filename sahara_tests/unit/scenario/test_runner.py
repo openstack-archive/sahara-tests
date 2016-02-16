@@ -49,7 +49,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "os_password": "nova",
                 "os_tenant": "admin",
                 "ssl_cert": None,
-                "ssl_verify": True
+                "ssl_verify": False
             }
         }
 
@@ -165,7 +165,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "os_tenant": "changed_admin",
                 "sahara_service_type": "data-processing",
                 "ssl_cert": "/etc/tests/cert.crt",
-                "ssl_verify": True
+                "ssl_verify": False
             },
         }
 

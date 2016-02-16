@@ -117,8 +117,9 @@ class BaseTestCase(base.BaseTestCase):
         auth_version = '3.0' if 'v3' in auth_url else '2.0'
         session = clients.get_session(auth_url, username, password,
                                       tenant_name,
-                                      self.credentials['ssl_verify'],
-                                      self.credentials['ssl_cert'])
+                                      self.credentials.get('ssl_verify',
+                                                           False),
+                                      self.credentials.get('ssl_cert'))
 
         self.sahara = clients.SaharaClient(session=session,
                                            service_type=sahara_service_type,
@@ -131,8 +132,8 @@ class BaseTestCase(base.BaseTestCase):
             authurl=auth_url,
             user=username,
             key=password,
-            insecure=not self.credentials['ssl_verify'],
-            cacert=self.credentials['ssl_cert'],
+            insecure=not self.credentials.get('ssl_verify', False),
+            cacert=self.credentials.get('ssl_cert'),
             tenant_name=tenant_name)
 
     def create_cluster(self):

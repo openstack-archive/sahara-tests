@@ -154,7 +154,7 @@ This section is dictionary-type.
 +---------------------+--------+----------+------------------------------+---------------------------------+
 | ssl_cert            | string |          | None                         | ssl certificate for all clients |
 +---------------------+--------+----------+------------------------------+---------------------------------+
-| ssl_verify          | boolean|          | True                         | enable verify ssl for sahara    |
+| ssl_verify          | boolean|          | False                        | enable verify ssl for sahara    |
 +---------------------+--------+----------+------------------------------+---------------------------------+
 
 Section "network"
