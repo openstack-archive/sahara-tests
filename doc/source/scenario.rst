@@ -340,6 +340,11 @@ This sections is an array-type.
      -
      -
      - name of edp job flow
+   * - hdfs_username
+     - string
+     -
+     - hadoop
+     - username for hdfs
    * - retain_resources
      - boolean
      -

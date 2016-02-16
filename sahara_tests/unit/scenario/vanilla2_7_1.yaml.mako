@@ -14,6 +14,7 @@ clusters:
       plugin_version: 2.7.1
       image: ${vanilla_two_six_image}
       image_username: ubuntu
+      hdfs_username: hadoop
       node_group_templates:
         - name: master
           node_processes:

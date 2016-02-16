@@ -114,6 +114,10 @@ SCHEMA = {
                         "type": "string",
                         "minLength": 1
                     },
+                    "hdfs_username": {
+                        "type": "string",
+                        "minLength": 1
+                    },
                     "node_group_templates": {
                         "type": "array",
                         "minItems": 1,
@@ -355,9 +359,6 @@ SCHEMA = {
                                         "enum": ["swift", "hdfs", "maprfs"]
                                     },
                                     "source": {
-                                        "type": "string"
-                                    },
-                                    "hdfs_username": {
                                         "type": "string"
                                     }
                                 },

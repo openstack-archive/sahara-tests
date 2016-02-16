@@ -508,7 +508,7 @@ class TestBase(testtools.TestCase):
                 'sahara_tests.scenario.clients.SaharaClient.get_cluster',
                 return_value=FakeResponse(node_groups=[
                     {
-                        'node_processes': 'test',
+                        'node_processes': ['test'],
                         'instances': ['test_instance']
                     }
                 ])):
@@ -599,10 +599,10 @@ class TestBase(testtools.TestCase):
             'sahara_tests.scenario.clients.SaharaClient.get_cluster',
             return_value=FakeResponse(node_groups=[
                 {
-                    'instances': [
-                        {
-                            'management_ip': 'test_ip'
-                        }]
+                    'node_processes': ['master', 'namenode'],
+                    'instances': [{
+                        'management_ip': 'test_ip'
+                    }]
                 }])):
             self.assertIn('/user/test/data-', (
                 self.base_scenario._create_dfs_data(input_path, None,

@@ -236,7 +236,8 @@ class BaseTestCase(base.BaseTestCase):
                 url = self._create_swift_data(source, destination)
             if ds['type'] == 'hdfs':
                 url = self._create_dfs_data(source, destination,
-                                            ds.get('hdfs_username', 'oozie'),
+                                            self.testcase.get('hdfs_username',
+                                                              'hadoop'),
                                             ds['type'])
             if ds['type'] == 'maprfs':
                 url = self._create_dfs_data(source, destination,
@@ -384,7 +385,10 @@ class BaseTestCase(base.BaseTestCase):
                             'maprfs': 'hadoop fs'}
 
         hdfs_dir = utils.rand_name("/user/%s/data" % hdfs_username)
-        inst_ip = self._get_nodes_with_process()[0]["management_ip"]
+        instances = self._get_nodes_with_process('namenode')
+        if len(instances) == 0:
+            instances = self._get_nodes_with_process('CLDB')
+        inst_ip = instances[0]["management_ip"]
         self._run_command_on_node(
             inst_ip,
             "sudo su - -c \"%(prefix)s -mkdir -p %(path)s \" %(user)s" % {
@@ -650,11 +654,14 @@ class BaseTestCase(base.BaseTestCase):
         return ssh_session.exec_command(command)
 
     def _get_nodes_with_process(self, process=None):
+        if process is not None:
+            process = process.lower()
         nodegroups = self.sahara.get_cluster(self.cluster_id).node_groups
         nodes_with_process = []
         for nodegroup in nodegroups:
-            if not process or process in nodegroup['node_processes']:
-                nodes_with_process.extend(nodegroup['instances'])
+            for node_process in nodegroup['node_processes']:
+                if not process or process in node_process.lower():
+                    nodes_with_process.extend(nodegroup['instances'])
         return nodes_with_process
 
     def _get_health_status(self, cluster):

@@ -56,7 +56,6 @@ edp_jobs_flow:
         source: edp-examples/edp-hive/script.q
       input_datasource:
         type: hdfs
-        hdfs_username: hadoop
         source: edp-examples/edp-hive/input.csv
       output_datasource:
         type: hdfs
