@@ -59,6 +59,10 @@ SCHEMA = {
                 "ssl_cert": {
                     "type": "string",
                     "minLength": 1
+                },
+                "image_username": {
+                    "type": "string",
+                    "minLength": 1
                 }
             },
             "additionalProperties": False
