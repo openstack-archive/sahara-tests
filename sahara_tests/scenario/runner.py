@@ -31,6 +31,11 @@ import yaml
 from sahara_tests.scenario import validation
 
 
+TEST_TEMPLATE_DIR = 'etc/scenario/defaults/'
+DEFAULT_TEMPLATE_VARS = [os.path.join(TEST_TEMPLATE_DIR,
+                                      'credentials.yaml.mako'),
+                         os.path.join(TEST_TEMPLATE_DIR,
+                                      'edp.yaml.mako')]
 TEST_TEMPLATE_PATH = 'sahara_tests/scenario/testcase.py.mako'
 
 
@@ -167,7 +172,7 @@ def main():
     # parse args
     parser = argparse.ArgumentParser(description="Scenario tests runner.")
     parser.add_argument('scenario_arguments', help="Path to scenario files",
-                        nargs='+')
+                        nargs='*', default=[])
     parser.add_argument('--variable_file', '-V', default='', nargs='?',
                         help='Path to the file with template variables')
     parser.add_argument('--verbose', default=False, action='store_true',
@@ -176,12 +181,34 @@ def main():
                         help='Validate yaml-files, tests will not be runned')
     parser.add_argument('--args', default='', nargs='+',
                         help='Pairs of arguments key:value')
+    parser.add_argument('--plugin', '-p', default=None, nargs='?',
+                        help='Specify plugin name')
+    parser.add_argument('--plugin_version', '-v', default=None,
+                        nargs='?', help='Specify plugin version')
+    parser.add_argument('--release', '-r', default=None,
+                        nargs='?', help='Specify Sahara release')
 
     args = parser.parse_args()
     scenario_arguments = args.scenario_arguments
     variable_file = args.variable_file
     verbose_run = args.verbose
     scenario_args = parse_args(args.args)
+    plugin = args.plugin
+    version = args.plugin_version
+    release = args.release
+
+    templates_location = TEST_TEMPLATE_DIR
+    if release is not None:
+        templates_location = os.path.join(TEST_TEMPLATE_DIR, release)
+
+    template = "%s-%s.yaml.mako" % (plugin, version)
+
+    if plugin in ['transient', 'fake']:
+        template = "%s.yaml.mako" % plugin
+    elif plugin or version:
+        DEFAULT_TEMPLATE_VARS.append(os.path.join(templates_location,
+                                                  template))
+        scenario_arguments = DEFAULT_TEMPLATE_VARS
 
     # parse config
     config = {'credentials': {},

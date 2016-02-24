@@ -15,7 +15,6 @@
 
 from __future__ import print_function
 import functools
-import glob
 import logging
 import os
 import sys
@@ -23,7 +22,6 @@ import time
 import traceback
 
 import fixtures
-from oslo_serialization import jsonutils as json
 from oslo_utils import timeutils
 import prettytable
 import six
@@ -39,8 +37,6 @@ from sahara_tests.utils import crypto as ssh
 logger = logging.getLogger('swiftclient')
 logger.setLevel(logging.CRITICAL)
 
-DEFAULT_TEMPLATES_PATH = (
-    'sahara_tests/scenario/templates/%(plugin_name)s/%(hadoop_version)s')
 CHECK_OK_STATUS = "OK"
 CHECK_FAILED_STATUS = "FAILED"
 CLUSTER_STATUS_ACTIVE = "Active"
@@ -103,7 +99,6 @@ class BaseTestCase(base.BaseTestCase):
             'plugin_name': self.testcase['plugin_name'],
             'hadoop_version': self.testcase['plugin_version']
         }
-        self.template_path = DEFAULT_TEMPLATES_PATH % self.plugin_opts
         self.cinder = True
         self.proxy = False
 
@@ -392,13 +387,7 @@ class BaseTestCase(base.BaseTestCase):
     def check_scale(self):
         scale_ops = []
         ng_before_scale = self.sahara.get_cluster(self.cluster_id).node_groups
-        if self.testcase.get('scaling'):
-            scale_ops = self.testcase['scaling']
-        else:
-            scale_path = os.path.join(self.template_path, 'scale.json')
-            if os.path.exists(scale_path):
-                with open(scale_path) as data:
-                    scale_ops = json.load(data)
+        scale_ops = self.testcase['scaling']
 
         body = {}
         for op in scale_ops:
@@ -496,15 +485,8 @@ class BaseTestCase(base.BaseTestCase):
             floating_ip_pool = self.network['public_network']
 
         node_groups = []
-        if self.testcase.get('node_group_templates'):
-            for ng in self.testcase['node_group_templates']:
-                node_groups.append(ng)
-        else:
-            templates_path = os.path.join(self.template_path,
-                                          'node_group_template_*.json')
-            for template_file in glob.glob(templates_path):
-                with open(template_file) as data:
-                    node_groups.append(json.load(data))
+        for ng in self.testcase['node_group_templates']:
+            node_groups.append(ng)
 
         for ng in node_groups:
             kwargs = dict(ng)
@@ -529,14 +511,7 @@ class BaseTestCase(base.BaseTestCase):
     @track_result("Create cluster template")
     def _create_cluster_template(self):
         self.ng_name_map = {}
-        template = None
-        if self.testcase.get('cluster_template'):
-            template = self.testcase['cluster_template']
-        else:
-            template_path = os.path.join(self.template_path,
-                                         'cluster_template.json')
-            with open(template_path) as data:
-                template = json.load(data)
+        template = self.testcase['cluster_template']
 
         kwargs = dict(template)
         ngs = kwargs['node_group_templates']
