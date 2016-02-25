@@ -187,6 +187,8 @@ def main():
                         nargs='?', help='Specify plugin version')
     parser.add_argument('--release', '-r', default=None,
                         nargs='?', help='Specify Sahara release')
+    parser.add_argument('--report', default=False, action='store_true',
+                        help='Write results of test to file')
 
     args = parser.parse_args()
     scenario_arguments = args.scenario_arguments
@@ -196,6 +198,7 @@ def main():
     plugin = args.plugin
     version = args.plugin_version
     release = args.release
+    report = args.report
 
     templates_location = TEST_TEMPLATE_DIR
     if release is not None:
@@ -263,7 +266,7 @@ def main():
     test_template = mako_template.Template(filename=TEST_TEMPLATE_PATH)
     testcase_data = test_template.render(testcases=testcases,
                                          credentials=credentials,
-                                         network=network)
+                                         network=network, report=report)
 
     test_dir_path = tempfile.mkdtemp()
     print("The generated test file located at: %s" % test_dir_path)

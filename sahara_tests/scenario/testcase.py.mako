@@ -12,6 +12,7 @@ class ${testcase['class_name']}TestCase(base.BaseTestCase):
         cls.credentials = ${credentials}
         cls.network = ${network}
         cls.testcase = ${testcase}
+        cls.report = ${report}
 
     def test_plugin(self):
         self.create_cluster()

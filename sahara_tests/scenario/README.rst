@@ -78,6 +78,9 @@ Also, you can validate your yaml-files using flag ``--validate`` via command:
 
 ..
 
+For generating report use flag `--report`.
+
+
 Template variables
 ------------------
 The variables used in the Mako template files are replaced with the values from a
