@@ -246,10 +246,10 @@ def main():
     # run tests
     concurrency = config.get('concurrency')
     os.environ['DISCOVER_DIRECTORY'] = test_dir_path
-    command = 'bash tools/pretty_tox.sh'
+    command = ['ostestr']
     if concurrency:
-        command = command + ' -- --concurrency %d' % concurrency
-    return_code = subprocess.call(command, shell=True)
+        command.extend(['--concurrency', '%d' % concurrency])
+    return_code = subprocess.call(command)
     sys.exit(return_code)
 
 
