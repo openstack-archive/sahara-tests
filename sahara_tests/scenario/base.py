@@ -221,16 +221,16 @@ class BaseTestCase(base.BaseTestCase):
 
     def _create_datasources(self, job):
         def create(ds, name):
-            location = ds.get('source', None)
-            if not location:
-                location = utils.rand_name(ds['destination'])
+            source = ds.get('source', None)
+            destination = None if source else utils.rand_name(
+                ds['destination'])
             if ds['type'] == 'swift':
-                url = self._create_swift_data(location)
+                url = self._create_swift_data(source, destination)
             if ds['type'] == 'hdfs':
-                url = self._create_hdfs_data(location, ds.get('hdfs_username',
-                                                              'oozie'))
+                url = self._create_hdfs_data(source, destination,
+                                             ds.get('hdfs_username', 'oozie'))
             if ds['type'] == 'maprfs':
-                url = location
+                url = source if source else destination
             return self.__create_datasource(
                 name=utils.rand_name(name),
                 description='',
@@ -326,9 +326,9 @@ class BaseTestCase(base.BaseTestCase):
             if report:
                 self.fail("\n".join(report))
 
-    def _create_swift_data(self, source=None):
+    def _create_swift_data(self, source=None, destination=None):
         container = self._get_swift_container()
-        path = utils.rand_name('test')
+        path = utils.rand_name(destination if destination else 'test')
         data = None
         if source:
             with open(source) as source_fd:
@@ -338,11 +338,13 @@ class BaseTestCase(base.BaseTestCase):
 
         return 'swift://%s.sahara/%s' % (container, path)
 
-    def _create_hdfs_data(self, source, hdfs_username):
+    def _create_hdfs_data(self, source, destination, hdfs_username):
 
         def to_hex_present(string):
             return "".join(map(lambda x: hex(ord(x)).replace("0x", "\\x"),
                                string))
+        if destination:
+            return destination
 
         if 'user' in source:
             return source

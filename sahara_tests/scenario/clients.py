@@ -246,9 +246,18 @@ class SwiftClient(Client):
         return self.swift_client.put_container(container_name)
 
     def delete_container(self, container_name):
+        objects = self._get_objects(container_name)
+        for obj in objects:
+            self.delete_object(container_name, obj)
         return self.delete_resource(
-            self.swift_client.delete_container,
-            container_name)
+            self.swift_client.delete_container, container_name)
+
+    def _get_objects(self, container_name):
+        metadata = self.swift_client.get_container(container_name)
+        objects = []
+        for obj in metadata[1]:
+            objects.append(obj['name'])
+        return objects[::-1]
 
     def upload_data(self, container_name, object_name, data):
         return self.swift_client.put_object(container_name, object_name, data)

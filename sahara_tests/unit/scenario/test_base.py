@@ -534,7 +534,8 @@ class TestBase(testtools.TestCase):
         self.base_scenario._init_clients()
         output_path = '/user/test/data/output'
         self.assertEqual(output_path,
-                         self.base_scenario._create_hdfs_data(output_path,
+                         self.base_scenario._create_hdfs_data(None,
+                                                              output_path,
                                                               None))
         input_path = 'etc/edp-examples/edp-pig/trim-spaces/data/input'
         with mock.patch(
@@ -547,4 +548,5 @@ class TestBase(testtools.TestCase):
                         }]
                 }])):
             self.assertTrue('/user/test/data-' in (
-                self.base_scenario._create_hdfs_data(input_path, 'test')))
+                self.base_scenario._create_hdfs_data(input_path, None,
+                                                     'test')))
