@@ -75,6 +75,7 @@ def track_result(check_name, exit_with_error=True):
 
 
 class BaseTestCase(base.BaseTestCase):
+
     @classmethod
     def setUpClass(cls):
         super(BaseTestCase, cls).setUpClass()
@@ -606,7 +607,13 @@ class BaseTestCase(base.BaseTestCase):
                 if status == CLUSTER_STATUS_ACTIVE:
                     break
                 if status == CLUSTER_STATUS_ERROR:
-                    raise exc.TempestException("Cluster in %s state" % status)
+                    cluster = self.sahara.get_cluster(cluster_id)
+                    failure_desc = cluster.status_description
+                    message = ("Cluster in %s state with"
+                               " a message below:\n%s") % (status,
+                                                           failure_desc)
+
+                    raise exc.TempestException(message)
                 time.sleep(3)
 
     def _run_command_on_node(self, node_ip, command):

@@ -55,10 +55,12 @@ class FakeCluster(object):
 
 
 class FakeResponse(object):
-    def __init__(self, set_id=None, set_status=None, node_groups=None,
-                 url=None, job_id=None, name=None, job_type=None):
+    def __init__(self, set_id=None, set_status=None, status_description=None,
+                 node_groups=None, url=None, job_id=None, name=None,
+                 job_type=None):
         self.id = set_id
         self.status = set_status
+        self.status_description = status_description
         self.node_groups = node_groups
         self.url = url
         self.job_id = job_id
@@ -434,7 +436,8 @@ class TestBase(testtools.TestCase):
     @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',
                 return_value='mock_net')
     @mock.patch('saharaclient.api.base.ResourceManager._get',
-                return_value=FakeResponse(set_status='Error'))
+                return_value=FakeResponse(set_status='Error',
+                                          status_description=""))
     def test_errormsg(self, mock_status, mock_neutron, mock_saharaclient):
         self.base_scenario._init_clients()
         with testtools.ExpectedException(exc.TempestException):
