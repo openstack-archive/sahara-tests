@@ -227,10 +227,13 @@ class BaseTestCase(base.BaseTestCase):
             if ds['type'] == 'swift':
                 url = self._create_swift_data(source, destination)
             if ds['type'] == 'hdfs':
-                url = self._create_hdfs_data(source, destination,
-                                             ds.get('hdfs_username', 'oozie'))
+                url = self._create_dfs_data(source, destination,
+                                            ds.get('hdfs_username', 'oozie'),
+                                            ds['type'])
             if ds['type'] == 'maprfs':
-                url = source if source else destination
+                url = self._create_dfs_data(source, destination,
+                                            ds.get('maprfs_username', 'mapr'),
+                                            ds['type'])
             return self.__create_datasource(
                 name=utils.rand_name(name),
                 description='',
@@ -338,7 +341,7 @@ class BaseTestCase(base.BaseTestCase):
 
         return 'swift://%s.sahara/%s' % (container, path)
 
-    def _create_hdfs_data(self, source, destination, hdfs_username):
+    def _create_dfs_data(self, source, destination, hdfs_username, fs):
 
         def to_hex_present(string):
             return "".join(map(lambda x: hex(ord(x)).replace("0x", "\\x"),
@@ -346,24 +349,28 @@ class BaseTestCase(base.BaseTestCase):
         if destination:
             return destination
 
-        if 'user' in source:
-            return source
+        command_prefixes = {'hdfs': 'hdfs dfs',
+                            'maprfs': 'hadoop fs'}
+
         hdfs_dir = utils.rand_name("/user/%s/data" % hdfs_username)
         inst_ip = self._get_nodes_with_process()[0]["management_ip"]
         self._run_command_on_node(
             inst_ip,
-            "sudo su - -c \"hdfs dfs -mkdir -p %(path)s \" %(user)s" % {
-                "path": hdfs_dir, "user": hdfs_username})
+            "sudo su - -c \"%(prefix)s -mkdir -p %(path)s \" %(user)s" % {
+                "prefix": command_prefixes[fs],
+                "path": hdfs_dir,
+                "user": hdfs_username})
         hdfs_filepath = utils.rand_name(hdfs_dir + "/file")
         with open(source) as source_fd:
             data = source_fd.read()
         self._run_command_on_node(
             inst_ip,
-            ("echo -e \"%(data)s\" | sudo su - -c \"hdfs dfs"
+            ("echo -e \"%(data)s\" | sudo su - -c \"%(prefix)s"
              " -put - %(path)s\" %(user)s") % {
-                 "data": to_hex_present(data),
-                 "path": hdfs_filepath,
-                 "user": hdfs_username})
+                "data": to_hex_present(data),
+                "prefix": command_prefixes[fs],
+                "path": hdfs_filepath,
+                "user": hdfs_username})
         return hdfs_filepath
 
     def _create_internal_db_data(self, source):

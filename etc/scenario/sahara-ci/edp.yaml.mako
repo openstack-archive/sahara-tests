@@ -85,7 +85,7 @@ edp_jobs_flow:
         fs.swift.service.sahara.password: ${OS_PASSWORD}
       args:
         - '{input_datasource}'
-  mapr:
+  mapr_pig_job:
     - type: Pig
       input_datasource:
         type: maprfs
@@ -99,6 +99,7 @@ edp_jobs_flow:
       additional_libs:
         - type: swift
           source: etc/edp-examples/edp-pig/trim-spaces/udf.jar
+  mapr:
     - type: MapReduce
       input_datasource:
         type: maprfs

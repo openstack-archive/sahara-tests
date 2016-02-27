@@ -534,9 +534,8 @@ class TestBase(testtools.TestCase):
         self.base_scenario._init_clients()
         output_path = '/user/test/data/output'
         self.assertEqual(output_path,
-                         self.base_scenario._create_hdfs_data(None,
-                                                              output_path,
-                                                              None))
+                         self.base_scenario._create_dfs_data(None, output_path,
+                                                             None, 'hdfs'))
         input_path = 'etc/edp-examples/edp-pig/trim-spaces/data/input'
         with mock.patch(
             'sahara_tests.scenario.clients.SaharaClient.get_cluster',
@@ -548,5 +547,5 @@ class TestBase(testtools.TestCase):
                         }]
                 }])):
             self.assertTrue('/user/test/data-' in (
-                self.base_scenario._create_hdfs_data(input_path, None,
-                                                     'test')))
+                self.base_scenario._create_dfs_data(input_path, None,
+                                                    'test', 'hdfs')))

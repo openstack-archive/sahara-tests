@@ -41,12 +41,12 @@ clusters:
       name: mapr500mrv2
       node_group_templates:
         master: 1
-        worker: 3
+        worker: 1
     cluster:
       name: ${cluster_name}
     scaling:
       - operation: add
         node_group: worker
         size: 1
-    scenario:
-      - scale
+    edp_jobs_flow:
+      - mapr
