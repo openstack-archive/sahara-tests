@@ -15,9 +15,7 @@ dist
 doc/build
 doc/html
 eggs
-etc/sahara.conf
-etc/sahara/*.conf
-etc/sahara/*.topology
+scenario_key-*
 sdist
 target
 tools/lintstack.head.py
