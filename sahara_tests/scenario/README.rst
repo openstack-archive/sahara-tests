@@ -4,6 +4,15 @@ System(scenario) tests for Sahara project
 How to run
 ----------
 
+Scenario framework has default templates for testing Sahara. For
+use them, need to specify plugin and version (for transient check and
+fake plugin, version is not necessary):
+
+.. sourcecode:: console
+
+    $ tox -e venv -- sahara-scenario -p vanilla -v 2.7.1
+..
+
 Create the YAML and/or the YAML mako template files for scenario tests
 ``etc/scenario/sahara-ci/simple-testcase.yaml``.
 You can take a look at sample YAML files `How to write scenario files`_.

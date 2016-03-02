@@ -313,3 +313,30 @@ class RunnerUnitTest(testtools.TestCase):
                     'network_type:test']
         with testtools.ExpectedException(exceptions.ValidationError):
             runner.main()
+
+    @mock.patch('sahara_tests.scenario.validation.validate')
+    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('sys.exit', return_value=None)
+    def test_default_templates_non_plugin(self, mock_sys, mock_sub,
+                                          mock_validate):
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    '-p', 'transient']
+        runner.main()
+
+    @mock.patch('sahara_tests.scenario.validation.validate')
+    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('sys.exit', return_value=None)
+    def test_default_templates_kilo(self, mock_sys, mock_sub, mock_validate):
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    '-p', 'spark', '-v', '1.0.0', '-r', 'kilo']
+        runner.main()
+        self.assertEqual('spark',
+                         mock_validate.call_args[0][0]['clusters'][0][
+                             'plugin_name'])
+        self.assertEqual('1.0.0',
+                         mock_validate.call_args[0][0]['clusters'][0][
+                             'plugin_version'])
