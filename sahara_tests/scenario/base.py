@@ -599,8 +599,8 @@ class BaseTestCase(base.BaseTestCase):
         if self.proxy:
             host_ip = self.proxy
             command = ("echo '{pkey}' > {filename} && chmod 600 {filename} && "
-                       "ssh {ip} -i {filename} '{cmd}' && "
-                       "rm {filename}".format(
+                       "ssh -o StrictHostKeyChecking=no {ip} -i {filename} "
+                       "'{cmd}' && rm {filename}".format(
                            pkey=self.private_key, filename='scenario.pem',
                            ip=node_ip, cmd=command))
         ssh_session = connection.Client(host_ip, self.testcase['ssh_username'],
