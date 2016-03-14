@@ -79,6 +79,7 @@ class BaseTestCase(base.BaseTestCase):
         cls.credentials = None
         cls.testcase = None
         cls._results = []
+        cls.report = False
 
     def setUp(self):
         super(BaseTestCase, self).setUp()
@@ -707,3 +708,13 @@ class BaseTestCase(base.BaseTestCase):
                            for c in self._results])
         if test_failed:
             self.fail("Scenario tests failed")
+        if self.report:
+            filename = {"time": time.strftime('%Y%m%d%H%M%S',
+                                              time.localtime())}
+            filename.update(self._results)
+            report_file_name = (
+                '{plugin_name}_{hadoop_version}-{time}'.format(**filename))
+            time.strftime('%Y%m%d%H%M%S', time.localtime())
+            with open(report_file_name, 'w') as report_file:
+                report_file.write(self._results)
+            print("Results can be found in %s" % report_file_name)
