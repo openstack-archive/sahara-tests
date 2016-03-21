@@ -54,7 +54,7 @@ Swift Objects
 Several of the examples here call for objects in Swift. To upload all of the
 required files for all examples, use the following:
 
-    $ cd etc/edp-examples
+    $ cd sahara_tests/scenario/defaults/edp-examples
     $ swift upload edp-examples ./*
 
 Swift credentials

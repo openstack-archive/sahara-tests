@@ -93,7 +93,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "sahara_url": "http://127.0.0.1",
                 "os_password": "changed_nova",
                 "os_tenant": "changed_admin",
-                "ssl_cert": "/etc/tests/cert.crt"
+                "ssl_cert": "sahara_tests/scenario/defaults/tests/cert.crt"
             },
             "network": {
                 "type": "neutron",
@@ -116,7 +116,8 @@ class RunnerUnitTest(testtools.TestCase):
                         "type": "Pig",
                         "input_datasource": {
                             "type": "swift",
-                            "source": "etc/edp-examples/edp-pig/top-todoers/"
+                            "source": "sahara_tests/scenario/defaults/"
+                                      "edp-examples/edp-pig/top-todoers/"
                                       "data/input"
                         },
                         "output_datasource": {
@@ -125,7 +126,8 @@ class RunnerUnitTest(testtools.TestCase):
                         },
                         "main_lib": {
                             "type": "swift",
-                            "source": "etc/edp-examples/edp-pig/top-todoers/"
+                            "source": "sahara_tests/scenario/defaults/"
+                                      "edp-examples/edp-pig/top-todoers/"
                                       "example.pig"
                         }
                     },
@@ -167,7 +169,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "os_password": "changed_nova",
                 "os_tenant": "changed_admin",
                 "sahara_service_type": "data-processing",
-                "ssl_cert": "/etc/tests/cert.crt",
+                "ssl_cert": "sahara_tests/scenario/defaults/tests/cert.crt",
                 "ssl_verify": False
             },
         }
@@ -191,13 +193,15 @@ class RunnerUnitTest(testtools.TestCase):
                     'edp_jobs_flow': [
                         {
                             'main_lib': {
-                                'source': 'etc/edp-examples/edp-pig/'
+                                'source': 'sahara_tests/scenario/defaults/'
+                                          'edp-examples/edp-pig/'
                                           'top-todoers/example.pig',
                                 'type': 'swift'
                             },
                             'type': 'Pig',
                             'input_datasource': {
-                                'source': 'etc/edp-examples/edp-pig/'
+                                'source': 'sahara_tests/scenario/defaults/'
+                                          'edp-examples/edp-pig/'
                                           'top-todoers/data/input',
                                 'type': 'swift'
                             },
