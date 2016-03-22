@@ -37,8 +37,9 @@ class RunnerUnitTest(testtools.TestCase):
                     "plugin_name": "vanilla",
                     "plugin_version": "2.7.1",
                     "image": "sahara-vanilla-2.7.1-ubuntu-14.04"
-                }],
-            }
+                }
+            ]
+        }
 
         expected_default_credential = {
             "credentials": {
@@ -59,7 +60,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "private_network": "private",
                 "public_network": "public",
                 "auto_assignment_floating_ip": False
-                },
+            }
         }
 
         expected_default_cluster = {
@@ -72,7 +73,8 @@ class RunnerUnitTest(testtools.TestCase):
                     "scenario": ['run_jobs', 'scale', 'run_jobs'],
                     "plugin_version": "2.7.1",
                     "retain_resources": False,
-                }],
+                }
+            ]
         }
 
         runner.set_defaults(config_without_cred_net)
@@ -98,7 +100,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "private_network": "changed_private",
                 "public_network": "changed_public",
                 "auto_assignment_floating_ip": True,
-                },
+            },
             "clusters": [
                 {
                     "plugin_name": "vanilla",
@@ -106,7 +108,8 @@ class RunnerUnitTest(testtools.TestCase):
                     "image": "sahara-vanilla-2.7.1-ubuntu-14.04",
                     "edp_jobs_flow": "test_flow",
                     "retain_resources": True
-                }],
+                }
+            ],
             "edp_jobs_flow": {
                 "test_flow": [
                     {
@@ -138,7 +141,7 @@ class RunnerUnitTest(testtools.TestCase):
                                    "examples.QuasiMonteCarlo",
                         "args": [10, 10]
                     },
-                    ],
+                ],
                 "test_flow2": [
                     {
                         "type": "Java",
@@ -151,10 +154,10 @@ class RunnerUnitTest(testtools.TestCase):
                         "configs": "edp.java.main_class: org.apache.hadoop."
                                    "examples.QuasiMonteCarlo",
                         "args": [20, 20]
-                    },
-                ],
-                },
+                    }
+                ]
             }
+        }
 
         expected_credential = {
             "credentials": {
@@ -175,7 +178,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "private_network": "changed_private",
                 "public_network": "changed_public",
                 "auto_assignment_floating_ip": True,
-                },
+            }
         }
 
         expected_cluster = {

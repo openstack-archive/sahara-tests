@@ -39,7 +39,7 @@ def main():
     lines = kvs.map(lambda x: x[1])
     counts = lines.flatMap(lambda line: (line.split(" "))
                            .map(lambda word: (word, 1))
-                           .reduceByKey(lambda a, b: a+b))
+                           .reduceByKey(lambda a, b: a + b))
     counts.pprint()
     kwargs = {}
     if timeout:
