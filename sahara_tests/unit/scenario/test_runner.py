@@ -340,3 +340,12 @@ class RunnerUnitTest(testtools.TestCase):
         self.assertEqual('1.0.0',
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_version'])
+
+    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('sys.exit', return_value=None)
+    def test_count(self, mock_sys, mock_sub):
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    '-p', 'spark', '-v', '1.0.0', '--count', '4']
+        runner.main()

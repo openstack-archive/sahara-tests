@@ -80,7 +80,6 @@ Also, you can validate your yaml-files using flag ``--validate`` via command:
 
 For generating report use flag `--report`.
 
-
 Template variables
 ------------------
 The variables used in the Mako template files are replaced with the values from a
@@ -143,6 +142,9 @@ This field has integer value, and set concurrency for run tests
 
 For example:
      ``concurrency: 2``
+
+For parallel testing use flag ``--count`` in run command and
+setup ``cuncurrency`` value
 
 Section "credentials"
 --------------------

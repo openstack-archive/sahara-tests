@@ -134,6 +134,17 @@ def is_template_file(config_file):
     return config_file.endswith(('.yaml.mako', '.yml.mako'))
 
 
+def valid_count(value):
+    try:
+        ivalue = int(value)
+        if ivalue <= 0:
+            raise ValueError
+    except ValueError:
+        raise argparse.ArgumentTypeError("%s is an invalid value of count. "
+                                         "Value must be int and > 0. " % value)
+    return ivalue
+
+
 def read_scenario_config(scenario_config, template_vars=None,
                          verbose=False):
     """Parse the YAML or the YAML template file.
@@ -189,6 +200,8 @@ def main():
                         nargs='?', help='Specify Sahara release')
     parser.add_argument('--report', default=False, action='store_true',
                         help='Write results of test to file')
+    parser.add_argument('--count', default=1, nargs='?', type=valid_count,
+                        help='Specify count of runs current cases.')
 
     args = parser.parse_args()
     scenario_arguments = args.scenario_arguments
@@ -199,6 +212,7 @@ def main():
     version = args.plugin_version
     release = args.release
     report = args.report
+    count = args.count
 
     templates_location = TEST_TEMPLATE_DIR
     if release is not None:
@@ -261,6 +275,8 @@ def main():
     credentials = config['credentials']
     network = config['network']
     testcases = config['clusters']
+    for case in range(count - 1):
+        testcases.extend(config['clusters'])
 
     # create testcase file
     test_template = mako_template.Template(filename=TEST_TEMPLATE_PATH)
