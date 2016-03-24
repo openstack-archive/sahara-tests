@@ -328,6 +328,18 @@ class RunnerUnitTest(testtools.TestCase):
     @mock.patch('sahara_tests.scenario.validation.validate')
     @mock.patch('subprocess.call', return_value=None)
     @mock.patch('sys.exit', return_value=None)
+    def test_default_templates_negative(self, mock_sys, mock_sub,
+                                        mock_validate):
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    '-p', 'vanilla']
+        with testtools.ExpectedException(ValueError):
+            runner.main()
+
+    @mock.patch('sahara_tests.scenario.validation.validate')
+    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('sys.exit', return_value=None)
     def test_default_templates_kilo(self, mock_sys, mock_sub, mock_validate):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
