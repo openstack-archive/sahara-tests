@@ -377,7 +377,7 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.0.0', '-r', 'kilo',
+                    '-p', 'spark', '-v', '1.3.1', '-r', 'liberty',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'http://127.0.0.1:5000/v2']
@@ -385,7 +385,7 @@ class RunnerUnitTest(testtools.TestCase):
         self.assertEqual('spark',
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_name'])
-        self.assertEqual('1.0.0',
+        self.assertEqual('1.3.1',
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_version'])
 
@@ -396,7 +396,8 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.0.0', '--count', '4',
+                    '-p', 'spark', '-v', '1.3.1', '--release', 'liberty',
+                    '--count', '4',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'http://127.0.0.1:5000/v2']
@@ -418,7 +419,8 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.0.0', '--count', '4']
+                    '-p', 'spark', '-v', '1.3.1', '--release', 'liberty',
+                    '--count', '4']
         runner.main()
         expected = {
             'os_username': 'demo_env',
