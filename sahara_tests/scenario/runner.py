@@ -218,11 +218,13 @@ def main():
     if release is not None:
         templates_location = os.path.join(TEST_TEMPLATE_DIR, release)
 
-    template = "%s-%s.yaml.mako" % (plugin, version)
-
-    if plugin in ['transient', 'fake']:
-        template = "%s.yaml.mako" % plugin
-    elif plugin or version:
+    if plugin:
+        if plugin in ['transient', 'fake']:
+            template = "%s.yaml.mako" % plugin
+        elif plugin and version:
+            template = "%s-%s.yaml.mako" % (plugin, version)
+        else:
+            raise ValueError("Please, specify version for plugin via '-v'")
         DEFAULT_TEMPLATE_VARS.append(os.path.join(templates_location,
                                                   template))
         scenario_arguments = DEFAULT_TEMPLATE_VARS
