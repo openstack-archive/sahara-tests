@@ -288,8 +288,8 @@ def main():
 
     test_dir_path = tempfile.mkdtemp()
     print("The generated test file located at: %s" % test_dir_path)
-    fileutils.write_to_tempfile(testcase_data, prefix='test_', suffix='.py',
-                                path=test_dir_path)
+    fileutils.write_to_tempfile(testcase_data.encode("ASCII"), prefix='test_',
+                                suffix='.py', path=test_dir_path)
 
     # run tests
     concurrency = config.get('concurrency')
