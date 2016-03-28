@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import print_function
 import time
 
 import fixtures
@@ -166,6 +167,25 @@ class SaharaClient(Client):
         for nodegroup in self.sahara_client.node_group_templates.list():
             if nodegroup.name == name:
                 return nodegroup.id
+
+    def register_image(self, image_id, testcase):
+        try:
+            return self.sahara_client.images.get(image_id)
+        except saharaclient_base.APIException:
+            print("Image not registered in sahara. Registering and run tests")
+            if testcase.get('image_username') is not None:
+                self.sahara_client.images.update_image(
+                    image_id, testcase.get('image_username'),
+                    "Registered by scenario tests")
+                self.sahara_client.images.update_tags(
+                    image_id, [testcase["plugin_name"],
+                               testcase["plugin_version"]])
+            else:
+                raise exc.InvalidContentType(
+                    "Registering of image failed. Please, specify "
+                    "'image_username'. For details see README in scenario "
+                    "tests.")
+        return self.sahara_client.images.get(image_id)
 
     def is_resource_deleted(self, method, *args, **kwargs):
         try:

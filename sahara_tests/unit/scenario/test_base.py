@@ -227,13 +227,15 @@ class TestBase(testtools.TestCase):
         self.assertEqual('id_ct',
                          self.base_scenario._create_cluster_template())
 
+    @mock.patch('saharaclient.api.images.ImageManager.get',
+                return_value=FakeResponse(set_id='image'))
     @mock.patch('sahara_tests.scenario.clients.NovaClient.get_image_id',
                 return_value='mock_image')
     @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('saharaclient.api.clusters.ClusterManager.create',
                 return_value=FakeResponse(set_id='id_cluster'))
     def test__create_cluster(self, mock_cluster_manager, mock_saharaclient,
-                             mock_nova):
+                             mock_nova, mock_image):
         self.base_scenario._init_clients()
         self.assertEqual('id_cluster',
                          self.base_scenario._create_cluster('id_ct'))

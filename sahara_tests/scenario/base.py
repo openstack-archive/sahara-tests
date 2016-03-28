@@ -85,8 +85,9 @@ class BaseTestCase(base.BaseTestCase):
         super(BaseTestCase, self).setUp()
         self._init_clients()
         timeouts.Defaults.init_defaults(self.testcase)
-        self.testcase['ssh_username'] = self.sahara.sahara_client.images.get(
-            self.nova.get_image_id(self.testcase['image'])).username
+        self.testcase['ssh_username'] = self.sahara.register_image(
+            self.nova.get_image_id(self.testcase['image']),
+            self.testcase).username
         self.key = self.testcase.get('key_name')
         if self.key is None:
             self.private_key, self.public_key = ssh.generate_key_pair()
