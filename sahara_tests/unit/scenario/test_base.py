@@ -107,15 +107,13 @@ class TestBase(testtools.TestCase):
                     'node_processes': ['datanode', 'nodemanager'],
                     'flavor': '2'
                 }],
-            'cluster_template':
-                {
-                    'name': 'test_name_ct',
-                    'node_group_templates':
-                        {
-                            'master': 1,
-                            'worker': 3
-                        }
-                },
+            'cluster_template': {
+                'name': 'test_name_ct',
+                'node_group_templates': {
+                    'master': 1,
+                    'worker': 3
+                }
+            },
             'timeout_poll_cluster_status': 300,
             'timeout_delete_resource': 300,
             'timeout_poll_jobs_status': 2,
@@ -123,30 +121,27 @@ class TestBase(testtools.TestCase):
             'retain_resources': True,
             'image': 'image_name',
             'edp_batching': 1,
-            "edp_jobs_flow":
-                {
-                    "test_flow":
-                        [{
-                            "type": "Pig",
-                            "input_datasource":
-                                {
-                                    "type": "swift",
-                                    "source": "etc/edp-examples/edp-pig/"
-                                              "top-todoers/data/input"
-                                },
-                            "output_datasource":
-                                {
-                                    "type": "hdfs",
-                                    "destination": "/user/hadoop/edp-output"
-                                },
-                            "main_lib":
-                                {
-                                    "type": "swift",
-                                    "source": "etc/edp-examples/edp-pig/"
-                                              "top-todoers/example.pig"
-                                }
-                        }],
-                },
+            "edp_jobs_flow": {
+                "test_flow": [
+                    {
+                        "type": "Pig",
+                        "input_datasource": {
+                            "type": "swift",
+                            "source": "etc/edp-examples/edp-pig/"
+                                      "top-todoers/data/input"
+                        },
+                        "output_datasource": {
+                            "type": "hdfs",
+                            "destination": "/user/hadoop/edp-output"
+                        },
+                        "main_lib": {
+                            "type": "swift",
+                            "source": "etc/edp-examples/edp-pig/"
+                                      "top-todoers/example.pig"
+                        }
+                    }
+                ]
+            }
         }
         self.base_scenario.ng_id_map = {'worker': 'set_id', 'master': 'set_id'}
         self.base_scenario.ng_name_map = {}
