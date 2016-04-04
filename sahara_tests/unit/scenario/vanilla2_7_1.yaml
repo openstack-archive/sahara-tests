@@ -16,6 +16,7 @@ clusters:
     - plugin_name: vanilla
       plugin_version: 2.7.1
       image: sahara-vanilla-2.7.1-ubuntu-14.04
+      image_username: ubuntu
       node_group_templates:
         - name: master
           node_processes:

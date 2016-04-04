@@ -60,10 +60,6 @@ SCHEMA = {
                     "type": "string",
                     "minLength": 1
                 },
-                "image_username": {
-                    "type": "string",
-                    "minLength": 1
-                }
             },
             "additionalProperties": False
         },
@@ -111,6 +107,10 @@ SCHEMA = {
                         "minLength": 1
                     },
                     "image": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "image_username": {
                         "type": "string",
                         "minLength": 1
                     },
