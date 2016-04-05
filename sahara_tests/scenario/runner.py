@@ -179,9 +179,9 @@ def parse_args(array):
     return args
 
 
-def main():
-    # parse args
+def get_base_parser():
     parser = argparse.ArgumentParser(description="Scenario tests runner.")
+
     parser.add_argument('scenario_arguments', help="Path to scenario files",
                         nargs='*', default=[])
     parser.add_argument('--variable_file', '-V', default='', nargs='?',
@@ -202,38 +202,10 @@ def main():
                         help='Write results of test to file')
     parser.add_argument('--count', default=1, nargs='?', type=valid_count,
                         help='Specify count of runs current cases.')
+    return parser
 
-    args = parser.parse_args()
-    scenario_arguments = args.scenario_arguments
-    variable_file = args.variable_file
-    verbose_run = args.verbose
-    scenario_args = parse_args(args.args)
-    plugin = args.plugin
-    version = args.plugin_version
-    release = args.release
-    report = args.report
-    count = args.count
 
-    templates_location = TEST_TEMPLATE_DIR
-    if release is not None:
-        templates_location = os.path.join(TEST_TEMPLATE_DIR, release)
-
-    if plugin:
-        if plugin in ['transient', 'fake']:
-            template = "%s.yaml.mako" % plugin
-        elif plugin and version:
-            template = "%s-%s.yaml.mako" % (plugin, version)
-        else:
-            raise ValueError("Please, specify version for plugin via '-v'")
-        DEFAULT_TEMPLATE_VARS.append(os.path.join(templates_location,
-                                                  template))
-        scenario_arguments = DEFAULT_TEMPLATE_VARS
-
-    # parse config
-    config = {'credentials': {},
-              'network': {},
-              'clusters': [],
-              'edp_jobs_flow': {}}
+def get_scenario_files(scenario_arguments):
     files = []
     for scenario_argument in scenario_arguments:
         if os.path.isdir(scenario_argument):
@@ -241,6 +213,10 @@ def main():
         if os.path.isfile(scenario_argument):
             files.append(scenario_argument)
 
+    return files
+
+
+def get_templates_variables(files, variable_file, verbose_run, scenario_args):
     template_variables = {}
     if any(is_template_file(config_file) for config_file in files):
         template_variables = read_template_variables(variable_file,
@@ -249,6 +225,15 @@ def main():
     elif scenario_args:
         template_variables = read_template_variables(
             verbose=verbose_run, scenario_args=scenario_args)
+
+    return template_variables
+
+
+def generate_config(files, template_variables, verbose_run):
+    config = {'credentials': {},
+              'network': {},
+              'clusters': [],
+              'edp_jobs_flow': {}}
 
     for scenario_argument in files:
         test_scenario = read_scenario_config(scenario_argument,
@@ -266,6 +251,51 @@ def main():
                         test_scenario['edp_jobs_flow'][key])
                 else:
                     raise ValueError('Job flow exist')
+    return config
+
+
+def get_default_templates(plugin, version, release, scenario_arguments):
+    templates_location = TEST_TEMPLATE_DIR
+    if release is not None:
+        templates_location = os.path.join(TEST_TEMPLATE_DIR, release)
+
+    if plugin:
+        if plugin in ['transient', 'fake']:
+            template = "%s.yaml.mako" % plugin
+        elif plugin and version:
+            template = "%s-%s.yaml.mako" % (plugin, version)
+        else:
+            raise ValueError("Please, specify version for plugin via '-v'")
+        DEFAULT_TEMPLATE_VARS.append(os.path.join(templates_location,
+                                                  template))
+        scenario_arguments = DEFAULT_TEMPLATE_VARS
+    return scenario_arguments
+
+
+def main():
+    # parse args
+    parser = get_base_parser()
+    args = parser.parse_args()
+
+    scenario_arguments = args.scenario_arguments
+    variable_file = args.variable_file
+    verbose_run = args.verbose
+    scenario_args = parse_args(args.args)
+    plugin = args.plugin
+    version = args.plugin_version
+    release = args.release
+    report = args.report
+    count = args.count
+
+    scenario_arguments = get_default_templates(plugin, version, release,
+                                               scenario_arguments)
+
+    files = get_scenario_files(scenario_arguments)
+
+    template_variables = get_templates_variables(files, variable_file,
+                                                 verbose_run, scenario_args)
+
+    config = generate_config(files, template_variables, verbose_run)
 
     # validate config
     validation.validate(config)
