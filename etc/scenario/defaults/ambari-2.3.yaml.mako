@@ -56,10 +56,15 @@ clusters:
             timeout: 30
     cluster:
       name: ${cluster_name}
+    scaling:
+      - operation: add
+        node_group: worker
+        size: 1
     scenario:
       - run_jobs
+      - scale
+      - run_jobs
       - kafka
-
     edp_jobs_flow:
       - java_job
       - spark_pi
