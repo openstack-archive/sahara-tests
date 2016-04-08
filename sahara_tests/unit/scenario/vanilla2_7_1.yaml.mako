@@ -5,7 +5,7 @@ credentials:
     os_password: ${OS_PASSWORD}
     os_tenant: ${OS_TENANT_NAME}
     os_auth_url: ${OS_AUTH_URL}
-    ssl_cert: /etc/tests/cert.crt
+    ssl_cert: sahara_tests/scenario/defaults/tests/cert.crt
     ssl_verify: True
 
 network:
@@ -56,17 +56,17 @@ edp_jobs_flow:
         - type: Pig
           input_datasource:
               type: swift
-              source: etc/edp-examples/edp-pig/top-todoers/data/input
+              source: sahara_tests/scenario/defaults/edp-examples/edp-pig/top-todoers/data/input
           output_datasource:
               type: hdfs
               destination: /user/hadoop/edp-output
           main_lib:
               type: swift
-              source: etc/edp-examples/edp-pig/top-todoers/example.pig
+              source: sahara_tests/scenario/defaults/edp-examples/edp-pig/top-todoers/example.pig
         - type: Java
           additional_libs:
               - type: database
-                source: etc/edp-examples/hadoop2/edp-java/hadoop-mapreduce-examples-2.7.1.jar
+                source: sahara_tests/scenario/defaults/edp-examples/hadoop2/edp-java/hadoop-mapreduce-examples-2.7.1.jar
           configs:
               edp.java.main_class: org.apache.hadoop.examples.QuasiMonteCarlo
           args:
@@ -78,10 +78,10 @@ edp_jobs_flow:
               mapred.reducer.class: org.apache.oozie.example.SampleReducer
           additional_libs:
               - type: database
-                source: etc/edp-examples/edp-java/edp-java.jar
+                source: sahara_tests/scenario/defaults/edp-examples/edp-java/edp-java.jar
           input_datasource:
               type: swift
-              source: etc/edp-examples/edp-pig/top-todoers/data/input
+              source: sahara_tests/scenario/defaults/edp-examples/edp-pig/top-todoers/data/input
           output_datasource:
               type: hdfs
               destination: /user/hadoop/edp-output
@@ -91,30 +91,30 @@ edp_jobs_flow:
                 edp.streaming.reducer: /usr/bin/wc
           input_datasource:
               type: swift
-              source: etc/edp-examples/edp-pig/top-todoers/data/input
+              source: sahara_tests/scenario/defaults/edp-examples/edp-pig/top-todoers/data/input
           output_datasource:
               type: hdfs
               destination: /user/hadoop/edp-output
         - type: Hive
           input_datasource:
               type: swift
-              source: etc/edp-examples/edp-hive/input.csv
+              source: sahara_tests/scenario/defaults/edp-examples/edp-hive/input.csv
           output_datasource:
               type: hdfs
               destination: /user/hadoop/edp-hive/
           main_lib:
               type: swift
-              source: etc/edp-examples/edp-hive/script.q
+              source: sahara_tests/scenario/defaults/edp-examples/edp-hive/script.q
         - type: MapReduce
           configs:
               mapred.mapper.class: org.apache.oozie.example.SampleMapper
               mapred.reducer.class: org.apache.oozie.example.SampleReducer
           additional_libs:
               - type: database
-                source: etc/edp-examples/edp-java/edp-java.jar
+                source: sahara_tests/scenario/defaults/edp-examples/edp-java/edp-java.jar
           input_datasource:
               type: swift
-              source: etc/edp-examples/edp-pig/top-todoers/data/input
+              source: sahara_tests/scenario/defaults/edp-examples/edp-pig/top-todoers/data/input
           output_datasource:
               type: hdfs
               destination: /user/hadoop/edp-output

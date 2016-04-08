@@ -31,7 +31,7 @@ import yaml
 from sahara_tests.scenario import validation
 
 
-TEST_TEMPLATE_DIR = 'etc/scenario/defaults/'
+TEST_TEMPLATE_DIR = 'sahara_tests/scenario/defaults/'
 DEFAULT_TEMPLATE_VARS = [os.path.join(TEST_TEMPLATE_DIR,
                                       'credentials.yaml.mako'),
                          os.path.join(TEST_TEMPLATE_DIR,

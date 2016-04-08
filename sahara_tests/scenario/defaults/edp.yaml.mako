@@ -3,27 +3,27 @@ edp_jobs_flow:
     - type: Pig
       input_datasource:
         type: swift
-        source: etc/edp-examples/edp-pig/trim-spaces/data/input
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/data/input
       output_datasource:
         type: swift
         destination: edp-output
       main_lib:
         type: swift
-        source: etc/edp-examples/edp-pig/trim-spaces/example.pig
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/example.pig
       additional_libs:
         - type: swift
-          source: etc/edp-examples/edp-pig/trim-spaces/udf.jar
+          source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/udf.jar
   mapreduce_job:
     - type: MapReduce
       input_datasource:
         type: swift
-        source: etc/edp-examples/edp-pig/trim-spaces/data/input
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/data/input
       output_datasource:
         type: hdfs
         destination: /user/hadoop/edp-output
       additional_libs:
         - type: database
-          source:  etc/edp-examples/edp-mapreduce/edp-mapreduce.jar
+          source:  sahara_tests/scenario/defaults/edp-examples/edp-mapreduce/edp-mapreduce.jar
       configs:
         mapred.map.class: org.apache.oozie.example.SampleMapper
         mapred.reduce.class: org.apache.oozie.example.SampleReducer
@@ -32,7 +32,7 @@ edp_jobs_flow:
     - type: MapReduce.Streaming
       input_datasource:
         type: swift
-        source: etc/edp-examples/edp-pig/trim-spaces/data/input
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/data/input
       output_datasource:
         type: hdfs
         destination: /user/hadoop/edp-output
@@ -43,7 +43,7 @@ edp_jobs_flow:
     - type: Java
       additional_libs:
         - type: database
-          source: etc/edp-examples/hadoop2/edp-java/hadoop-mapreduce-examples-2.6.0.jar
+          source: sahara_tests/scenario/defaults/edp-examples/hadoop2/edp-java/hadoop-mapreduce-examples-2.6.0.jar
       configs:
        edp.java.main_class: org.apache.hadoop.examples.QuasiMonteCarlo
       args:
@@ -53,11 +53,11 @@ edp_jobs_flow:
     - type: Hive
       main_lib:
         type: swift
-        source: etc/edp-examples/edp-hive/script.q
+        source: sahara_tests/scenario/defaults/edp-examples/edp-hive/script.q
       input_datasource:
         type: hdfs
         hdfs_username: hadoop
-        source: etc/edp-examples/edp-hive/input.csv
+        source: sahara_tests/scenario/defaults/edp-examples/edp-hive/input.csv
       output_datasource:
         type: hdfs
         destination: /user/edp-output
@@ -65,7 +65,7 @@ edp_jobs_flow:
     - type: Spark
       main_lib:
         type: database
-        source: etc/edp-examples/edp-spark/spark-example.jar
+        source: sahara_tests/scenario/defaults/edp-examples/edp-spark/spark-example.jar
       configs:
         edp.java.main_class: org.apache.spark.examples.SparkPi
       args:
@@ -74,10 +74,10 @@ edp_jobs_flow:
     - type: Spark
       input_datasource:
         type: swift
-        source: etc/edp-examples/edp-spark/sample_input.txt
+        source: sahara_tests/scenario/defaults/edp-examples/edp-spark/sample_input.txt
       main_lib:
         type: database
-        source: etc/edp-examples/edp-spark/spark-wordcount.jar
+        source: sahara_tests/scenario/defaults/edp-examples/edp-spark/spark-wordcount.jar
       configs:
         edp.java.main_class: sahara.edp.spark.SparkWordCount
         edp.spark.adapt_for_swift: true
@@ -89,34 +89,34 @@ edp_jobs_flow:
     - type: Pig
       input_datasource:
         type: maprfs
-        source: etc/edp-examples/edp-pig/trim-spaces/data/input
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/data/input
       output_datasource:
         type: maprfs
         destination: /user/hadoop/edp-output
       main_lib:
         type: swift
-        source: etc/edp-examples/edp-pig/trim-spaces/example.pig
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/example.pig
       additional_libs:
         - type: swift
-          source: etc/edp-examples/edp-pig/trim-spaces/udf.jar
+          source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/udf.jar
   mapr:
     - type: MapReduce
       input_datasource:
         type: maprfs
-        source: etc/edp-examples/edp-pig/trim-spaces/data/input
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/data/input
       output_datasource:
         type: maprfs
         destination: /user/hadoop/edp-output
       additional_libs:
         - type: database
-          source:  etc/edp-examples/edp-mapreduce/edp-mapreduce.jar
+          source:  sahara_tests/scenario/defaults/edp-examples/edp-mapreduce/edp-mapreduce.jar
       configs:
         mapred.mapper.class: org.apache.oozie.example.SampleMapper
         mapred.reducer.class: org.apache.oozie.example.SampleReducer
     - type: MapReduce.Streaming
       input_datasource:
         type: maprfs
-        source: etc/edp-examples/edp-pig/trim-spaces/data/input
+        source: sahara_tests/scenario/defaults/edp-examples/edp-pig/trim-spaces/data/input
       output_datasource:
         type: maprfs
         destination: /user/hadoop/edp-output
@@ -126,7 +126,7 @@ edp_jobs_flow:
     - type: Java
       additional_libs:
         - type: database
-          source: etc/edp-examples/hadoop2/edp-java/hadoop-mapreduce-examples-2.6.0.jar
+          source: sahara_tests/scenario/defaults/edp-examples/hadoop2/edp-java/hadoop-mapreduce-examples-2.6.0.jar
       configs:
        edp.java.main_class: org.apache.hadoop.examples.QuasiMonteCarlo
       args:

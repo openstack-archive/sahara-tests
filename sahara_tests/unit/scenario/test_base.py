@@ -86,7 +86,8 @@ class TestBase(testtools.TestCase):
                                               'data-processing-local',
                                           'sahara_url':
                                               'http://sahara_host:8386/v1.1',
-                                          'ssl_cert': '/etc/tests/cert.crt',
+                                          'ssl_cert': 'sahara_tests/scenario/'
+                                          'defaults/tests/cert.crt',
                                           'ssl_verify': True}
         self.base_scenario.plugin_opts = {'plugin_name': 'vanilla',
                                           'hadoop_version': '2.7.1'}
@@ -127,7 +128,8 @@ class TestBase(testtools.TestCase):
                         "type": "Pig",
                         "input_datasource": {
                             "type": "swift",
-                            "source": "etc/edp-examples/edp-pig/"
+                            "source": "sahara_tests/scenario/defaults/"
+                                      "edp-examples/edp-pig/"
                                       "top-todoers/data/input"
                         },
                         "output_datasource": {
@@ -136,7 +138,8 @@ class TestBase(testtools.TestCase):
                         },
                         "main_lib": {
                             "type": "swift",
-                            "source": "etc/edp-examples/edp-pig/"
+                            "source": "sahara_tests/scenario/defaults/"
+                                      "edp-examples/edp-pig/"
                                       "top-todoers/example.pig"
                         }
                     }
@@ -176,13 +179,10 @@ class TestBase(testtools.TestCase):
                                   session=fake_session,
                                   service_type='data-processing-local',
                                   sahara_url='http://sahara_host:8386/v1.1')
-        swift.assert_called_with(auth_version='2.0',
-                                 user='admin',
-                                 key='nova',
-                                 insecure=False,
-                                 cacert='/etc/tests/cert.crt',
-                                 tenant_name='admin',
-                                 authurl='http://localhost:5000/v2.0')
+        swift.assert_called_with(
+            auth_version='2.0', user='admin', key='nova', insecure=False,
+            cacert='sahara_tests/scenario/defaults/tests/cert.crt',
+            tenant_name='admin', authurl='http://localhost:5000/v2.0')
 
         nova.assert_called_with('2', session=fake_session)
         neutron.assert_called_with('2.0', session=fake_session)
@@ -193,9 +193,9 @@ class TestBase(testtools.TestCase):
                                   project_name='admin',
                                   user_domain_name='default',
                                   project_domain_name='default')
-        m_session.assert_called_with(auth=fake_auth,
-                                     cert='/etc/tests/cert.crt',
-                                     verify=True)
+        m_session.assert_called_with(
+            auth=fake_auth,
+            cert='sahara_tests/scenario/defaults/tests/cert.crt', verify=True)
 
     @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',
                 return_value='mock_net')
@@ -394,7 +394,8 @@ class TestBase(testtools.TestCase):
                 "type": "Pig",
                 "input_datasource": {
                     "type": "swift",
-                    "source": "etc/edp-examples/edp-pig/top-todoers/"
+                    "source": "sahara_tests/scenario/defaults/edp-examples/"
+                              "edp-pig/top-todoers/"
                               "data/input"
                 },
                 "output_datasource": {
@@ -403,7 +404,8 @@ class TestBase(testtools.TestCase):
                 },
                 "main_lib": {
                     "type": "swift",
-                    "source": "etc/edp-examples/edp-pig/top-todoers/"
+                    "source": "sahara_tests/scenario/defaults/edp-examples/"
+                              "edp-pig/top-todoers/"
                               "example.pig"
                 }
             }
@@ -536,7 +538,8 @@ class TestBase(testtools.TestCase):
         self.assertEqual(output_path,
                          self.base_scenario._create_dfs_data(None, output_path,
                                                              None, 'hdfs'))
-        input_path = 'etc/edp-examples/edp-pig/trim-spaces/data/input'
+        input_path = ('sahara_tests/scenario/defaults/edp-examples/edp-pig/'
+                      'trim-spaces/data/input')
         with mock.patch(
             'sahara_tests.scenario.clients.SaharaClient.get_cluster',
             return_value=FakeResponse(node_groups=[

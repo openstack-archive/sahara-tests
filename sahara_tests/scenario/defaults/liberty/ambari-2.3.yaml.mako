@@ -48,7 +48,7 @@ clusters:
           - type: Spark
             main_lib:
               type: database
-              source: etc/edp-examples/edp-spark/spark-kafka-example.jar
+              source: sahara_tests/scenario/defaults/edp-examples/edp-spark/spark-kafka-example.jar
             args:
               - '{zookeeper_list}'
               - '{topic}'
@@ -56,15 +56,10 @@ clusters:
             timeout: 30
     cluster:
       name: ${cluster_name}
-    scaling:
-      - operation: add
-        node_group: worker
-        size: 1
     scenario:
       - run_jobs
-      - scale
-      - run_jobs
       - kafka
+
     edp_jobs_flow:
       - java_job
       - spark_pi
