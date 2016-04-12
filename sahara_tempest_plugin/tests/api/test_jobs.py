@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from tempest.api.data_processing import base as dp_base
+from sahara_tempest_plugin.tests.api import base as dp_base
 from tempest.common.utils import data_utils
 from tempest import test
 

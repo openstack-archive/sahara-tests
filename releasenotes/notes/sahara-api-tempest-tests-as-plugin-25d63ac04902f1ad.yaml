@@ -1,0 +1,4 @@
+---
+features:
+  - Sahara API tests have been imported from Tempest and
+    made available using the Tempest Plugin Interface.
