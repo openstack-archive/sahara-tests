@@ -735,16 +735,17 @@ class BaseTestCase(base.BaseTestCase):
 
         test_failed = any([c['status'] == CHECK_FAILED_STATUS
                            for c in self._results])
-        if test_failed:
-            self.fail("Scenario tests failed")
+
         if self.report:
             filename = {"time": time.strftime('%Y%m%d%H%M%S',
                                               time.localtime())}
-            filename.update(self._results)
+            filename.update(self.plugin_opts)
             report_file_name = os.path.join(
                 self.results_dir,
                 '{plugin_name}_{hadoop_version}-{time}'.format(**filename))
             time.strftime('%Y%m%d%H%M%S', time.localtime())
-            with open(report_file_name, 'w') as report_file:
-                report_file.write(self._results)
+            with open(report_file_name, 'w+') as report_file:
+                report_file.write(str(self._results))
             print("Results can be found in %s" % report_file_name)
+        if test_failed:
+            self.fail("Scenario tests failed")
