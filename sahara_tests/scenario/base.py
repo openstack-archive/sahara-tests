@@ -80,6 +80,7 @@ class BaseTestCase(base.BaseTestCase):
         cls.testcase = None
         cls._results = []
         cls.report = False
+        cls.default_templ_dir = '.'
 
     def setUp(self):
         super(BaseTestCase, self).setUp()
@@ -116,7 +117,8 @@ class BaseTestCase(base.BaseTestCase):
                                       tenant_name,
                                       self.credentials.get('ssl_verify',
                                                            False),
-                                      self.credentials.get('ssl_cert'))
+                                      self._get_file_with_defaults(
+                                          self.credentials.get('ssl_cert')))
 
         self.sahara = clients.SaharaClient(session=session,
                                            service_type=sahara_service_type,
@@ -329,13 +331,36 @@ class BaseTestCase(base.BaseTestCase):
             if report:
                 self.fail("\n".join(report))
 
+    def _get_file_with_defaults(self, file_path):
+        """ Check if the file exists; if it is a relative path, check also
+            among the default files.
+        """
+        if not file_path:
+            return ''
+
+        all_files = [file_path]
+        if not os.path.isabs(file_path):
+            # relative path: look into default templates too, if defined
+            default_file = os.path.join(self.default_templ_dir, file_path)
+            if os.path.abspath(default_file) != os.path.abspath(file_path):
+                all_files.append(default_file)
+        for checked_file in all_files:
+            if os.path.isfile(checked_file):
+                return checked_file
+        raise Exception('File %s not found while looking into %s' %
+                        (file_path, all_files))
+
+    def _read_source_file(self, source):
+        if not source:
+            return None
+        with open(self._get_file_with_defaults(source)) as source_fd:
+            data = source_fd.read()
+        return data
+
     def _create_swift_data(self, source=None, destination=None):
         container = self._get_swift_container()
         path = utils.rand_name(destination if destination else 'test')
-        data = None
-        if source:
-            with open(source) as source_fd:
-                data = source_fd.read()
+        data = self._read_source_file(source)
 
         self.__upload_to_container(container, path, data)
 
@@ -361,8 +386,9 @@ class BaseTestCase(base.BaseTestCase):
                 "path": hdfs_dir,
                 "user": hdfs_username})
         hdfs_filepath = utils.rand_name(hdfs_dir + "/file")
-        with open(source) as source_fd:
-            data = source_fd.read()
+        data = self._read_source_file(source)
+        if not data:
+            data = ''
         self._run_command_on_node(
             inst_ip,
             ("echo -e \"%(data)s\" | sudo su - -c \"%(prefix)s"
@@ -374,8 +400,7 @@ class BaseTestCase(base.BaseTestCase):
         return hdfs_filepath
 
     def _create_internal_db_data(self, source):
-        with open(source) as source_fd:
-            data = source_fd.read()
+        data = self._read_source_file(source)
         id = self.__create_internal_db_data(utils.rand_name('test'), data)
         return 'internal-db://%s' % id
 

@@ -1,0 +1,6 @@
+---
+prelude: >
+    Discovery of data sources with relative paths is now fixed.
+fixes:
+  - Datasources with relative paths are now properly found
+    from the default resources.

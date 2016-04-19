@@ -315,12 +315,14 @@ def main():
     testcases = config['clusters']
     for case in range(count - 1):
         testcases.extend(config['clusters'])
+    default_templ_dir = os.path.abspath(TEST_TEMPLATE_DIR)
 
     # create testcase file
     test_template = mako_template.Template(filename=TEST_TEMPLATE_PATH)
     testcase_data = test_template.render(testcases=testcases,
                                          credentials=credentials,
-                                         network=network, report=report)
+                                         network=network, report=report,
+                                         default_templ_dir=default_templ_dir)
 
     test_dir_path = tempfile.mkdtemp()
     print("The generated test file located at: %s" % test_dir_path)

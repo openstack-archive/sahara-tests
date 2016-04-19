@@ -1,0 +1,1 @@
+# Unit tests require a file for the certificate. The content is not checked but the file must exists.
