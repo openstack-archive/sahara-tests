@@ -160,8 +160,8 @@ class TestBase(testtools.TestCase):
         self.base_scenario.setUpClass()
         timeouts.Defaults.init_defaults(self.base_scenario.testcase)
 
-    @mock.patch('keystoneclient.auth.identity.v3.Password')
-    @mock.patch('keystoneclient.session.Session')
+    @mock.patch('keystoneauth1.identity.v3.Password')
+    @mock.patch('keystoneauth1.session.Session')
     @mock.patch('saharaclient.client.Client', return_value=None)
     @mock.patch('novaclient.client.Client', return_value=None)
     @mock.patch('neutronclient.neutron.client.Client', return_value=None)
@@ -473,7 +473,7 @@ class TestBase(testtools.TestCase):
             self.assertEqual(
                 [], self.base_scenario._get_nodes_with_process('test'))
 
-    @mock.patch('keystoneclient.session.Session')
+    @mock.patch('keystoneauth1.session.Session')
     def test_get_node_list_with_volumes(self, mock_keystone):
         self.base_scenario._init_clients()
         with mock.patch(
@@ -516,7 +516,7 @@ class TestBase(testtools.TestCase):
     @mock.patch('sahara_tests.scenario.base.BaseTestCase.addCleanup')
     @mock.patch('novaclient.v2.flavors.FlavorManager.create',
                 return_value=FakeResponse(set_id='flavor_id'))
-    @mock.patch('keystoneclient.session.Session')
+    @mock.patch('keystoneauth1.session.Session')
     def test_get_flavor_id(self, mock_keystone, mock_create_flavor, mock_base):
         self.base_scenario._init_clients()
         self.assertEqual('flavor_id',
@@ -531,7 +531,7 @@ class TestBase(testtools.TestCase):
                          }))
 
     @mock.patch('sahara_tests.scenario.base.BaseTestCase._run_command_on_node')
-    @mock.patch('keystoneclient.session.Session')
+    @mock.patch('keystoneauth1.session.Session')
     def test_create_hdfs_data(self, mock_session, mock_ssh):
         self.base_scenario._init_clients()
         output_path = '/user/test/data/output'

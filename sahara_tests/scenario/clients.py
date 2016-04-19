@@ -17,8 +17,8 @@ from __future__ import print_function
 import time
 
 import fixtures
-from keystoneclient.auth.identity import v3 as identity_v3
-from keystoneclient import session
+from keystoneauth1.identity import v3 as identity_v3
+from keystoneauth1 import session
 from neutronclient.neutron import client as neutron_client
 from novaclient import client as nova_client
 from novaclient import exceptions as nova_exc
