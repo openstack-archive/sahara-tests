@@ -13,6 +13,7 @@ class ${testcase['class_name']}TestCase(base.BaseTestCase):
         cls.network = ${network}
         cls.testcase = ${testcase}
         cls.report = ${report}
+        cls.results_dir = '${results_dir}'
         cls.default_templ_dir = '${default_templ_dir}'
 
     def test_plugin(self):

@@ -19,6 +19,7 @@ from __future__ import print_function
 import argparse
 import collections
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -43,6 +44,7 @@ DEFAULT_TEMPLATE_VARS = [os.path.join(TEST_TEMPLATE_DIR,
                                       'edp.yaml.mako')]
 TEST_TEMPLATE_PATH = os.path.join(SCENARIO_RESOURCES_DIR,
                                   'testcase.py.mako')
+DEFAULT_TESTR_CONF = os.path.join(SCENARIO_RESOURCES_DIR, 'testr.conf')
 
 
 def set_defaults(config):
@@ -315,6 +317,8 @@ def main():
     testcases = config['clusters']
     for case in range(count - 1):
         testcases.extend(config['clusters'])
+    # current directory, where to write reports, key files, etc, if required
+    results_dir = os.getcwd()
     default_templ_dir = os.path.abspath(TEST_TEMPLATE_DIR)
 
     # create testcase file
@@ -322,21 +326,26 @@ def main():
     testcase_data = test_template.render(testcases=testcases,
                                          credentials=credentials,
                                          network=network, report=report,
+                                         results_dir=results_dir,
                                          default_templ_dir=default_templ_dir)
 
     test_dir_path = tempfile.mkdtemp()
     print("The generated test file located at: %s" % test_dir_path)
     fileutils.write_to_tempfile(testcase_data.encode("ASCII"), prefix='test_',
                                 suffix='.py', path=test_dir_path)
+    shutil.copyfile(DEFAULT_TESTR_CONF, os.path.join(test_dir_path,
+                                                     '.testr.conf'))
 
     # run tests
     concurrency = config.get('concurrency')
-    os.environ['DISCOVER_DIRECTORY'] = test_dir_path
     command = ['ostestr']
     if concurrency:
         command.extend(['--concurrency', '%d' % concurrency])
-    return_code = subprocess.call(command)
-    sys.exit(return_code)
+    new_env = os.environ.copy()
+    new_env['DISCOVER_DIRECTORY'] = '.'
+    tester_runner = subprocess.Popen(command, env=new_env, cwd=test_dir_path)
+    tester_runner.communicate()
+    sys.exit(tester_runner.returncode)
 
 
 if __name__ == '__main__':

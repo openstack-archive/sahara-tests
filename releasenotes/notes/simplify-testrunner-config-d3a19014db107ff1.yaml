@@ -1,0 +1,7 @@
+---
+prelude: >
+    Removed the need of a .testr.conf file when calling the
+    test runner.
+fixes:
+  - A .testr.conf file was previously required in the runner
+    execution directory, now this is handled internally.

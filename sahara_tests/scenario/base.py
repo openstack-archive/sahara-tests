@@ -80,6 +80,7 @@ class BaseTestCase(base.BaseTestCase):
         cls.testcase = None
         cls._results = []
         cls.report = False
+        cls.results_dir = '.'
         cls.default_templ_dir = '.'
 
     def setUp(self):
@@ -96,7 +97,9 @@ class BaseTestCase(base.BaseTestCase):
         # save the private key if retain_resources is specified
         # (useful for debugging purposes)
         if self.testcase['retain_resources'] or self.key is None:
-            with open(self.key_name + '.key', 'a') as private_key_file:
+            private_key_file = os.path.join(self.results_dir, self.key_name +
+                                            '.key')
+            with open(private_key_file, 'a') as private_key_file:
                 private_key_file.write(self.private_key)
         self.plugin_opts = {
             'plugin_name': self.testcase['plugin_name'],
@@ -738,7 +741,8 @@ class BaseTestCase(base.BaseTestCase):
             filename = {"time": time.strftime('%Y%m%d%H%M%S',
                                               time.localtime())}
             filename.update(self._results)
-            report_file_name = (
+            report_file_name = os.path.join(
+                self.results_dir,
                 '{plugin_name}_{hadoop_version}-{time}'.format(**filename))
             time.strftime('%Y%m%d%H%M%S', time.localtime())
             with open(report_file_name, 'w') as report_file:

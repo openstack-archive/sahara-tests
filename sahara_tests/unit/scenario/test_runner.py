@@ -22,6 +22,12 @@ import testtools
 from sahara_tests.scenario import runner
 
 
+def _create_subprocess_communicate_mock():
+    communicate_mock = mock.Mock()
+    communicate_mock.communicate.return_value = ["", ""]
+    return communicate_mock
+
+
 class RunnerUnitTest(testtools.TestCase):
 
     def _isDictContainSubset(self, sub_dictionary, dictionary):
@@ -244,21 +250,24 @@ class RunnerUnitTest(testtools.TestCase):
             expected_cluster, config))
 
     @mock.patch('sys.exit', return_value=None)
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     def test_runner_main(self, mock_sub, mock_sys):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     'sahara_tests/unit/scenario/vanilla2_7_1.yaml']
         runner.main()
 
     @mock.patch('sys.exit', return_value=None)
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     def test_runner_template_missing_varfile(self, mock_sub, mock_sys):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako']
         self.assertRaises(NameError, runner.main)
 
     @mock.patch('sys.exit', return_value=None)
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     def test_runner_template_wrong_varfile(self, mock_sub, mock_sys):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
@@ -267,7 +276,8 @@ class RunnerUnitTest(testtools.TestCase):
         self.assertRaises(NameError, runner.main)
 
     @mock.patch('sys.exit', return_value=None)
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     def test_runner_template_incomplete_varfile(self, mock_sub, mock_sys):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
@@ -276,7 +286,8 @@ class RunnerUnitTest(testtools.TestCase):
         self.assertRaises(NameError, runner.main)
 
     @mock.patch('sys.exit', return_value=None)
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     def test_runner_template_working(self, mock_sub, mock_sys):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
@@ -294,7 +305,8 @@ class RunnerUnitTest(testtools.TestCase):
         runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
     def test_runner_from_args(self, mock_sys, mock_sub, mock_validate):
         sys.argv = ['sahara_tests/scenario/runner.py',
@@ -315,7 +327,8 @@ class RunnerUnitTest(testtools.TestCase):
         self.assertTrue(self._isDictContainSubset(
             expected, mock_validate.call_args_list[0][0][0]['credentials']))
 
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
     def test_replace_value_args(self, mock_sys, mock_sub):
         sys.argv = ['sahara_tests/scenario/runner.py',
@@ -328,7 +341,8 @@ class RunnerUnitTest(testtools.TestCase):
             runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
     def test_default_templates_non_plugin(self, mock_sys, mock_sub,
                                           mock_validate):
@@ -339,7 +353,8 @@ class RunnerUnitTest(testtools.TestCase):
         runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
     def test_default_templates_negative(self, mock_sys, mock_sub,
                                         mock_validate):
@@ -351,7 +366,8 @@ class RunnerUnitTest(testtools.TestCase):
             runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
     def test_default_templates_kilo(self, mock_sys, mock_sub, mock_validate):
         sys.argv = ['sahara_tests/scenario/runner.py',
@@ -366,7 +382,8 @@ class RunnerUnitTest(testtools.TestCase):
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_version'])
 
-    @mock.patch('subprocess.call', return_value=None)
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
     def test_count(self, mock_sys, mock_sub):
         sys.argv = ['sahara_tests/scenario/runner.py',
