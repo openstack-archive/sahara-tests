@@ -25,18 +25,24 @@ import tempfile
 
 from mako import template as mako_template
 from oslo_utils import fileutils
+import pkg_resources as pkg
 import six
 import yaml
 
 from sahara_tests.scenario import validation
+from sahara_tests import version
 
 
-TEST_TEMPLATE_DIR = 'sahara_tests/scenario/defaults/'
+SCENARIO_RESOURCES_DIR = pkg.resource_filename(version.version_info.package,
+                                               'scenario')
+
+TEST_TEMPLATE_DIR = os.path.join(SCENARIO_RESOURCES_DIR, 'defaults/')
 DEFAULT_TEMPLATE_VARS = [os.path.join(TEST_TEMPLATE_DIR,
                                       'credentials.yaml.mako'),
                          os.path.join(TEST_TEMPLATE_DIR,
                                       'edp.yaml.mako')]
-TEST_TEMPLATE_PATH = 'sahara_tests/scenario/testcase.py.mako'
+TEST_TEMPLATE_PATH = os.path.join(SCENARIO_RESOURCES_DIR,
+                                  'testcase.py.mako')
 
 
 def set_defaults(config):

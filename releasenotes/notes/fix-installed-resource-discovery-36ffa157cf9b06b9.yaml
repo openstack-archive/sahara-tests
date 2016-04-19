@@ -1,0 +1,6 @@
+---
+prelude: >
+    Fix default resource discovery from the installed package.
+fixes:
+  - The default set of resources (test templates for each plugin, etc)
+    can now be properly discovered when the package is installed.
