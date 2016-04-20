@@ -48,7 +48,7 @@ clusters:
           - type: Spark
             main_lib:
               type: database
-              source: sahara_tests/scenario/defaults/edp-examples/edp-spark/spark-kafka-example.jar
+              source: edp-examples/edp-spark/spark-kafka-example.jar
             args:
               - '{zookeeper_list}'
               - '{topic}'

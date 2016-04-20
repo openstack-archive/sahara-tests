@@ -93,7 +93,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "sahara_url": "http://127.0.0.1",
                 "os_password": "changed_nova",
                 "os_tenant": "changed_admin",
-                "ssl_cert": "sahara_tests/scenario/defaults/tests/cert.crt"
+                "ssl_cert": "sahara_tests/unit/scenario/dummy.crt"
             },
             "network": {
                 "type": "neutron",
@@ -136,8 +136,10 @@ class RunnerUnitTest(testtools.TestCase):
                         "additional_libs": [
                             {
                                 "type": "database",
-                                "source": "sahara_tests/integration/tests/"
-                                          "resources/"
+                                "source": 'sahara_tests/scenario/defaults/'
+                                          'edp-examples/hadoop2/edp-java/'
+                                          'hadoop-mapreduce-examples-'
+                                          '2.6.0.jars',
                             }],
                         "configs": "edp.java.main_class: org.apache.hadoop."
                                    "examples.QuasiMonteCarlo",
@@ -150,8 +152,10 @@ class RunnerUnitTest(testtools.TestCase):
                         "additional_libs": [
                             {
                                 "type": "database",
-                                "source": "sahara_tests/integration/tests/"
-                                          "resources/"
+                                "source":
+                                    "sahara_tests/scenario/defaults/"
+                                    "edp-examples/hadoop2/edp-java/hadoop-"
+                                    "mapreduce-examples-2.6.0.jars"
                             }],
                         "configs": "edp.java.main_class: org.apache.hadoop."
                                    "examples.QuasiMonteCarlo",
@@ -169,7 +173,7 @@ class RunnerUnitTest(testtools.TestCase):
                 "os_password": "changed_nova",
                 "os_tenant": "changed_admin",
                 "sahara_service_type": "data-processing",
-                "ssl_cert": "sahara_tests/scenario/defaults/tests/cert.crt",
+                "ssl_cert": "sahara_tests/unit/scenario/dummy.crt",
                 "ssl_verify": False
             },
         }
@@ -217,8 +221,10 @@ class RunnerUnitTest(testtools.TestCase):
                             'type': 'Java',
                             'additional_libs': [
                                 {
-                                    'source': 'sahara_tests/integration/'
-                                              'tests/resources/',
+                                    'source': 'sahara_tests/scenario/defaults/'
+                                              'edp-examples/hadoop2/edp-java/'
+                                              'hadoop-mapreduce-examples-'
+                                              '2.6.0.jars',
                                     'type': 'database'
                                 }]
                         }

@@ -86,8 +86,8 @@ class TestBase(testtools.TestCase):
                                               'data-processing-local',
                                           'sahara_url':
                                               'http://sahara_host:8386/v1.1',
-                                          'ssl_cert': 'sahara_tests/scenario/'
-                                          'defaults/tests/cert.crt',
+                                          'ssl_cert': 'sahara_tests/unit/'
+                                                      'scenario/dummy.crt',
                                           'ssl_verify': True}
         self.base_scenario.plugin_opts = {'plugin_name': 'vanilla',
                                           'hadoop_version': '2.7.1'}
@@ -181,7 +181,7 @@ class TestBase(testtools.TestCase):
                                   sahara_url='http://sahara_host:8386/v1.1')
         swift.assert_called_with(
             auth_version='2.0', user='admin', key='nova', insecure=False,
-            cacert='sahara_tests/scenario/defaults/tests/cert.crt',
+            cacert='sahara_tests/unit/scenario/dummy.crt',
             tenant_name='admin', authurl='http://localhost:5000/v2.0')
 
         nova.assert_called_with('2', session=fake_session)
@@ -195,7 +195,7 @@ class TestBase(testtools.TestCase):
                                   project_domain_name='default')
         m_session.assert_called_with(
             auth=fake_auth,
-            cert='sahara_tests/scenario/defaults/tests/cert.crt', verify=True)
+            cert='sahara_tests/unit/scenario/dummy.crt', verify=True)
 
     @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',
                 return_value='mock_net')
