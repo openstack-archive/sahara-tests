@@ -21,7 +21,7 @@ class Defaults(object):
         self.timeout_delete_resource = config.get('timeout_delete_resource',
                                                   300)
         self.timeout_poll_cluster_status = config.get(
-            'timeout_poll_cluster_status', 1800)
+            'timeout_poll_cluster_status', 3600)
         self.timeout_poll_jobs_status = config.get('timeout_poll_jobs_status',
                                                    1800)
 

@@ -1,0 +1,4 @@
+---
+other:
+  - The default timeout for cluster polling was raised from 1800
+    to 3600 seconds.
