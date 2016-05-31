@@ -17,6 +17,7 @@ from __future__ import print_function
 import time
 
 import fixtures
+from glanceclient import client as glance_client
 from keystoneauth1.identity import v3 as identity_v3
 from keystoneauth1 import session
 from neutronclient.neutron import client as neutron_client
@@ -200,15 +201,6 @@ class NovaClient(Client):
     def __init__(self, *args, **kwargs):
         self.nova_client = nova_client.Client('2', *args, **kwargs)
 
-    def get_image_id(self, image_name):
-        if uuidutils.is_uuid_like(image_name):
-            return image_name
-        for image in self.nova_client.images.list():
-            if image.name == image_name:
-                return image.id
-
-        raise exc.NotFound(image_name)
-
     def get_flavor_id(self, flavor_name):
         if uuidutils.is_uuid_like(flavor_name) or flavor_name.isdigit():
             return flavor_name
@@ -295,3 +287,16 @@ class SwiftClient(Client):
             return ex.http_status == 404
 
         return False
+
+
+class GlanceClient(Client):
+    def __init__(self, *args, **kwargs):
+        self.glance_client = glance_client.Client('2', *args, **kwargs)
+
+    def get_image_id(self, image_name):
+        if uuidutils.is_uuid_like(image_name):
+            return image_name
+        for image in self.glance_client.images.list():
+            if image.name == image_name:
+                return image.id
+        raise exc.NotFound(image_name)

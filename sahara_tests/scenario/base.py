@@ -88,7 +88,7 @@ class BaseTestCase(base.BaseTestCase):
         self._init_clients()
         timeouts.Defaults.init_defaults(self.testcase)
         self.testcase['ssh_username'] = self.sahara.register_image(
-            self.nova.get_image_id(self.testcase['image']),
+            self.glance.get_image_id(self.testcase['image']),
             self.testcase).username
         self.key = self.testcase.get('key_name')
         if self.key is None:
@@ -137,6 +137,7 @@ class BaseTestCase(base.BaseTestCase):
             insecure=not self.credentials.get('ssl_verify', False),
             cacert=self.credentials.get('ssl_cert'),
             tenant_name=tenant_name)
+        self.glance = clients.GlanceClient(session=session)
 
     def create_cluster(self):
         self.cluster_id = self.sahara.get_cluster_id(
@@ -596,7 +597,7 @@ class BaseTestCase(base.BaseTestCase):
         kwargs.update(self.plugin_opts)
         kwargs['name'] = utils.rand_name(kwargs.get('name', 'test'))
         kwargs['cluster_template_id'] = cluster_template_id
-        kwargs['default_image_id'] = self.nova.get_image_id(
+        kwargs['default_image_id'] = self.glance.get_image_id(
             self.testcase['image'])
         kwargs['user_keypair_id'] = self.key_name
 
