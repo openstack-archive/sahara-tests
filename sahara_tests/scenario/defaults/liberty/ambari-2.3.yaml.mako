@@ -58,8 +58,6 @@ clusters:
       name: ${cluster_name}
     scenario:
       - run_jobs
-      - kafka
-
     edp_jobs_flow:
       - java_job
       - spark_pi

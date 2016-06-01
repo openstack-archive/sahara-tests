@@ -64,7 +64,6 @@ clusters:
       - run_jobs
       - scale
       - run_jobs
-      - kafka
     edp_jobs_flow:
       - java_job
       - spark_pi
