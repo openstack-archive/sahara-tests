@@ -162,12 +162,13 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('keystoneauth1.identity.v3.Password')
     @mock.patch('keystoneauth1.session.Session')
+    @mock.patch('glanceclient.client.Client', return_value=None)
     @mock.patch('saharaclient.client.Client', return_value=None)
     @mock.patch('novaclient.client.Client', return_value=None)
     @mock.patch('neutronclient.neutron.client.Client', return_value=None)
     @mock.patch('swiftclient.client.Connection', return_value=None)
-    def test__init_clients(self, swift, neutron, nova, sahara, m_session,
-                           m_auth):
+    def test__init_clients(self, swift, neutron, nova, sahara, glance,
+                           m_session, m_auth):
         fake_session = mock.Mock()
         fake_auth = mock.Mock()
         m_session.return_value = fake_session
@@ -186,6 +187,7 @@ class TestBase(testtools.TestCase):
 
         nova.assert_called_with('2', session=fake_session)
         neutron.assert_called_with('2.0', session=fake_session)
+        glance.assert_called_with('2', session=fake_session)
 
         m_auth.assert_called_with(auth_url='http://localhost:5000/v3',
                                   username='admin',
@@ -224,13 +226,13 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('saharaclient.api.images.ImageManager.get',
                 return_value=FakeResponse(set_id='image'))
-    @mock.patch('sahara_tests.scenario.clients.NovaClient.get_image_id',
+    @mock.patch('sahara_tests.scenario.clients.GlanceClient.get_image_id',
                 return_value='mock_image')
     @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('saharaclient.api.clusters.ClusterManager.create',
                 return_value=FakeResponse(set_id='id_cluster'))
     def test__create_cluster(self, mock_cluster_manager, mock_saharaclient,
-                             mock_nova, mock_image):
+                             mock_glance, mock_image):
         self.base_scenario._init_clients()
         self.assertEqual('id_cluster',
                          self.base_scenario._create_cluster('id_ct'))
