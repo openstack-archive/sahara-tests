@@ -24,8 +24,8 @@ class ClientTestBase(base.ClientTestBase):
 
     def _get_clients(self):
         cli_dir = os.environ.get(
-            'OS_SAHARACLIENT_EXEC_DIR',
-            os.path.join(os.path.abspath('.'), '.tox/functional/bin'))
+            'OS_SAHARA_TESTS_DIR',
+            os.path.join(os.path.abspath('.'), '.tox/cli-tests/bin'))
 
         return base.CLIClient(
             username=os.environ.get('OS_USERNAME'),
