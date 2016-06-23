@@ -26,10 +26,12 @@ source $DEVSTACK_DIR/openrc admin admin
 set -x
 
 # Make public and register in Sahara as admin
-sahara_register_fake_plugin_image
+# Commented temporary
+#sahara_register_fake_plugin_image
 
 # Register sahara specific flavor for gate
-sahara_register_flavor
+# Commented temporary
+# sahara_register_flavor
 
 # Go to the sahara-tests dir
 sudo chown -R jenkins:stack $SAHARA_TESTS_DIR
