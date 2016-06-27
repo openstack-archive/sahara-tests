@@ -90,7 +90,16 @@ class SaharaImageCLITest(base.ClientTestBase):
 
 class SaharaNodeGroupCLITest(base.ClientTestBase):
 
-    def test_openstack_node_group_template_list(self):
+    def test_launch_node_group(self):
+        master_ngt = self.openstack_node_group_template_create('master', '4')
+        worker_ngt = self.openstack_node_group_template_create('worker', '3')
+        self.openstack_node_group_template_list()
+        self.openstack_node_group_template_update(master_ngt)
+        self.openstack_node_group_template_show(master_ngt)
+        self.openstack_node_group_template_delete(master_ngt)
+        self.openstack_node_group_template_delete(worker_ngt)
+
+    def openstack_node_group_template_list(self):
         node_group = self.openstack('dataprocessing node group template list')
         result = self.parser.listing(node_group)
         self.assertTableStruct(result, [
@@ -99,6 +108,63 @@ class SaharaNodeGroupCLITest(base.ClientTestBase):
             'Plugin version',
             'Plugin name'
         ])
+
+    def openstack_node_group_template_create(self, ng_type, flavor_id):
+        plugin_list = self.openstack('dataprocessing plugin list')
+        plugins = self.parser.listing(plugin_list)
+        node_group_name = 'CLITest-' + ng_type
+        found_plugin = None
+        for plugin in plugins:
+            if plugin['Name'] == 'fake':
+                plugin_name = plugin['Name']
+                plugin_version = plugin['Versions']
+                found_plugin = plugin
+        if found_plugin is None:
+            raise self.skipException('No available plugins for testing')
+        flags = ("%(ngt_name)s %(plugin)s %(plugin-version)s "
+                 "%(processes)s %(flavor)s"
+                 % {'flavor': ' --flavor ' + flavor_id,
+                    'processes': ' --processes datanode',
+                    'plugin-version': ' --plugin-version ' + plugin_version,
+                    'plugin': ' --plugin ' + plugin_name,
+                    'ngt_name': '--name ' + node_group_name})
+        create_ng = self.openstack('dataprocessing node group template create',
+                                   params=flags)
+        result = self.parser.listing(create_ng)
+        self.assertTableStruct(result, [
+            'Field',
+            'Value'
+        ])
+        return node_group_name
+
+    def openstack_node_group_template_show(self, node_group_name):
+        show_node_group = self.openstack(
+            'dataprocessing node group template show',
+            params=node_group_name)
+        result = self.parser.listing(show_node_group)
+        self.assertTableStruct(result, [
+            'Field',
+            'Value'
+        ])
+
+    def openstack_node_group_template_update(self, node_group_name):
+        update_node_group = self.openstack(
+            'dataprocessing node group template update',
+            params=node_group_name)
+        result = self.parser.listing(update_node_group)
+        self.assertTableStruct(result, [
+            'Field',
+            'Value'
+        ])
+
+    def openstack_node_group_template_delete(self, node_group_name):
+        delete_node_group = self.openstack(
+            'dataprocessing node group template delete',
+            params=node_group_name)
+        result = ('''\
+Node group template "%s" has been removed successfully.
+''' % node_group_name)
+        self.assertEqual(delete_node_group, result)
 
 
 class SaharaClusterTemplateCLITest(base.ClientTestBase):
