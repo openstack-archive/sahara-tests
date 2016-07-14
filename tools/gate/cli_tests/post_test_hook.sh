@@ -22,16 +22,15 @@ export SAHARA_TESTS_DIR="$BASE/new/sahara-tests"
 
 # Get admin credentials
 set +x
+source $DEVSTACK_DIR/stackrc
 source $DEVSTACK_DIR/openrc admin admin
 set -x
 
-# Make public and register in Sahara as admin
-# Commented temporary
-#sahara_register_fake_plugin_image
+# Prepare image for Sahara
+sahara_prepare_fake_plugin_image
 
 # Register sahara specific flavor for gate
-# Commented temporary
-# sahara_register_flavor
+sahara_register_flavor
 
 # Go to the sahara-tests dir
 sudo chown -R jenkins:stack $SAHARA_TESTS_DIR
