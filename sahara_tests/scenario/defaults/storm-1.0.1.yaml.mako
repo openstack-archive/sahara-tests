@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true'"/>
 
 clusters:
   - plugin_name: storm
@@ -9,18 +9,18 @@ clusters:
         flavor: ${ci_flavor_id}
         node_processes:
           - nimbus
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         is_proxy_gateway: ${is_proxy_gateway}
       - name: worker
         flavor: ${ci_flavor_id}
         node_processes:
           - supervisor
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: zookeeper
         flavor: ${medium_flavor}
         node_processes:
           - zookeeper
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
     cluster_template:
       name: storm101
       node_group_templates:

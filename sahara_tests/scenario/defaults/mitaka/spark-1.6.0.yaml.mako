@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true'"/>
 
 clusters:
   - plugin_name: spark
@@ -10,14 +10,14 @@ clusters:
         node_processes:
           - master
           - namenode
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         is_proxy_gateway: ${is_proxy_gateway}
       - name: worker
         flavor: ${ci_flavor_id}
         node_processes:
           - datanode
           - slave
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
     cluster_template:
       name: spark160
       node_group_templates:

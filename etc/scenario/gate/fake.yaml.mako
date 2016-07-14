@@ -1,4 +1,4 @@
-<%page args="is_transient='false'"/>
+<%page args="is_transient='false', use_auto_security_group='true'"/>
 
 clusters:
   - plugin_name: fake
@@ -14,13 +14,13 @@ clusters:
           - tasktracker
         volumes_per_node: 2
         volumes_size: 1
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: worker
         flavor: ${ci_flavor_id}
         node_processes:
           - datanode
           - jobtracker
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
     cluster_template:
       name: fake01
       node_group_templates:

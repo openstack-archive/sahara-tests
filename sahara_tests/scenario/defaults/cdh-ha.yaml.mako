@@ -1,3 +1,5 @@
+<%page args="use_auto_security_group='true'"/>
+
 clusters:
   - plugin_name: cdh
     plugin_version: 5.4.0
@@ -10,7 +12,7 @@ clusters:
           - HDFS_JOURNALNODE
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         node_configs:
           &ng_configs
           DATANODE:
@@ -19,7 +21,7 @@ clusters:
         flavor: ${ci_flavor_id}
         node_processes:
           - YARN_NODEMANAGER
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: worker-nm-dn
         flavor: ${ci_flavor_id}
         node_processes:
@@ -28,21 +30,21 @@ clusters:
           - HDFS_JOURNALNODE
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         node_configs:
           *ng_configs
       - name: manager
         flavor: ${large_flavor_id}
         node_processes:
           - CLOUDERA_MANAGER
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: master-core
         flavor: ${medium_flavor_id}
         node_processes:
           - HDFS_NAMENODE
           - YARN_RESOURCEMANAGER
           - ZOOKEEPER_SERVER
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: master-additional
         flavor: ${large_flavor_id}
         node_processes:
@@ -51,7 +53,7 @@ clusters:
           - YARN_JOBHISTORY
           - HDFS_SECONDARYNAMENODE
           - HDFS_JOURNALNODE
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
     cluster_template:
       name: cdh540
       node_group_templates:
