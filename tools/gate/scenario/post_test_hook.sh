@@ -43,10 +43,6 @@ cd $SAHARA_TESTS_DIR
 echo "Generating scenario tests config file"
 sudo -E -u jenkins tee template_vars.ini <<EOF
 [DEFAULT]
-OS_USERNAME: ${OS_USERNAME}
-OS_PASSWORD: ${OS_PASSWORD}
-OS_TENANT_NAME: ${OS_TENANT_NAME}
-OS_AUTH_URL: ${OS_AUTH_URL}
 network_type: ${NETWORK}
 network_private_name: ${PRIVATE_NETWORK_NAME}
 network_public_name: ${PUBLIC_NETWORK_NAME}
@@ -57,7 +53,7 @@ EOF
 
 echo "Running scenario tests"
 # TODO(slukjanov): Create separated list of templates for fake plugin in gate
-sudo -u jenkins tox -e venv -- sahara-scenario --verbose -V template_vars.ini \
+sudo -E -u jenkins tox -e venv -- sahara-scenario --verbose -V template_vars.ini \
     etc/scenario/gate/credentials.yaml.mako \
     etc/scenario/gate/edp.yaml.mako \
     etc/scenario/gate/fake.yaml.mako \

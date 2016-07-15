@@ -4,6 +4,8 @@ System(scenario) tests for Sahara project
 How to run
 ----------
 
+Information about authentication can be found in section `Authentication`_.
+
 Scenario framework has default templates for testing Sahara. For
 use them, need to specify plugin and version (for transient check and
 fake plugin, version is not necessary):
@@ -80,6 +82,38 @@ Also, you can validate your yaml-files using flag ``--validate`` via command:
 
 For generating report use flag `--report`.
 
+_`Authentication`
+-----------------
+
+You can set authentication variables in two ways:
+
+1. Use environment variables(like openrc in devstack)
+
+.. sourcecode:: console
+
+   List of variables:
+     - OS_USERNAME
+     - OS_PASSWORD
+     - OS_TENANT_NAME
+     - OS_AUTH_URL
+
+..
+
+2. Use flags in run-commad
+
+.. sourcecode:: console
+
+   List of flags:
+     --os-username
+     --os-password
+     --os-project-name
+     --os-auth-url
+..
+
+See default values for these variables in `How to write scenario files`_ in the `Credentials` section.
+
+
+
 Template variables
 ------------------
 The variables used in the Mako template files are replaced with the values from a
@@ -93,11 +127,8 @@ Example of template variables file:
 .. sourcecode:: ini
 
     [DEFAULT]
-    OS_USERNAME: demo
-    OS_TENANT_NAME: demo
-    OS_PASSWORD: foobar
-    ...
     network_type: neutron
+    network_private_name: private
     ...
 
 ..
@@ -109,14 +140,6 @@ The following variables are currently used by defaults templates:
 +-----------------------------+--------+--------------------------------------------------------------+
 |   Variable                  |  Type  |          Value                                               |
 +=============================+========+==============================================================+
-| OS_USERNAME                 | string | user name for login                                          |
-+-----------------------------+--------+--------------------------------------------------------------+
-| OS_PASSWORD                 | string | password for login                                           |
-+-----------------------------+--------+--------------------------------------------------------------+
-| OS_TENANT_NAME              | string | tenant name                                                  |
-+-----------------------------+--------+--------------------------------------------------------------+
-| OS_AUTH_URL                 | string | url for authentication                                       |
-+-----------------------------+--------+--------------------------------------------------------------+
 | network_type                | string | neutron or nova-network                                      |
 +-----------------------------+--------+--------------------------------------------------------------+
 | network_private_name        | string | private network name for OS_TENANT_NAME                      |
@@ -147,21 +170,13 @@ For parallel testing use flag ``--count`` in run command and
 setup ``cuncurrency`` value
 
 Section "credentials"
---------------------
+---------------------
 
 This section is dictionary-type.
 
 +---------------------+--------+----------+------------------------------+---------------------------------+
 |   Fields            |  Type  | Required |          Default             |               Value             |
 +=====================+========+==========+==============================+=================================+
-| os_username         | string | True     | admin                        | user name for login             |
-+---------------------+--------+----------+------------------------------+---------------------------------+
-| os_password         | string | True     | nova                         | password for login              |
-+---------------------+--------+----------+------------------------------+---------------------------------+
-| os_tenant           | string | True     | admin                        | tenant name                     |
-+---------------------+--------+----------+------------------------------+---------------------------------+
-| os_auth_url         | string | True     | `http://localhost:5000/v2.0` | url for login                   |
-+---------------------+--------+----------+------------------------------+---------------------------------+
 | sahara_service_type | string |          | data-processing              | service type for sahara         |
 +---------------------+--------+----------+------------------------------+---------------------------------+
 | sahara_url          | string |          | None                         | url of sahara                   |

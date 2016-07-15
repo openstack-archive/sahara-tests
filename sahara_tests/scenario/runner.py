@@ -26,6 +26,7 @@ import tempfile
 
 from mako import template as mako_template
 from oslo_utils import fileutils
+import os_client_config
 import pkg_resources as pkg
 import six
 import yaml
@@ -51,11 +52,6 @@ def set_defaults(config):
     # set up credentials
     config['credentials'] = config.get('credentials', {})
     creds = config['credentials']
-    creds['os_username'] = creds.get('os_username', 'admin')
-    creds['os_password'] = creds.get('os_password', 'nova')
-    creds['os_tenant'] = creds.get('os_tenant', 'admin')
-    creds['os_auth_url'] = creds.get('os_auth_url',
-                                     'http://localhost:5000/v2.0')
     creds.setdefault('sahara_service_type', 'data-processing')
     creds['sahara_url'] = creds.get('sahara_url', None)
     creds['ssl_verify'] = creds.get('ssl_verify', False)
@@ -112,7 +108,7 @@ def recursive_walk(directory):
 
 
 def read_template_variables(variable_file=None, verbose=False,
-                            scenario_args=None):
+                            scenario_args=None, auth_values=None):
     variables = {}
     try:
         cp = six.moves.configparser.ConfigParser()
@@ -123,6 +119,8 @@ def read_template_variables(variable_file=None, verbose=False,
         variables = cp.defaults()
         if scenario_args:
             variables.update(scenario_args)
+        if auth_values:
+            variables.update(auth_values)
     except IOError as ioe:
         print("WARNING: the input contains at least one template, but "
               "the variable configuration file '%s' is not valid: %s" %
@@ -224,20 +222,20 @@ def get_scenario_files(scenario_arguments):
     return files
 
 
-def get_templates_variables(files, variable_file, verbose_run, scenario_args):
+def get_templates_variables(files, variable_file, verbose_run, scenario_args,
+                            auth_values):
     template_variables = {}
     if any(is_template_file(config_file) for config_file in files):
         template_variables = read_template_variables(variable_file,
                                                      verbose_run,
                                                      scenario_args)
-    elif scenario_args:
-        template_variables = read_template_variables(
-            verbose=verbose_run, scenario_args=scenario_args)
-
+    template_variables.update(read_template_variables(
+        verbose=verbose_run, scenario_args=scenario_args,
+        auth_values=auth_values))
     return template_variables
 
 
-def generate_config(files, template_variables, verbose_run):
+def generate_config(files, template_variables, auth_values, verbose_run):
     config = {'credentials': {},
               'network': {},
               'clusters': [],
@@ -259,6 +257,7 @@ def generate_config(files, template_variables, verbose_run):
                         test_scenario['edp_jobs_flow'][key])
                 else:
                     raise ValueError('Job flow exist')
+    config.update(auth_values)
     return config
 
 
@@ -282,7 +281,9 @@ def get_default_templates(plugin, version, release, scenario_arguments):
 
 def main():
     # parse args
+    cloud_config = os_client_config.OpenStackConfig()
     parser = get_base_parser()
+    cloud_config.register_argparse_arguments(parser, sys.argv)
     args = parser.parse_args()
 
     scenario_arguments = args.scenario_arguments
@@ -295,15 +296,35 @@ def main():
     report = args.report
     count = args.count
 
+    try:
+        envvars_cloud = cloud_config.get_one_cloud('envvars')
+        env_credentials = envvars_cloud.config['auth']
+    except os_client_config.exceptions.OpenStackConfigException:
+        # no env vars present
+        env_credentials = {}
+
+    os_flags = cloud_config.get_one_cloud(argparse=args)
+    flag_credentials = os_flags.config['auth']
+    env_credentials.update(flag_credentials)
+    auth_values = {
+        'os_username': env_credentials.get('username', 'admin'),
+        'os_password': env_credentials.get('password', 'nova'),
+        'os_auth_url': env_credentials.get('auth_url',
+                                           'http://localhost:5000/v2.0'),
+        'os_tenant': env_credentials.get('project_name', 'admin')
+    }
     scenario_arguments = get_default_templates(plugin, version, release,
                                                scenario_arguments)
 
     files = get_scenario_files(scenario_arguments)
 
     template_variables = get_templates_variables(files, variable_file,
-                                                 verbose_run, scenario_args)
+                                                 verbose_run, scenario_args,
+                                                 auth_values)
 
-    config = generate_config(files, template_variables, verbose_run)
+    params_for_login = {'credentials': auth_values}
+    config = generate_config(files, template_variables, params_for_login,
+                             verbose_run)
 
     # validate config
     validation.validate(config)

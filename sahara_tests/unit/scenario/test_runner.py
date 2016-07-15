@@ -16,6 +16,7 @@
 import sys
 
 from jsonschema import exceptions
+from os import environ
 import mock
 import testtools
 
@@ -49,12 +50,8 @@ class RunnerUnitTest(testtools.TestCase):
 
         expected_default_credential = {
             "credentials": {
-                "os_username": "admin",
-                "os_auth_url": "http://localhost:5000/v2.0",
                 "sahara_url": None,
                 "sahara_service_type": "data-processing",
-                "os_password": "nova",
-                "os_tenant": "admin",
                 "ssl_cert": None,
                 "ssl_verify": False
             }
@@ -311,12 +308,13 @@ class RunnerUnitTest(testtools.TestCase):
     def test_runner_from_args(self, mock_sys, mock_sub, mock_validate):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako',
-                    '--args', 'OS_USERNAME:demo', 'OS_PASSWORD:demopwd',
-                    'OS_TENANT_NAME:demo', 'network_type:neutron',
+                    '--os-username', 'demo', '--os-password', 'demopwd',
+                    '--os-project-name', 'demo', '--os-auth-url', 'localhost',
+                    '--args', 'network_type:neutron',
                     'network_private_name:private',
                     'network_public_name:public',
                     'vanilla_two_six_image:hadoop_2_6_latest',
-                    'ci_flavor_id:2', 'OS_AUTH_URL:localhost']
+                    'ci_flavor_id:2']
         runner.main()
         expected = {
             'os_username': 'demo',
@@ -349,7 +347,10 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'transient']
+                    '-p', 'transient', '--os-username', 'demo',
+                    '--os-password', 'demopwd',
+                    '--os-project-name', 'demo',
+                    '--os-auth-url', 'http://127.0.0.1:5000/v2']
         runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')
@@ -361,7 +362,10 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'vanilla']
+                    '-p', 'vanilla', '--os-username', 'demo',
+                    '--os-password', 'demopwd',
+                    '--os-project-name', 'demo',
+                    '--os-auth-url', 'http://127.0.0.1:5000/v2']
         with testtools.ExpectedException(ValueError):
             runner.main()
 
@@ -373,7 +377,10 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.0.0', '-r', 'kilo']
+                    '-p', 'spark', '-v', '1.0.0', '-r', 'kilo',
+                    '--os-username', 'demo', '--os-password', 'demopwd',
+                    '--os-project-name', 'demo',
+                    '--os-auth-url', 'http://127.0.0.1:5000/v2']
         runner.main()
         self.assertEqual('spark',
                          mock_validate.call_args[0][0]['clusters'][0][
@@ -389,5 +396,39 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    '-p', 'spark', '-v', '1.0.0', '--count', '4',
+                    '--os-username', 'demo', '--os-password', 'demopwd',
+                    '--os-project-name', 'demo',
+                    '--os-auth-url', 'http://127.0.0.1:5000/v2']
+        runner.main()
+
+    @mock.patch('sahara_tests.scenario.validation.validate')
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
+    @mock.patch('sys.exit', return_value=None)
+    def test_credentials_envvars(self, mock_sys, mock_sub, mock_validate):
+        username = environ.get('OS_USERNAME', '')
+        password = environ.get('OS_PASSWORD', '')
+        auth_url = environ.get('OS_AUTHURL', '')
+        project_name = environ.get('OS_TENANT_NAME', '')
+        environ['OS_USERNAME'] = 'demo_env'
+        environ['OS_PASSWORD'] = 'demopwd_env'
+        environ['OS_AUTH_URL'] = 'http://localhost:5000/v2.0'
+        environ['OS_TENANT_NAME'] = 'project_env'
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
                     '-p', 'spark', '-v', '1.0.0', '--count', '4']
         runner.main()
+        expected = {
+            'os_username': 'demo_env',
+            'os_password': 'demopwd_env',
+            'os_tenant': 'project_env',
+            'os_auth_url': 'http://localhost:5000/v2.0'
+        }
+        self.assertTrue(self._isDictContainSubset(
+            expected, mock_validate.call_args_list[0][0][0]['credentials']))
+        environ['OS_USERNAME'] = username
+        environ['OS_PASSWORD'] = password
+        environ['OS_AUTHURL'] = auth_url
+        environ['OS_TENANT_NAME'] = project_name

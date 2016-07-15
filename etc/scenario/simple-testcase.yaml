@@ -1,11 +1,5 @@
 concurrency: 1
 
-credentials:
-    os_username: admin
-    os_password: nova
-    os_tenant: admin
-    os_auth_url: http://localhost:5000/v2.0
-
 network:
     private_network: private
     public_network: public
