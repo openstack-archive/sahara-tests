@@ -36,3 +36,60 @@ class ClientTestBase(base.ClientTestBase):
 
     def openstack(self, *args, **kwargs):
         return self.clients.openstack(*args, **kwargs)
+
+    def listing_result(self, command):
+        command_for_item = self.openstack('dataprocessing', params=command)
+        result = self.parser.listing(command_for_item)
+        return result
+
+    def find_in_listing(self, result, name):
+        check_table = None
+        for line in result:
+            if line['Field'] == 'Name':
+                self.assertEqual(line['Value'], name)
+                check_table = True
+        if check_table is None:
+            raise self.skipException('No table to show information')
+
+    def check_if_delete(self, command, name):
+        delete_cmd = self.openstack('dataprocessing %s delete' % command,
+                                    params=name)
+        result = ('''\
+%s "%s" has been removed successfully.
+''' % command % name)
+        self.assertEqual(delete_cmd, result)
+
+    def find_fake_plugin(self):
+        found_plugin = None
+        plugins = self.listing_result('plugin list')
+        for plugin in plugins:
+            if plugin['Name'] == 'fake':
+                found_plugin = plugin
+        if found_plugin is None:
+            raise self.skipException('No available plugins for testing')
+        return found_plugin
+
+    def find_id_of_pool(self):
+        floating_pool_list = self.openstack('ip floating pool list')
+        floating_pool = self.parser.listing(floating_pool_list)
+        network_list = self.openstack('network list')
+        networks = self.parser.listing(network_list)
+        network_name = [p['Name'] for p in networks]
+        pools_name = [p['Name'] for p in floating_pool]
+        if not network_name:
+            raise self.skipException('Network list is empty')
+        if not pools_name:
+            raise self.skipException('Floating pool ip list is empty')
+        name_net_pool = None
+        id_net_pool = None
+        for net_name in network_name:
+            for pool_name in pools_name:
+                if net_name == pool_name:
+                    name_net_pool = net_name
+        if name_net_pool is None:
+            raise self.skipException('Network list and floating pool ip list'
+                                     ' dont have common networks')
+        for network in networks:
+            if network['Name'] == name_net_pool:
+                id_net_pool = network['ID']
+        return id_net_pool
