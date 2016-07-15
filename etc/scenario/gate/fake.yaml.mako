@@ -1,3 +1,5 @@
+<%page args="is_transient='false'"/>
+
 clusters:
   - plugin_name: fake
     plugin_version: "0.1"
@@ -25,6 +27,7 @@ clusters:
         aio: 1
     cluster:
       name: ${cluster_name}
+      is_transient: ${is_transient}
     scaling:
       - operation: add
         node_group: worker
