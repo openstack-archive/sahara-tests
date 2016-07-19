@@ -37,6 +37,7 @@ clusters:
           - CLOUDERA_MANAGER
           - KMS
         auto_security_group: true
+        is_proxy_gateway: ${is_proxy_gateway}
       - name: master-core
         flavor: ${medium_flavor_id}
         node_processes:
@@ -46,7 +47,6 @@ clusters:
           - YARN_NODEMANAGER
           - ZOOKEEPER_SERVER
         auto_security_group: true
-        is_proxy_gateway: ${is_proxy_gateway}
       - name: master-additional
         flavor: ${medium_flavor_id}
         node_processes:
