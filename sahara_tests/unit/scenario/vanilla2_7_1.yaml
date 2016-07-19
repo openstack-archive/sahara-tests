@@ -1,10 +1,6 @@
 concurrency: 1
 
 credentials:
-    os_username: admin
-    os_password: nova
-    os_tenant: admin
-    os_auth_url: http://127.0.0.1:5000/v2.0
     ssl_cert: sahara_tests/unit/scenario/dummy.crt
     ssl_verify: True
 

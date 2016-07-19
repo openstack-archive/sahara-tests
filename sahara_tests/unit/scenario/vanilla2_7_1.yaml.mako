@@ -1,10 +1,6 @@
 concurrency: 1
 
 credentials:
-    os_username: ${OS_USERNAME}
-    os_password: ${OS_PASSWORD}
-    os_tenant: ${OS_TENANT_NAME}
-    os_auth_url: ${OS_AUTH_URL}
     ssl_cert: sahara_tests/unit/scenario/dummy.crt
     ssl_verify: True
 

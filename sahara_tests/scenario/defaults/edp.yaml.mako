@@ -81,8 +81,8 @@ edp_jobs_flow:
       configs:
         edp.java.main_class: sahara.edp.spark.SparkWordCount
         edp.spark.adapt_for_swift: true
-        fs.swift.service.sahara.username: ${OS_USERNAME}
-        fs.swift.service.sahara.password: ${OS_PASSWORD}
+        fs.swift.service.sahara.username: ${os_username}
+        fs.swift.service.sahara.password: ${os_password}
       args:
         - '{input_datasource}'
   mapr_pig_job:
