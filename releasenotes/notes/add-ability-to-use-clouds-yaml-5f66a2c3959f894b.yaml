@@ -1,0 +1,7 @@
+---
+prelude: >
+    Added ability to use clouds.yaml with scenario tests
+features:
+  - User can now use clouds.yaml in the format defined
+    by os-client-config to specify the auth values
+    wanted on a scenario test.

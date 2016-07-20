@@ -32,11 +32,6 @@ sahara_register_fake_plugin_image
 # Register sahara specific flavor for gate
 sahara_register_flavor
 
-# Use demo user for running scenario tests
-set +x
-source $DEVSTACK_DIR/openrc demo demo
-set -x
-
 sudo -E chown -R jenkins:stack $SAHARA_TESTS_DIR
 cd $SAHARA_TESTS_DIR
 
@@ -54,10 +49,11 @@ EOF
 
 echo "Running scenario tests"
 # TODO(slukjanov): Create separated list of templates for fake plugin in gate
-sudo -E -u jenkins tox -e venv -- sahara-scenario --verbose -V template_vars.ini \
+sudo -u jenkins tox -e venv -- sahara-scenario --verbose -V template_vars.ini \
     etc/scenario/gate/credentials.yaml.mako \
     etc/scenario/gate/edp.yaml.mako \
     etc/scenario/gate/fake.yaml.mako \
+    --os-cloud devstack \
     | tee scenario.log
 
 if grep -q FAILED scenario.log; then

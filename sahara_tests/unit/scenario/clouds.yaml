@@ -1,0 +1,7 @@
+clouds:
+  scenario_test:
+    auth:
+      username: demo_cloud
+      password: demo_cloud_pwd
+      project_name: demo_cloud_project
+      auth_url: http://localhost:5000/v2.0

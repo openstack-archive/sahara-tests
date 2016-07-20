@@ -87,7 +87,7 @@ For generating report use flag `--report`.
 _`Authentication`
 -----------------
 
-You can set authentication variables in two ways:
+You can set authentication variables in three ways:
 
 1. Use environment variables(like openrc in devstack)
 
@@ -112,9 +112,37 @@ You can set authentication variables in two ways:
      --os-auth-url
 ..
 
-See default values for these variables in `How to write scenario files`_
-in the `Credentials` section.
+3. Use a ``clouds.yaml`` file
 
+Create a ``clouds.yaml`` file containing your cloud information.
+os-client-config will look for that file in the home directory, then
+``~/.config/openstack`` then ``/etc/openstack``. It's also possible to set
+``OS_CLIENT_CONFIG_FILE`` environment variable to that file's absolute
+path.
+After creating the file, you can set ``OS_CLOUD`` variable or ``--os-cloud``
+flag to the name of the cloud you have created and those values will be used.
+
+Example of a ``clouds.yaml`` file:
+
+.. sourcecode:: yaml
+
+    clouds:
+      scenario_cloud:
+        auth:
+          username: admin
+          password: nova
+          project_name: admin
+          auth_url: http://localhost:5000/v2.0
+
+..
+
+Using this example, ``OS_CLOUD`` or ``--os-cloud`` value would be
+``scenario_cloud``. Note that more than one cloud can be defined in
+the same file.
+
+More information can be found
+`here
+<http://docs.openstack.org/developer/os-client-config/#config-files>`_
 
 
 Template variables

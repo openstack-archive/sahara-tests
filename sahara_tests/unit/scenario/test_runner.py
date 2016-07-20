@@ -13,13 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 
 from jsonschema import exceptions
-from os import environ
+import pkg_resources as pkg
 import mock
 import testtools
 
+from sahara_tests import version
 from sahara_tests.scenario import runner
 
 
@@ -320,7 +322,7 @@ class RunnerUnitTest(testtools.TestCase):
             'os_username': 'demo',
             'os_password': 'demopwd',
             'os_tenant': 'demo',
-            'os_auth_url': 'localhost'
+            'os_auth_url': 'localhost/v2.0'
         }
         self.assertTrue(self._isDictContainSubset(
             expected, mock_validate.call_args_list[0][0][0]['credentials']))
@@ -425,14 +427,14 @@ class RunnerUnitTest(testtools.TestCase):
                 return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
     def test_credentials_envvars(self, mock_sys, mock_sub, mock_validate):
-        username = environ.get('OS_USERNAME', '')
-        password = environ.get('OS_PASSWORD', '')
-        auth_url = environ.get('OS_AUTHURL', '')
-        project_name = environ.get('OS_TENANT_NAME', '')
-        environ['OS_USERNAME'] = 'demo_env'
-        environ['OS_PASSWORD'] = 'demopwd_env'
-        environ['OS_AUTH_URL'] = 'http://localhost:5000/v2.0'
-        environ['OS_TENANT_NAME'] = 'project_env'
+        username = os.environ.get('OS_USERNAME', '')
+        password = os.environ.get('OS_PASSWORD', '')
+        auth_url = os.environ.get('OS_AUTHURL', '')
+        project_name = os.environ.get('OS_TENANT_NAME', '')
+        os.environ['OS_USERNAME'] = 'demo_env'
+        os.environ['OS_PASSWORD'] = 'demopwd_env'
+        os.environ['OS_AUTH_URL'] = 'http://localhost:5000/v2.0'
+        os.environ['OS_TENANT_NAME'] = 'project_env'
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
@@ -447,7 +449,35 @@ class RunnerUnitTest(testtools.TestCase):
         }
         self.assertTrue(self._isDictContainSubset(
             expected, mock_validate.call_args_list[0][0][0]['credentials']))
-        environ['OS_USERNAME'] = username
-        environ['OS_PASSWORD'] = password
-        environ['OS_AUTHURL'] = auth_url
-        environ['OS_TENANT_NAME'] = project_name
+        os.environ['OS_USERNAME'] = username
+        os.environ['OS_PASSWORD'] = password
+        os.environ['OS_AUTHURL'] = auth_url
+        os.environ['OS_TENANT_NAME'] = project_name
+
+    @mock.patch('sahara_tests.scenario.validation.validate')
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
+    @mock.patch('sys.exit', return_value=None)
+    def test_credentials_clouds(self, mock_sys, mock_sub, mock_validate):
+        unit_dir = pkg.resource_filename(version.version_info.package,
+                                         'unit')
+        os_client_config_file = os.environ.get('OS_CLIENT_CONFIG_FILE', '')
+        os.environ['OS_CLIENT_CONFIG_FILE'] = os.path.join(unit_dir,
+                                                           'scenario',
+                                                           'clouds.yaml')
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    '-p', 'spark', '-v', '1.0.0', '--count', '4',
+                    '--os-cloud', 'scenario_test']
+        runner.main()
+        expected = {
+            'os_username': 'demo_cloud',
+            'os_password': 'demo_cloud_pwd',
+            'os_tenant': 'demo_cloud_project',
+            'os_auth_url': 'http://localhost:5000/v2.0'
+        }
+        self.assertTrue(self._isDictContainSubset(
+            expected, mock_validate.call_args_list[0][0][0]['credentials']))
+        os.environ['OS_CLIENT_CONFIG_FILE'] = os_client_config_file
+

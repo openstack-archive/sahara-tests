@@ -279,6 +279,29 @@ def get_default_templates(plugin, version, release, scenario_arguments):
     return scenario_arguments
 
 
+def get_auth_values(cloud_config, args):
+    try:
+        cloud = cloud_config.get_one_cloud(argparse=args)
+        cloud_credentials = cloud.get_auth_args()
+        api_version = cloud.config.get('identity_api_version')
+    except os_client_config.exceptions.OpenStackConfigException:
+        # cloud not found
+        api_version = '2.0'
+        cloud_credentials = {}
+    auth_values = {
+        'os_username': cloud_credentials.get('username', 'admin'),
+        'os_password': cloud_credentials.get('password', 'nova'),
+        'os_auth_url': cloud_credentials.get('auth_url',
+                                             'http://localhost:5000/v2.0'),
+        'os_tenant': cloud_credentials.get('project_name', 'admin')
+    }
+    auth_url = auth_values['os_auth_url']
+    if not any(v in auth_url for v in ('v2.0', 'v3')):
+        version = 'v3' if api_version in ('3', '3.0') else 'v2.0'
+        auth_values['os_auth_url'] = "%s/%s" % (auth_url, version)
+    return auth_values
+
+
 def main():
     # parse args
     cloud_config = os_client_config.OpenStackConfig()
@@ -296,23 +319,8 @@ def main():
     report = args.report
     count = args.count
 
-    try:
-        envvars_cloud = cloud_config.get_one_cloud('envvars')
-        env_credentials = envvars_cloud.config['auth']
-    except os_client_config.exceptions.OpenStackConfigException:
-        # no env vars present
-        env_credentials = {}
+    auth_values = get_auth_values(cloud_config, args)
 
-    os_flags = cloud_config.get_one_cloud(argparse=args)
-    flag_credentials = os_flags.config['auth']
-    env_credentials.update(flag_credentials)
-    auth_values = {
-        'os_username': env_credentials.get('username', 'admin'),
-        'os_password': env_credentials.get('password', 'nova'),
-        'os_auth_url': env_credentials.get('auth_url',
-                                           'http://localhost:5000/v2.0'),
-        'os_tenant': env_credentials.get('project_name', 'admin')
-    }
     scenario_arguments = get_default_templates(plugin, version, release,
                                                scenario_arguments)
 
