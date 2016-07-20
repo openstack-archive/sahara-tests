@@ -16,7 +16,7 @@ fake plugin, version is not necessary):
 ..
 
 Create the YAML and/or the YAML mako template files for scenario tests
-``etc/scenario/defaults/simple-testcase.yaml``.
+``etc/scenario/simple-testcase.yaml``.
 You can take a look at sample YAML files `How to write scenario files`_.
 
 If you want to run scenario tests for one plugin, you should use the
@@ -24,14 +24,14 @@ YAML files with a scenario for the specific plugin:
 
 .. sourcecode:: console
 
-    $ tox -e venv -- sahara-scenario etc/scenario/defaults/simple-testcase.yaml
+    $ tox -e venv -- sahara-scenario etc/scenario/simple-testcase.yaml
 ..
 
 or, if the file is a YAML Mako template:
 
 .. sourcecode:: console
 
-    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/defaults/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
 ..
 
 where templatevars.ini contains the values of the variables referenced
@@ -44,7 +44,7 @@ and use the following tox env:
 
 .. sourcecode:: console
 
-    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/defaults/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
 ..
 
 If you want to run scenario tests for a few plugins or their versions, you
@@ -52,31 +52,31 @@ should use the several YAML and/or YAML Mako template files:
 
 .. sourcecode:: console
 
-    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/defaults/cdh-5.4.0.yaml.mako etc/scenario/defaults/vanilla-2.7.1.yaml.mako ...
+    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/cdh-5.4.0.yaml.mako sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako ...
 ..
 
 Here are a few more examples.
 
 .. sourcecode:: console
 
-    $ tox -e venv -- sahara-scenario -V templatevars.ini etc/scenario/defaults/credentials.yaml.mako etc/scenario/defaults/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/credentials.yaml.mako sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
 
 ..
 
 will run tests for Vanilla plugin with the Hadoop version 2.7.1 and credential
-located in ``etc/scenario/defaults/credentials.yaml.mako``, replacing the variables
+located in ``sahara_tests/scenario/defaults/credentials.yaml.mako``, replacing the variables
 included into ``vanilla-2.7.1.yaml.mako`` with the values defined into
 ``templatevars.ini``.
 For more information about writing scenario YAML files, see the section
 section `How to write scenario files`_.
 
-``tox -e venv -- sahara-scenario etc/scenario/defaults`` will run tests from the test directory.
+``tox -e venv -- sahara-scenario sahara_tests/scenario/defaults`` will run tests from the test directory.
 
 Also, you can validate your yaml-files using flag ``--validate`` via command:
 
 .. sourcecode:: console
 
-    $ tox -e venv -- sahara-scenario --validate -V templatevars.ini etc/scenario/defaults/credantials.yaml.mako etc/scenario/defaults/vanilla-2.7.1.yaml.mako
+    $ tox -e venv -- sahara-scenario --validate -V templatevars.ini sahara_tests/scenario/defaults/credantials.yaml.mako sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
 
 ..
 
