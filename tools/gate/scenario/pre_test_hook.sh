@@ -28,7 +28,11 @@ echo "IMAGE_URLS=$SAHARA_FAKE_PLUGIN_IMAGE" >> $LOCALRC_PATH
 # echo -e '[[post-config|$SAHARA_CONF]]\n[DEFAULT]\n' >> $LOCALCONF_PATH
 # echo -e 'infrastructure_engine=true\n' >> $LOCALCONF_PATH
 
+echo -e '[[post-config|$SAHARA_CONF_FILE]]\n[DEFAULT]\n' >> $LOCALCONF_PATH
+
+
 if [ "$NETWORK" == "nova-network" ]; then
-    echo -e '[[post-config|$SAHARA_CONF_FILE]]\n[DEFAULT]\n' >> $LOCALCONF_PATH
     echo -e 'heat_enable_wait_condition=false\n' >> $LOCALCONF_PATH
+else
+    echo -e 'min_transient_cluster_active_time=90\n' >> $LOCALCONF_PATH
 fi
