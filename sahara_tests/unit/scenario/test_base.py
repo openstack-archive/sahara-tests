@@ -24,7 +24,7 @@ from saharaclient.api import job_executions
 from saharaclient.api import jobs
 from saharaclient.api import node_group_templates
 from saharaclient.api import plugins
-from tempest_lib import exceptions as exc
+from tempest.lib import exceptions as exc
 import testtools
 
 from sahara_tests.scenario import base
