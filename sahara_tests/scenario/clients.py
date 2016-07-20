@@ -28,7 +28,7 @@ from saharaclient.api import base as saharaclient_base
 from saharaclient import client as sahara_client
 from swiftclient import client as swift_client
 from swiftclient import exceptions as swift_exc
-from tempest_lib import exceptions as exc
+from tempest.lib import exceptions as exc
 
 from sahara_tests.scenario import utils
 

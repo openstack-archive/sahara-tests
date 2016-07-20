@@ -15,7 +15,7 @@
 
 import contextlib
 import shutil
-from tempest_lib import exceptions as ex
+from tempest.lib import exceptions as ex
 import tempfile
 
 

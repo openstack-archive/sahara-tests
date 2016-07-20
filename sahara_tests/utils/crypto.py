@@ -18,7 +18,7 @@ import os
 from oslo_concurrency import processutils
 import paramiko
 import six
-from tempest_lib import exceptions as ex
+from tempest.lib import exceptions as ex
 
 from sahara_tests.utils import tempfiles
 

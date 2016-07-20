@@ -25,9 +25,9 @@ import fixtures
 from oslo_utils import timeutils
 import prettytable
 import six
-from tempest_lib import base
-from tempest_lib.common import ssh as connection
-from tempest_lib import exceptions as exc
+from tempest.lib import base
+from tempest.lib.common import ssh as connection
+from tempest.lib import exceptions as exc
 
 from sahara_tests.scenario import clients
 from sahara_tests.scenario import timeouts
