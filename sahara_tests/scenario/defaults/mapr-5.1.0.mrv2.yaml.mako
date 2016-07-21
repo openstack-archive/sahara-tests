@@ -1,3 +1,5 @@
+<%page args="use_auto_security_group='true'"/>
+
 clusters:
   - plugin_name: mapr
     plugin_version: 5.1.0.mrv2
@@ -26,7 +28,7 @@ clusters:
           - HiveMetastore
           - Sqoop2-Client
           - Sqoop2-Server
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: worker
         flavor:
           vcpus: 2
@@ -36,7 +38,7 @@ clusters:
         node_processes:
           - NodeManager
           - FileServer
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
     cluster_template:
       name: mapr510mrv2
       node_group_templates:

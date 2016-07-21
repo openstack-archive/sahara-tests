@@ -1,3 +1,5 @@
+<%page args="use_auto_security_group='true'"/>
+
 clusters:
   - plugin_name: ambari
     plugin_version: '2.3'
@@ -15,14 +17,14 @@ clusters:
           - YARN Timeline Server
           - ZooKeeper
           - Kafka Broker
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: master-edp
         flavor: ${ci_flavor_id}
         node_processes:
           - Hive Metastore
           - HiveServer
           - Oozie
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: worker
         flavor: ${ci_flavor_id}
         node_processes:
@@ -30,7 +32,7 @@ clusters:
           - NodeManager
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
     cluster_template:
       name: ambari21
       node_group_templates:

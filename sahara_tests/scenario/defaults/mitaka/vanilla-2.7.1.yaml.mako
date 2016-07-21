@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true'"/>
 
 clusters:
   - plugin_name: vanilla
@@ -12,19 +12,19 @@ clusters:
           - nodemanager
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: worker-nm
         flavor: ${ci_flavor_id}
         node_processes:
           - nodemanager
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: worker-dn
         flavor: ${ci_flavor_id}
         node_processes:
           - datanode
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: master-rm-nn-hvs
         flavor: ${ci_flavor_id}
         node_processes:
@@ -32,7 +32,7 @@ clusters:
           - resourcemanager
           - hiveserver
           - nodemanager
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: master-oo-hs-sn
         flavor: ${ci_flavor_id}
         node_processes:
@@ -40,7 +40,7 @@ clusters:
           - historyserver
           - secondarynamenode
           - nodemanager
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         is_proxy_gateway: ${is_proxy_gateway}
     cluster_template:
       name: vanilla271

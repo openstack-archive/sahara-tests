@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true'"/>
 
 clusters:
   - plugin_name: cdh
@@ -11,7 +11,7 @@ clusters:
           - HDFS_DATANODE
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         node_configs:
           &ng_configs
           DATANODE:
@@ -20,7 +20,7 @@ clusters:
         flavor: ${ci_flavor_id}
         node_processes:
           - YARN_NODEMANAGER
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: worker-nm-dn
         flavor: ${ci_flavor_id}
         node_processes:
@@ -28,7 +28,7 @@ clusters:
           - HDFS_DATANODE
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         node_configs:
           *ng_configs
       - name: manager
@@ -36,8 +36,8 @@ clusters:
         node_processes:
           - CLOUDERA_MANAGER
           - KMS
-        auto_security_group: true
         is_proxy_gateway: ${is_proxy_gateway}
+        auto_security_group: ${use_auto_security_group}
       - name: master-core
         flavor: ${medium_flavor_id}
         node_processes:
@@ -46,7 +46,7 @@ clusters:
           - SENTRY_SERVER
           - YARN_NODEMANAGER
           - ZOOKEEPER_SERVER
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: master-additional
         flavor: ${medium_flavor_id}
         node_processes:
@@ -57,7 +57,7 @@ clusters:
           - HIVE_METASTORE
           - HIVE_SERVER2
           - SPARK_YARN_HISTORY_SERVER
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         # In 5.7 the defaults of following configs are too large,
         # restrict them to save memory for scenario testing.
         node_configs:

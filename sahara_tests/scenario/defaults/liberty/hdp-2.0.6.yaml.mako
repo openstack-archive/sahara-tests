@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true'"/>
 
 clusters:
   - plugin_name: hdp
@@ -17,7 +17,7 @@ clusters:
           - RESOURCEMANAGER
           - SECONDARY_NAMENODE
           - ZOOKEEPER_SERVER
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         is_proxy_gateway: ${is_proxy_gateway}
       - name: worker
         flavor: ${ci_flavor_id}
@@ -32,7 +32,7 @@ clusters:
           - ZOOKEEPER_CLIENT
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
     cluster_template:
       name: hdp206
       node_group_templates:

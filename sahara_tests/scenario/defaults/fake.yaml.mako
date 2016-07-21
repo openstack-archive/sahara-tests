@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true'"/>
 
 clusters:
   - plugin_name: fake
@@ -12,13 +12,13 @@ clusters:
           - tasktracker
         volumes_per_node: 2
         volumes_size: 2
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
       - name: master
         flavor: ${ci_flavor_id}
         node_processes:
           - jobtracker
           - namenode
-        auto_security_group: true
+        auto_security_group: ${use_auto_security_group}
         is_proxy_gateway: ${is_proxy_gateway}
     cluster_template:
       name: fake01
