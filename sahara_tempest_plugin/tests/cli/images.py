@@ -55,8 +55,16 @@ class SaharaImageCLITest(base.ClientTestBase):
                 'Value'
             ])
 
+    def openstack_image_tags_set(self, image_name):
+        flag = ''.join([image_name, ' --tags update_tag'])
+        self.assertTableStruct(
+            self.listing_result(''.join(['image tags set ', flag])), [
+                'Field',
+                'Value'
+            ])
+
     def openstack_image_tags_remove(self, image_name):
-        flag = ''.join([image_name, ' --tags test'])
+        flag = ''.join([image_name, ' --tags update_tag'])
         self.assertTableStruct(
             self.listing_result(''.join(['image tags remove ', flag])), [
                 'Field',

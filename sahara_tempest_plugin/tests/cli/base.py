@@ -11,9 +11,16 @@
 #    under the License.
 
 import os
+import fixtures
+import time
 
 from tempest.lib.cli import base
 from tempest.test import BaseTestCase
+from tempest.lib import exceptions as exc
+
+DEL_RESULT = '''\
+{} "{}" has been removed successfully.
+'''
 
 
 class ClientTestBase(base.ClientTestBase):
@@ -49,6 +56,9 @@ class ClientTestBase(base.ClientTestBase):
     def openstack(self, *args, **kwargs):
         return self.clients.openstack(*args, **kwargs)
 
+    def neutron(self, *args, **kwargs):
+        return self.clients.neutron(*args, **kwargs)
+
     def listing_result(self, command):
         command_for_item = self.openstack('dataprocessing', params=command)
         result = self.parser.listing(command_for_item)
@@ -66,9 +76,7 @@ class ClientTestBase(base.ClientTestBase):
     def check_if_delete(self, command, name):
         delete_cmd = self.openstack('dataprocessing %s delete' % command,
                                     params=name)
-        result = ('''\
-%s "%s" has been removed successfully.
-''' % (command, name))
+        result = DEL_RESULT.format(command, name)
         # lower() is required because "command" in the result string could
         # have the first letter capitalized.
         self.assertEqual(delete_cmd.lower(), result.lower())
@@ -84,7 +92,7 @@ class ClientTestBase(base.ClientTestBase):
         return found_plugin
 
     def find_id_of_pool(self):
-        floating_pool_list = self.openstack('ip floating pool list')
+        floating_pool_list = self.neutron('floatingip-list')
         floating_pool = self.parser.listing(floating_pool_list)
         network_list = self.openstack('network list')
         networks = self.parser.listing(network_list)
@@ -101,9 +109,45 @@ class ClientTestBase(base.ClientTestBase):
                 if net_name == pool_name:
                     name_net_pool = net_name
         if name_net_pool is None:
-            raise self.skipException('Network list and floating pool ip list'
-                                     ' dont have common networks')
+            raise self.skipException('Network list and floating ip list do '
+                                     'not have common networks')
         for network in networks:
             if network['Name'] == name_net_pool:
                 id_net_pool = network['ID']
         return id_net_pool
+
+    def _get_cluster_status(self, cluster_name):
+        status = None
+        show_cluster = self.listing_result(''.join(['cluster show ',
+                                                    cluster_name]))
+        for line in show_cluster:
+            if line['Field'] == 'Status':
+                status = line['Value']
+        if status is None:
+            raise self.skipException('Can not find the cluster to get its '
+                                     'status')
+        return status
+
+    def _poll_cluster_status(self, cluster_name):
+        with fixtures.Timeout(300, gentle=True):
+            while True:
+                status = self._get_cluster_status(cluster_name)
+                if status == 'Active':
+                    break
+                if status == 'Error':
+                    raise exc.TempestException("Cluster in %s state" % status)
+                time.sleep(3)
+
+    def wait_for_resource_deletion(self, name, type):
+        # type can be cluster, cluster template or node group template string
+        name_exist = False
+        # if name exists in the command "type list" than tests should fail
+        with fixtures.Timeout(300, gentle=True):
+            while True:
+                list_of_types = self.listing_result(''.join([type, ' list']))
+                list_names = [p['Name'] for p in list_of_types]
+                for resource_name in list_names:
+                    if resource_name == name:
+                        name_exist = True
+                if not name_exist:
+                    break
