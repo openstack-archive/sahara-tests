@@ -12,7 +12,6 @@ Tests for Sahara project
 In sahara_tests folder we have next tools:
     - Sahara-scenario framework
     - Sahara tempest tests
-    - Sahara CLI tests
 
 For more details see README.rst file in the chosen directory
 
