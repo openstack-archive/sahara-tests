@@ -17,7 +17,7 @@ clusters:
           - supervisor
         auto_security_group: ${use_auto_security_group}
       - name: zookeeper
-        flavor: ${medium_flavor}
+        flavor: ${medium_flavor_id}
         node_processes:
           - zookeeper
         auto_security_group: ${use_auto_security_group}
