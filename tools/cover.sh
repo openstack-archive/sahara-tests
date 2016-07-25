@@ -22,15 +22,16 @@ show_diff () {
     diff -U 0 $1 $2 | sed 1,2d
 }
 
+package_name=${PACKAGE_NAME:-sahara_tests}
 # Stash uncommitted changes, checkout master and save coverage report
 uncommited=$(git status --porcelain | grep -v "^??")
 [[ -n $uncommited ]] && git stash > /dev/null
 git checkout HEAD^
 
 baseline_report=$(mktemp -t sahara-scenario_coverageXXXXXXX)
-find . -type f -name "*.pyc" -delete && python setup.py testr --coverage --testr-args="$*"
+find . -type f -name "*.pyc" -delete && python setup.py test --coverage --coverage-package-name=${package_name} --testr-args="$*"
 coverage report > $baseline_report
-baseline_missing=$(awk 'END { print $3 }' $baseline_report)
+baseline_missing=$(awk '/^TOTAL/ { print $3 }' $baseline_report)
 
 # Checkout back and unstash uncommitted changes (if any)
 git checkout -
@@ -38,9 +39,9 @@ git checkout -
 
 # Generate and save coverage report
 current_report=$(mktemp -t sahara-scenario_coverageXXXXXXX)
-find . -type f -name "*.pyc" -delete && python setup.py testr --coverage --testr-args="$*"
+find . -type f -name "*.pyc" -delete && python setup.py test --coverage --coverage-package-name=${package_name} --testr-args="$*"
 coverage report > $current_report
-current_missing=$(awk 'END { print $3 }' $current_report)
+current_missing=$(awk '/^TOTAL/ { print $3 }' $current_report)
 
 # Show coverage details
 allowed_missing=$((baseline_missing+ALLOWED_EXTRA_MISSING))
@@ -49,7 +50,10 @@ echo "Allowed to introduce missing lines : ${ALLOWED_EXTRA_MISSING}"
 echo "Missing lines in master            : ${baseline_missing}"
 echo "Missing lines in proposed change   : ${current_missing}"
 
-if [ $allowed_missing -gt $current_missing ];
+if [ -z "$current_missing" ]; then
+    echo "No coverage found!"
+    exit_code=1
+elif [ $allowed_missing -gt $current_missing ];
 then
     if [ $baseline_missing -lt $current_missing ];
     then
