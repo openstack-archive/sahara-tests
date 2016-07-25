@@ -110,7 +110,12 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_image_unregister(image_name)
 
     def test_job_binary_cli(self):
+        job_binary_name = self.openstack_job_binary_create()
         self.openstack_job_binary_list()
+        self.openstack_job_binary_show(job_binary_name)
+        self.openstack_job_binary_update(job_binary_name)
+        self.openstack_job_binary_download(job_binary_name)
+        self.openstack_job_binary_delete(job_binary_name)
 
     def test_job_cli(self):
         self.openstack_job_list()
