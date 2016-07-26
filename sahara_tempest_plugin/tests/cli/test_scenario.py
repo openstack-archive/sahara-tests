@@ -123,3 +123,4 @@ class Scenario(images.SaharaImageCLITest,
 
     def test_job_type_cli(self):
         self.openstack_job_type_list()
+        self.openstack_job_type_configs_get()
