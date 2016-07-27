@@ -199,17 +199,68 @@ class TestBase(testtools.TestCase):
             auth=fake_auth,
             cert='sahara_tests/unit/scenario/dummy.crt', verify=True)
 
-    @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',
-                return_value='mock_net')
+    @mock.patch('neutronclient.v2_0.client.Client.list_networks',
+                return_value={'networks': [{'id': '2314'}]})
     @mock.patch('saharaclient.client.Client',
                 return_value=FakeSaharaClient())
     @mock.patch('saharaclient.api.node_group_templates.'
                 'NodeGroupTemplateManager.create',
                 return_value=FakeResponse(set_id='id_ng'))
-    def test__create_node_group_template(self, mock_ng, mock_saharaclient,
-                                         mock_neutron):
+    def test__create_node_group_template(self, mock_del, mock_ng,
+                                         mock_saharaclient):
         self.base_scenario._init_clients()
         self.assertEqual({'worker': 'id_ng', 'master': 'id_ng'},
+                         self.base_scenario._create_node_group_templates())
+
+    @mock.patch('saharaclient.api.node_group_templates.'
+                'NodeGroupTemplateManager.create',
+                return_value=FakeResponse(set_id='id_ng'))
+    @mock.patch('neutronclient.v2_0.client.Client.list_networks',
+                return_value={'networks': [
+                    {'id': '342'}
+                ]})
+    @mock.patch('neutronclient.v2_0.client.Client.create_security_group',
+                return_value={'security_group': {'id': '213'}})
+    @mock.patch('sahara_tests.scenario.clients.NeutronClient'
+                '.add_security_group_rule_for_neutron',
+                return_value='sg_name')
+    @mock.patch('sahara_tests.scenario.clients.NeutronClient'
+                '.delete_security_group_for_neutron',
+                return_value=None)
+    def test__create_security_group_uuid(self, mock_del,
+                                         mock_add_rule,
+                                         mock_sg,
+                                         mock_neutron, mock_ng):
+        self.base_scenario.network['public_network'] = (
+            '692dcc5b-1205-4645-8a12-2558579ed17e')
+        self.base_scenario._init_clients()
+        for ng in self.base_scenario.testcase['node_group_templates']:
+            ng['auto_security_group'] = False
+        self.assertEqual({'master': 'id_ng', 'worker': 'id_ng'},
+                         self.base_scenario._create_node_group_templates())
+
+    @mock.patch('saharaclient.api.node_group_templates.'
+                'NodeGroupTemplateManager.create',
+                return_value=FakeResponse(set_id='id_ng'))
+    @mock.patch('neutronclient.v2_0.client.Client.list_networks',
+                return_value={'networks': [
+                    {'id': '342'}
+                ]})
+    @mock.patch('neutronclient.v2_0.client.Client.create_security_group',
+                return_value={'security_group': {'id': '213'}})
+    @mock.patch('sahara_tests.scenario.clients.NeutronClient'
+                '.create_security_group_for_neutron',
+                return_value='sg_name')
+    @mock.patch('neutronclient.v2_0.client.Client.create_security_group_rule',
+                return_value=None)
+    @mock.patch('neutronclient.v2_0.client.Client.delete_security_group',
+                return_value=None)
+    def test__create_security_group(self, mock_del, mock_create, mock_sg,
+                                    mock_sgn, mock_list, mock_ng):
+        self.base_scenario._init_clients()
+        for ng in self.base_scenario.testcase['node_group_templates']:
+            ng['auto_security_group'] = False
+        self.assertEqual({'master': 'id_ng', 'worker': 'id_ng'},
                          self.base_scenario._create_node_group_templates())
 
     @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',

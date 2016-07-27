@@ -18,11 +18,13 @@
 export NETWORK=${1:-neutron}
 export ENGINE=${2:-heat}
 export IS_TRANSIENT=true
+export AUTO_SECURITY_GROUP=true
 
 # Normalize network name
 if [[ $NETWORK == nova* ]]; then
     export NETWORK="nova-network"
     export IS_TRANSIENT=false
+    export AUTO_SECURITY_GROUP=false
 fi
 
 source settings

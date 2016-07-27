@@ -510,6 +510,8 @@ class BaseTestCase(base.BaseTestCase):
     def _create_node_group_templates(self):
         ng_id_map = {}
         floating_ip_pool = None
+        security_group = None
+
         if self.network['type'] == 'neutron':
             floating_ip_pool = self.neutron.get_network_id(
                 self.network['public_network'])
@@ -527,6 +529,13 @@ class BaseTestCase(base.BaseTestCase):
             del kwargs['flavor']
             kwargs['name'] = utils.rand_name(kwargs['name'])
             kwargs['floating_ip_pool'] = floating_ip_pool
+            if not kwargs.get('auto_security_group', True):
+                if security_group is None:
+                    sg_name = utils.rand_name('scenario')
+                    security_group = self.__create_security_group(sg_name)
+                    self.neutron.add_security_group_rule_for_neutron(
+                        security_group)
+                kwargs['security_groups'] = [security_group]
             ng_id = self.__create_node_group_template(**kwargs)
             ng_id_map[ng['name']] = ng_id
         return ng_id_map
@@ -653,6 +662,12 @@ class BaseTestCase(base.BaseTestCase):
         id = self.sahara.create_node_group_template(*args, **kwargs)
         if not self.testcase['retain_resources']:
             self.addCleanup(self.sahara.delete_node_group_template, id)
+        return id
+
+    def __create_security_group(self, sg_name):
+        id = self.neutron.create_security_group_for_neutron(sg_name)
+        if not self.testcase['retain_resources']:
+            self.addCleanup(self.neutron.delete_security_group_for_neutron, id)
         return id
 
     def __create_cluster_template(self, *args, **kwargs):

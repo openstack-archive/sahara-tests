@@ -249,6 +249,53 @@ class NeutronClient(Client):
             raise exc.NotFound(network_name)
         return networks[0]['id']
 
+    def create_security_group_for_neutron(self, sg_name):
+        security_group = self.neutron_client.create_security_group({
+            "security_group":
+                {
+                    "name": sg_name,
+                    "description": "Just for test"
+                }
+        })
+        return security_group['security_group']['id']
+
+    def get_security_group_id(self, sg_name):
+        for sg in (self.neutron_client.list_security_groups()
+                   ["security_groups"]):
+            if sg['name'] == sg_name:
+                return sg['id']
+
+        raise exc.NotFound(sg_name)
+
+    def add_security_group_rule_for_neutron(self, sg_id):
+        return self.neutron_client.create_security_group_rule({
+            "security_group_rules": [
+                {
+                    "direction": "ingress",
+                    "ethertype": "IPv4",
+                    "port_range_max": 65535,
+                    "port_range_min": 1,
+                    "protocol": "TCP",
+                    "remote_group_id": None,
+                    "remote_ip_prefix": None,
+                    "security_group_id": sg_id
+                },
+                {
+                    "direction": "egress",
+                    "ethertype": "IPv4",
+                    "port_range_max": 65535,
+                    "port_range_min": 1,
+                    "protocol": "TCP",
+                    "remote_group_id": None,
+                    "remote_ip_prefix": None,
+                    "security_group_id": sg_id
+                }
+            ]
+        })
+
+    def delete_security_group_for_neutron(self, sg_id):
+        return self.neutron_client.delete_security_group(sg_id)
+
 
 class SwiftClient(Client):
     def __init__(self, *args, **kwargs):

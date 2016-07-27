@@ -45,6 +45,7 @@ fake_plugin_image: ${SAHARA_FAKE_PLUGIN_IMAGE_NAME}
 ci_flavor_id: '${SAHARA_FLAVOR_ID}'
 cluster_name: fake-cluster
 is_transient: ${IS_TRANSIENT}
+auto_security_group: ${AUTO_SECURITY_GROUP}
 EOF
 
 echo "Running scenario tests"
