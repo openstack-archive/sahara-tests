@@ -2,7 +2,6 @@
 branch = True
 source = sahara_tests
 omit =
- */openstack/common/*
  .tox/*
  sahara_tests/unit/*
 
