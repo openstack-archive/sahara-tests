@@ -403,6 +403,23 @@ class RunnerUnitTest(testtools.TestCase):
                     '--os-auth-url', 'http://127.0.0.1:5000/v2']
         runner.main()
 
+    @mock.patch('subprocess.Popen',
+                return_value=_create_subprocess_communicate_mock())
+    @mock.patch('sys.exit', return_value=None)
+    def test_run_dir(self, mock_sys, mock_sub):
+        sys.argv = ['sahara_tests/scenario/runner.py',
+                    '-V',
+                    'sahara_tests/unit/scenario/templatevars_complete.ini',
+                    'sahara_tests/scenario/defaults/liberty',
+                    'sahara_tests/scenario/defaults/edp.yaml.mako',
+                    '--os-username', 'demo', '--os-password', 'demopwd',
+                    '--os-project-name', 'demo',
+                    '--os-auth-url', 'http://127.0.0.1:5000/v2', '--args',
+                    'ambari_2_1_image:ambari', 'fake_plugin_image:fake',
+                    'mapr_500mrv2_image:mapr', 'spark_1_3_image:spark',
+                    'hdp_two_image:hdp']
+        runner.main()
+
     @mock.patch('sahara_tests.scenario.validation.validate')
     @mock.patch('subprocess.Popen',
                 return_value=_create_subprocess_communicate_mock())
