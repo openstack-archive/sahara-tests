@@ -55,6 +55,14 @@ class SaharaJobCLITest(base.ClientTestBase):
         if not check_table:
             raise self.skipException('No table to show information')
 
+    def openstack_job_update(self, job_id):
+        self.assertTableStruct(
+            self.listing_result(
+                'job update --public %s' % job_id), [
+                'Field',
+                'Value'
+            ])
+
     def openstack_job_delete(self, job_id):
         delete_job = self.openstack('dataprocessing job delete',
                                     params=job_id)
