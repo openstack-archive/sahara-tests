@@ -15,10 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export SAHARA_FAKE_PLUGIN_IMAGE=http://tarballs.openstack.org/heat-test-image/fedora-heat-test-image.qcow2
-export SAHARA_FAKE_PLUGIN_IMAGE_NAME=$(basename $SAHARA_FAKE_PLUGIN_IMAGE .qcow2)
+export SAHARA_FAKE_PLUGIN_IMAGE=https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+export SAHARA_FAKE_PLUGIN_IMAGE_NAME=$(basename $SAHARA_FAKE_PLUGIN_IMAGE .img)
+export SAHARA_FAKE_PLUGIN_IMAGE_USERNAME=ubuntu
 export SAHARA_FLAVOR_NAME=sahara-flavor
 export SAHARA_FLAVOR_ID=20
 export SAHARA_FLAVOR_RAM=512
-export SAHARA_FLAVOR_DISK=4
+export SAHARA_FLAVOR_DISK=10
 export SAHARA_FLAVOR_VCPUS=1
