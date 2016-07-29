@@ -13,8 +13,6 @@ In sahara_tests folder we have next tools:
     - Sahara-scenario framework
     - Sahara tempest tests
 
-For more details see README.rst file in the chosen directory
-
 * License: Apache License, Version 2.0
 * `PyPi`_ - package installation
 * `Launchpad project`_ - release management
