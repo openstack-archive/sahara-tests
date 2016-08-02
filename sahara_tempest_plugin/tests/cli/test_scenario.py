@@ -10,16 +10,18 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sahara_cli_tests import clusters
-from sahara_cli_tests import cluster_templates
-from sahara_cli_tests import images
-from sahara_cli_tests import node_group_templates
-from sahara_cli_tests import plugins
-from sahara_cli_tests import job_binaries
-from sahara_cli_tests import jobs
-from sahara_cli_tests import job_templates
-from sahara_cli_tests import data_sources
-from sahara_cli_tests import job_types
+import time
+from sahara_tempest_plugin.tests.cli import clusters
+from sahara_tempest_plugin.tests.cli import cluster_templates
+from sahara_tempest_plugin.tests.cli import images
+from sahara_tempest_plugin.tests.cli import node_group_templates
+from sahara_tempest_plugin.tests.cli import plugins
+from sahara_tempest_plugin.tests.cli import job_binaries
+from sahara_tempest_plugin.tests.cli import jobs
+from sahara_tempest_plugin.tests.cli import job_templates
+from sahara_tempest_plugin.tests.cli import data_sources
+from sahara_tempest_plugin.tests.cli import job_types
+from tempest.test import BaseTestCase
 
 
 class Scenario(images.SaharaImageCLITest,
@@ -61,10 +63,17 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_node_group_template_delete(ng_worker)
 
     def test_cluster_cli(self):
-        image_name = self.openstack_image_register('fedora-heat-test-image')
+        image_name = self.openstack_image_register(
+            'xenial-server-cloudimg-amd64-disk1')
         self.openstack_image_tags_add(image_name)
         self.openstack_image_show(image_name)
         self.openstack_image_list()
+        flavors_client = self.client_manager_admin.flavors_client
+        flavor_ref = flavors_client.create_flavor(name='sahara-flavor',
+                                                  ram=512, vcpus=1, disk=4,
+                                                  id=20)['flavor']
+        self.addCleanup(flavors_client.delete_flavor, flavor_ref['id'])
+
         ng_master = self.openstack_node_group_template_create('cli-cluster'
                                                               '-master',
                                                               'sahara-flavor')
@@ -78,6 +87,8 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_cluster_list()
         self.openstack_cluster_show(cluster_name)
         self.openstack_cluster_delete(cluster_name)
+        # FIXME: this should be replaced by a proper busy waiting
+        time.sleep(300)
         self.openstack_cluster_template_delete(cluster_template_name)
         self.openstack_node_group_template_delete(ng_master)
         self.openstack_node_group_template_delete(ng_worker)

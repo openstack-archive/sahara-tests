@@ -13,6 +13,7 @@
 import os
 
 from tempest.lib.cli import base
+from tempest.test import BaseTestCase
 
 
 class ClientTestBase(base.ClientTestBase):
@@ -23,15 +24,26 @@ class ClientTestBase(base.ClientTestBase):
     """
 
     def _get_clients(self):
-        cli_dir = os.environ.get(
-            'OS_SAHARA_TESTS_DIR',
-            os.path.join(os.path.abspath('.'), '.tox/cli-tests/bin'))
+        cli_dir = os.environ.get('OS_SAHARA_TESTS_DIR', '')
+        if not cli_dir:
+            # if this is executed in a virtualenv, the command installed there
+            # will be the first one.
+            paths = os.environ.get('PATH').split(':')
+            for path in paths:
+                client_candidate = os.path.join(path, 'openstack')
+                if os.path.isfile(client_candidate) and os.access(
+                        client_candidate, os.X_OK):
+                    cli_dir = path
+                    break
+
+        self.client_manager_admin = BaseTestCase.get_client_manager('admin')
+        auth_provider = self.client_manager_admin.auth_provider
 
         return base.CLIClient(
-            username=os.environ.get('OS_USERNAME'),
-            password=os.environ.get('OS_PASSWORD'),
-            tenant_name=os.environ.get('OS_TENANT_NAME'),
-            uri=os.environ.get('OS_AUTH_URL'),
+            username=auth_provider.credentials.get('username'),
+            password=auth_provider.credentials.get('password'),
+            tenant_name=auth_provider.credentials.get('tenant_name'),
+            uri=auth_provider.base_url({'service': 'identity'}),
             cli_dir=cli_dir)
 
     def openstack(self, *args, **kwargs):
@@ -56,8 +68,10 @@ class ClientTestBase(base.ClientTestBase):
                                     params=name)
         result = ('''\
 %s "%s" has been removed successfully.
-''' % command % name)
-        self.assertEqual(delete_cmd, result)
+''' % (command, name))
+        # lower() is required because "command" in the result string could
+        # have the first letter capitalized.
+        self.assertEqual(delete_cmd.lower(), result.lower())
 
     def find_fake_plugin(self):
         found_plugin = None
