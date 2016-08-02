@@ -23,13 +23,3 @@ export SAHARA_TESTS_DIR=${SAHARA_TESTS_DIR:-$DEST/sahara-tests}
 
 export LOCALRC_PATH=$DEVSTACK_DIR/localrc
 export LOCALCONF_PATH=$DEVSTACK_DIR/local.conf
-
-function sahara_prepare_fake_plugin_image {
-    openstack --os-url $GLANCE_SERVICE_PROTOCOL://$GLANCE_HOSTPORT --os-image-api-version 1 image set \
-        $SAHARA_FAKE_PLUGIN_IMAGE_NAME --public
-}
-
-function sahara_register_flavor {
-    nova flavor-create $SAHARA_FLAVOR_NAME $SAHARA_FLAVOR_ID $SAHARA_FLAVOR_RAM \
-        $SAHARA_FLAVOR_DISK $SAHARA_FLAVOR_VCPUS
-}

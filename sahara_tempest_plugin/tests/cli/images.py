@@ -10,7 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sahara_cli_tests import base
+from sahara_tempest_plugin.tests.cli import base
 
 
 class SaharaImageCLITest(base.ClientTestBase):
@@ -30,7 +30,7 @@ class SaharaImageCLITest(base.ClientTestBase):
         flag = None
         for image_name in images_name:
             if image_name == name_to_register:
-                flag = ''.join([' --username fedora ', image_name])
+                flag = ''.join([' --username ubuntu ', image_name])
         if flag is None:
             raise self.skipException('No available image for testing')
         self.assertTableStruct(
@@ -48,7 +48,7 @@ class SaharaImageCLITest(base.ClientTestBase):
             ])
 
     def openstack_image_tags_add(self, image_name):
-        flag = ''.join([image_name, ' --tags test'])
+        flag = ''.join([image_name, ' --tags fake 0.1'])
         self.assertTableStruct(
             self.listing_result(''.join(['image tags add ', flag])), [
                 'Field',

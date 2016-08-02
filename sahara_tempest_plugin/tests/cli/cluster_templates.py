@@ -10,7 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sahara_cli_tests import base
+from sahara_tempest_plugin.tests.cli import base
 from tempest.lib.common.utils import data_utils
 
 

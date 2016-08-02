@@ -10,14 +10,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sahara_cli_tests import base
+from sahara_tempest_plugin.tests.cli import base
 
 
-class SaharaJobTemplateCLITest(base.ClientTestBase):
+class SaharaJobTypeCLITest(base.ClientTestBase):
 
-    def openstack_job_template_list(self):
-        self.assertTableStruct(self.listing_result('job template list'), [
+    def openstack_job_type_list(self):
+        self.assertTableStruct(self.listing_result('job type list'), [
             'Name',
-            'Id',
-            'Type'
+            'Plugins'
         ])
