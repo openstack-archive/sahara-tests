@@ -65,9 +65,9 @@ edp_jobs_flow:
     - type: Spark
       main_lib:
         type: database
-        source: edp-examples/edp-spark/spark-example.jar
+        source: edp-examples/edp-spark/spark-pi.py
       configs:
-        edp.java.main_class: org.apache.spark.examples.SparkPi
+        edp.java.main_class: main
       args:
         - 4
   spark_wordcount:
