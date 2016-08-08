@@ -97,10 +97,11 @@ class BaseTestCase(base.BaseTestCase):
         # save the private key if retain_resources is specified
         # (useful for debugging purposes)
         if self.testcase['retain_resources'] or self.key is None:
-            private_key_file = os.path.join(self.results_dir, self.key_name +
-                                            '.key')
-            with open(private_key_file, 'a') as private_key_file:
+            private_key_file_name = os.path.join(self.results_dir,
+                                                 self.key_name + '.key')
+            with open(private_key_file_name, 'w+') as private_key_file:
                 private_key_file.write(self.private_key)
+            os.chmod(private_key_file_name, 0o600)
         self.plugin_opts = {
             'plugin_name': self.testcase['plugin_name'],
             'hadoop_version': self.testcase['plugin_version']
