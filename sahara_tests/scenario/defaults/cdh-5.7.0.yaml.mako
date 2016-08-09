@@ -39,7 +39,7 @@ clusters:
         is_proxy_gateway: ${is_proxy_gateway}
         auto_security_group: ${use_auto_security_group}
       - name: master-core
-        flavor: ${medium_flavor_id}
+        flavor: ${large_flavor_id}
         node_processes:
           - HDFS_NAMENODE
           - YARN_RESOURCEMANAGER
@@ -48,7 +48,7 @@ clusters:
           - ZOOKEEPER_SERVER
         auto_security_group: ${use_auto_security_group}
       - name: master-additional
-        flavor: ${medium_flavor_id}
+        flavor: ${large_flavor_id}
         node_processes:
           - OOZIE_SERVER
           - YARN_JOBHISTORY
