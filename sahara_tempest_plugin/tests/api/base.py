@@ -444,3 +444,22 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
             return cluster_template
         except (IndexError, KeyError):
             return None
+
+    @classmethod
+    def wait_for_resource_deletion(cls, resource_id, get_resource):
+        """Waits for a resource to be deleted.
+
+        The deletion of a resource depends on the client is_resource_deleted
+        implementation. This implementation will vary slightly from resource
+        to resource. get_resource param should be the function used to
+        retrieve that type of resource.
+        """
+        def is_resource_deleted(resource_id):
+            try:
+                get_resource(resource_id)
+            except lib_exc.NotFound:
+                return True
+            return False
+
+        cls.client.is_resource_deleted = is_resource_deleted
+        cls.client.wait_for_resource_deletion(resource_id)

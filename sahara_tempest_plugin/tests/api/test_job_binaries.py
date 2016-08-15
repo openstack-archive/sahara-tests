@@ -137,6 +137,11 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
         # delete the job binary by id
         self.client.delete_job_binary(binary_id)
+        self.wait_for_resource_deletion(binary_id, self.client.get_job_binary)
+
+        binaries = self.client.list_job_binaries()['binaries']
+        binaries_ids = [binary['id'] for binary in binaries]
+        self.assertNotIn(binary_id, binaries_ids)
 
     @test.attr(type='smoke')
     @test.idempotent_id('d5d47659-7e2c-4ea7-b292-5b3e559e8587')

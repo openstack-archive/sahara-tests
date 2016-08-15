@@ -121,4 +121,10 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
 
         # delete the cluster template by id
         self.client.delete_cluster_template(template_id)
-        # TODO(ylobankov): check that cluster template is really deleted
+        get_resource = self.client.get_cluster_template
+        self.wait_for_resource_deletion(template_id, get_resource)
+
+        templates = self.client.list_cluster_templates()['cluster_templates']
+        templates_info = [template['id']
+                          for template in templates]
+        self.assertNotIn(template_id, templates_info)
