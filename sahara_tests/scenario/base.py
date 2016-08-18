@@ -41,6 +41,7 @@ CHECK_OK_STATUS = "OK"
 CHECK_FAILED_STATUS = "FAILED"
 CLUSTER_STATUS_ACTIVE = "Active"
 CLUSTER_STATUS_ERROR = "Error"
+HEALTH_CHECKS = ["RED", "YELLOW", "GREEN"]
 
 
 def track_result(check_name, exit_with_error=True):
@@ -154,9 +155,8 @@ class BaseTestCase(base.BaseTestCase):
         cluster = self.sahara.get_cluster(self.cluster_id, show_progress=True)
         self._get_proxy(cluster)
         self.check_cinder()
-        if not getattr(cluster, "provision_progress", None):
-            return
-        self._check_event_logs(cluster)
+        if self.check_feature_available("provision_progress"):
+            self._check_event_logs(cluster)
 
     def _get_proxy(self, cluster):
         for ng in cluster.node_groups:
@@ -218,6 +218,7 @@ class BaseTestCase(base.BaseTestCase):
                 self._job_batching(pre_exec)
                 pre_exec = []
                 batching = batching_size
+        self.check_verification(self.cluster_id)
 
     def _job_batching(self, pre_exec):
         job_exec_ids = []
@@ -656,6 +657,41 @@ class BaseTestCase(base.BaseTestCase):
                 nodes_with_process.extend(nodegroup['instances'])
         return nodes_with_process
 
+    def _get_health_status(self, cluster):
+        try:
+            return cluster.verification['status']
+        except (AttributeError, KeyError):
+            return 'UNKNOWN'
+
+    def _poll_verification_status(self, cluster_id):
+        with fixtures.Timeout(
+                timeouts.Defaults.instance.timeout_poll_cluster_status,
+                gentle=True):
+            while True:
+                cluster = self.sahara.get_cluster(cluster_id)
+                status = self._get_health_status(cluster)
+                if status == 'UNKNOWN':
+                    print("Cluster verification did not start")
+                    break
+                if status in HEALTH_CHECKS:
+                    break
+                time.sleep(3)
+
+    @track_result("Check cluster verification")
+    def check_verification(self, cluster_id):
+        if self.check_feature_available("verification"):
+            self._poll_cluster_status(cluster_id)
+
+            # need to check if previous verification check is not
+            # in the status CHECKING
+            self._poll_verification_status(cluster_id)
+            self.sahara.start_cluster_verification(cluster_id)
+
+            # check if this verification check finished without errors
+            self._poll_verification_status(cluster_id)
+        else:
+            print("All tests for cluster verification were skipped")
+
     # client ops
 
     def __create_node_group_template(self, *args, **kwargs):
@@ -732,6 +768,12 @@ class BaseTestCase(base.BaseTestCase):
         if not self.testcase['retain_resources']:
             self.addCleanup(self.nova.delete_keypair, key)
         return key
+
+    def check_feature_available(self, feature_name):
+        if not getattr(self.sahara.get_cluster(self.cluster_id),
+                       feature_name, None):
+            return False
+        return True
 
     def tearDown(self):
         tbs = []
