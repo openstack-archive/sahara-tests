@@ -91,3 +91,8 @@ class JobTest(dp_base.BaseDataProcessingTest):
 
         # delete the job by id
         self.client.delete_job(job_id)
+        self.wait_for_resource_deletion(job_id, self.client.get_job)
+
+        jobs = self.client.list_jobs()['jobs']
+        jobs_ids = [job['id'] for job in jobs]
+        self.assertNotIn(job_id, jobs_ids)

@@ -159,3 +159,9 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
 
         # delete the data source by id
         self.client.delete_data_source(source_id)
+        self.wait_for_resource_deletion(source_id, self.client.get_data_source)
+
+        # assert data source does not exist anymore
+        sources = self.client.list_data_sources()['data_sources']
+        sources_ids = [source['id'] for source in sources]
+        self.assertNotIn(source_id, sources_ids)

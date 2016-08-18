@@ -88,3 +88,10 @@ class NodeGroupTemplateTest(dp_base.BaseDataProcessingTest):
 
         # delete the node group template by id
         self.client.delete_node_group_template(template_id)
+        get_resource = self.client.get_node_group_template
+        self.wait_for_resource_deletion(template_id, get_resource)
+
+        templates = self.client.list_node_group_templates()
+        templates = templates['node_group_templates']
+        templates_ids = [template['id'] for template in templates]
+        self.assertNotIn(template_id, templates_ids)
