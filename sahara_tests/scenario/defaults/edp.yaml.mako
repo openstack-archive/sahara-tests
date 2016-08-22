@@ -3,16 +3,16 @@ edp_jobs_flow:
     - type: Pig
       input_datasource:
         type: swift
-        source: edp-examples/edp-pig/trim-spaces/data/input
+        source: edp-examples/edp-pig/cleanup-string/data/input
       output_datasource:
         type: swift
         destination: edp-output
       main_lib:
         type: swift
-        source: edp-examples/edp-pig/trim-spaces/example.pig
+        source: edp-examples/edp-pig/cleanup-string/example.pig
       additional_libs:
         - type: swift
-          source: edp-examples/edp-pig/trim-spaces/udf.jar
+          source: edp-examples/edp-pig/cleanup-string/edp-pig-udf-stringcleaner.jar
   mapreduce_job:
     - type: MapReduce
       input_datasource:
@@ -89,16 +89,16 @@ edp_jobs_flow:
     - type: Pig
       input_datasource:
         type: maprfs
-        source: edp-examples/edp-pig/trim-spaces/data/input
+        source: edp-examples/edp-pig/cleanup-string/data/input
       output_datasource:
         type: maprfs
         destination: /user/hadoop/edp-output
       main_lib:
         type: swift
-        source: edp-examples/edp-pig/trim-spaces/example.pig
+        source: edp-examples/edp-pig/cleanup-string/example.pig
       additional_libs:
         - type: swift
-          source: edp-examples/edp-pig/trim-spaces/udf.jar
+          source: edp-examples/edp-pig/cleanup-string/edp-pig-udf-stringcleaner.jar
   mapr:
     - type: MapReduce
       input_datasource:

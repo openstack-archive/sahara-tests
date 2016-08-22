@@ -105,12 +105,12 @@ This example assumes the following:
 3. In the demo user's project, the following files are stored in swift in the
    container ``edp-examples``, as follows:
 
-   * The file at ``edp-examples/edp-pig/trim-spaces/example.pig`` is stored
-     at path ``swift://edp-examples/edp-pig/trim-spaces/example.pig``.
-   * The file at ``edp-pig/trim-spaces/udf.jar`` is stored at
-     path ``swift://edp-examples/edp-pig/trim-spaces/udf.jar``.
-   * The file at ``edp-examples/edp-pig/trim-spaces/data/input`` is stored at
-     path ``swift://edp-examples/edp-pig/trim-spaces/data/input``.
+   * The file at ``edp-examples/edp-pig/cleanup-string/example.pig`` is stored
+     at path ``swift://edp-examples/edp-pig/cleanup-string/example.pig``.
+   * The file at ``edp-pig/cleanup-string/edp-pig-udf-stringcleaner.jar`` is stored at
+     path ``swift://edp-examples/edp-pig/cleanup-string/edp-pig-udf-stringcleaner.jar``.
+   * The file at ``edp-examples/edp-pig/cleanup-string/data/input`` is stored at
+     path ``swift://edp-examples/edp-pig/cleanup-string/data/input``.
 
 Steps
 -----
