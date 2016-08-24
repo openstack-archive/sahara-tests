@@ -15,6 +15,14 @@
 
 from oslo_config import cfg
 
+service_available_group = cfg.OptGroup(name="service_available",
+                                       title="Available OpenStack Services")
+
+ServiceAvailableGroup = [
+    cfg.BoolOpt("sahara",
+                default=True,
+                help="Whether or not sahara is expected to be available"),
+]
 
 data_processing_group = cfg.OptGroup(name="data-processing",
                                      title="Data Processing options")
