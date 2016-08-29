@@ -22,7 +22,7 @@ from tempest.lib.common.utils import data_utils
 from tempest.lib import decorators
 from tempest import test
 
-from sahara.tests.tempest.scenario.data_processing.client_tests import base
+from sahara_tempest_plugin.tests.clients import base
 
 
 TEMPEST_CONF = config.CONF
@@ -31,11 +31,11 @@ TEMPEST_CONF = config.CONF
 class JobExecutionTest(base.BaseDataProcessingTest):
     def _check_register_image(self, image_id):
         self.client.images.update_image(
-            image_id, TEMPEST_CONF.scenario.ssh_user, '')
+            image_id, TEMPEST_CONF.data_processing.test_ssh_user, '')
         reg_image = self.client.images.get(image_id)
 
         self.assertDictContainsSubset(
-            {'_sahara_username': TEMPEST_CONF.scenario.ssh_user},
+            {'_sahara_username': TEMPEST_CONF.data_processing.test_ssh_user},
             reg_image.metadata)
 
     def _check_image_get(self, image_id):
@@ -106,7 +106,7 @@ class JobExecutionTest(base.BaseDataProcessingTest):
             'plugin_name': 'fake',
             'hadoop_version': '0.1',
             'cluster_template_id': cluster_template.id,
-            'default_image_id': TEMPEST_CONF.data_processing.fake_image_id
+            'default_image_id': self.test_image_id
         }
 
         # create cluster
@@ -286,7 +286,7 @@ class JobExecutionTest(base.BaseDataProcessingTest):
     @decorators.skip_because(bug="1430252")
     @test.attr(type='slow')
     def test_job_executions(self):
-        image_id = TEMPEST_CONF.data_processing.fake_image_id
+        image_id = self.test_image_id
         self._check_register_image(image_id)
         self._check_image_get(image_id)
         self._check_image_list(image_id)
@@ -311,7 +311,7 @@ class JobExecutionTest(base.BaseDataProcessingTest):
     @classmethod
     def tearDownClass(cls):
         image_list = cls.client.images.list()
-        image_id = TEMPEST_CONF.data_processing.fake_image_id
+        image_id = cls.test_image_id
         if image_id in [image.id for image in image_list]:
             cls.client.images.unregister_image(image_id)
         super(JobExecutionTest, cls).tearDownClass()

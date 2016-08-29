@@ -40,6 +40,10 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
                                       sahara_config.DataProcessingGroup)
         except cfg.DuplicateOptError:
             pass
+
+        conf.register_opts(sahara_config.DataProcessingAdditionalGroup,
+                           sahara_config.data_processing_group.name)
+
         try:
             config.register_opt_group(conf, sahara_config.
                                       data_processing_feature_group,

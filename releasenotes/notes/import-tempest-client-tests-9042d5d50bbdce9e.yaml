@@ -1,0 +1,9 @@
+---
+prelude: >
+    Client tests have been imported from the Sahara repository.
+features:
+  - The tests for the official Python clients have been moved here
+    from the Sahara repository. They are based on the Tempest
+    libraries even they do not follow the Tempest guidelines
+    (as they need to test the Python clients, they do not use
+    the native Tempest clients).

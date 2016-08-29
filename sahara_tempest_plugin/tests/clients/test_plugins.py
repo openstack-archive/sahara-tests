@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sahara.tests.tempest.scenario.data_processing.client_tests import base
+from sahara_tempest_plugin.tests.clients import base
 
 
 class PluginsTest(base.BaseDataProcessingTest):

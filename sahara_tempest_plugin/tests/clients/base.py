@@ -19,7 +19,8 @@ from oslo_utils import timeutils
 from saharaclient.api import base as sab
 from saharaclient import client as sahara_client
 from tempest import config
-from tempest import exceptions
+from tempest import exceptions as tempest_exc
+from tempest.lib import exceptions
 from tempest.scenario import manager
 
 
@@ -33,6 +34,7 @@ LOG = logging.getLogger(__name__)
 
 
 class BaseDataProcessingTest(manager.ScenarioTest):
+
     @classmethod
     def resource_setup(cls):
         cls.set_network_resources()
@@ -58,9 +60,17 @@ class BaseDataProcessingTest(manager.ScenarioTest):
         cls.container_client = cls.os_primary.container_client
         cls.networks_client = cls.os_primary.compute_networks_client
 
-        cls.floating_ip_pool = TEMPEST_CONF.network.floating_network_name
-        if TEMPEST_CONF.service_available.neutron:
-            cls.floating_ip_pool = cls.get_floating_ip_pool_id_for_neutron()
+        if TEMPEST_CONF.network.floating_network_name:
+            cls.floating_ip_pool = TEMPEST_CONF.network.floating_network_name
+            if TEMPEST_CONF.service_available.neutron:
+                cls.floating_ip_pool = \
+                    cls.get_floating_ip_pool_id_for_neutron()
+        else:
+            cls.floating_ip_pool = TEMPEST_CONF.network.public_network_id
+
+        test_image_name = TEMPEST_CONF.data_processing.test_image_name
+
+        cls.test_image_id = cls.get_image_id(test_image_name)
 
         cls.worker_template = {
             'description': 'Test node group template',
@@ -141,6 +151,14 @@ class BaseDataProcessingTest(manager.ScenarioTest):
             if network['label'] == network_name:
                 return network['id']
         return None
+
+    @classmethod
+    def get_image_id(cls, image_name):
+        for image in cls.image_client.list_images()['images']:
+            if image['name'] == image_name:
+                return image['id']
+        raise exceptions.NotFound('Image \'%s\' not found in the image list.'
+                                  % (image_name))
 
     def create_node_group_template(self, name, **kwargs):
 
@@ -225,7 +243,7 @@ class BaseDataProcessingTest(manager.ScenarioTest):
             if cluster.status == CLUSTER_STATUS_ACTIVE:
                 return
             if cluster.status == CLUSTER_STATUS_ERROR:
-                raise exceptions.BuildErrorException(
+                raise tempest_exc.BuildErrorException(
                     'Cluster failed to build and is in %s status.' %
                     CLUSTER_STATUS_ERROR)
             time.sleep(TEMPEST_CONF.data_processing.request_timeout)

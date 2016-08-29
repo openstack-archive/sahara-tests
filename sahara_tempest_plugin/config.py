@@ -31,6 +31,29 @@ DataProcessingGroup = [
                     "service."),
 ]
 
+DataProcessingAdditionalGroup = [
+    cfg.IntOpt('cluster_timeout',
+               default=3600,
+               help='Timeout (in seconds) to wait for cluster deployment.'),
+    cfg.IntOpt('request_timeout',
+               default=10,
+               help='Timeout (in seconds) between status checks.'),
+    # FIXME: the default values here are an hack needed until it is possible
+    # to pass values from the job to tempest.conf (or a devstack plugin is
+    # written).
+    cfg.StrOpt('test_image_name',
+               default='xenial-server-cloudimg-amd64-disk1',
+               help='name of an image which is used for cluster creation.'),
+    cfg.StrOpt('test_ssh_user',
+               default='ubuntu',
+               help='username used to access the test image.'),
+    cfg.StrOpt('saharaclient_version',
+               default='1.1',
+               help='Version of python-saharaclient'),
+    cfg.StrOpt('sahara_url',
+               help='Sahara url as http://ip:port/api_version/tenant_id'),
+]
+
 
 data_processing_feature_group = cfg.OptGroup(
     name="data-processing-feature-enabled",

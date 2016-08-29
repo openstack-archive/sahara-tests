@@ -14,7 +14,7 @@
 
 from tempest.lib.common.utils import data_utils
 
-from sahara.tests.tempest.scenario.data_processing.client_tests import base
+from sahara_tempest_plugin.tests.clients import base
 
 
 class JobBinariesTest(base.BaseDataProcessingTest):
