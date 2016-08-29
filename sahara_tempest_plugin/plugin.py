@@ -67,3 +67,23 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
             (sahara_config.service_available_group.name,
              sahara_config.ServiceAvailableGroup)
         ]
+
+    def get_service_clients(self):
+        # Ignore the ArgsAlreadyParsed error: it means that
+        # the same content is (still) defined in Tempest
+        try:
+            data_processing_config = (
+                config.service_client_config('data-processing'))
+        except cfg.ArgsAlreadyParsedError:
+            # the service name must be returned with the other params
+            data_processing_config = {'service': 'data-processing'}
+
+        params = {
+            'name': 'data_processing',
+            'service_version': 'data_processing.v1_1',
+            'module_path':
+                'sahara_tempest_plugin.services.data_processing.v1_1',
+            'client_names': ['DataProcessingClient']
+        }
+        params.update(data_processing_config)
+        return [params]

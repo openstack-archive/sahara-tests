@@ -1,0 +1,8 @@
+---
+prelude: >
+    Sahara Tests plugin now uses tempest stable interface
+other:
+  - Sahara Tests plugin is adapted to use in-tree client,
+    which was migrated from Tempest code. Also, there's a
+    new stable interface for Service Clients in Tempest, so
+    this change adapts the code to use it.

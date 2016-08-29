@@ -22,6 +22,7 @@ from tempest import exceptions
 from tempest.lib import exceptions as lib_exc
 import tempest.test
 
+from sahara_tempest_plugin import clients
 
 CONF = config.CONF
 
@@ -190,6 +191,8 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
 
     credentials = ['primary']
 
+    client_manager = clients.Manager
+
     @classmethod
     def skip_checks(cls):
         super(BaseDataProcessingTest, cls).skip_checks()
@@ -200,7 +203,7 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
     @classmethod
     def setup_clients(cls):
         super(BaseDataProcessingTest, cls).setup_clients()
-        cls.client = cls.os.data_processing_client
+        cls.client = cls.os.data_processing.DataProcessingClient()
 
     @classmethod
     def resource_setup(cls):
