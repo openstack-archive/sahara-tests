@@ -3,7 +3,7 @@
 clusters:
   - plugin_name: ambari
     plugin_version: '2.3'
-    image: ${ambari_2_1_image}
+    image: ${ambari_2_2_image}
     node_group_templates:
       - name: master
         flavor: ${medium_flavor_id}
@@ -62,10 +62,6 @@ clusters:
       - operation: add
         node_group: worker
         size: 1
-    scenario:
-      - run_jobs
-      - scale
-      - run_jobs
     edp_jobs_flow:
       - java_job
       - spark_pi
