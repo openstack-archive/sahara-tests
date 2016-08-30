@@ -283,7 +283,7 @@ class BaseDataProcessingTest(manager.ScenarioTest):
             try:
                 resource_client.get(resource_id)
             except sab.APIException as sahara_api_exception:
-                if 'not found' in sahara_api_exception.message:
+                if 'not found' in str(sahara_api_exception):
                     return
                 raise sahara_api_exception
 
