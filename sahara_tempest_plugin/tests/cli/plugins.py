@@ -27,7 +27,7 @@ class SaharaPluginCLITest(base.ClientTestBase):
         list_plugin = self.listing_result('plugin list')
         name = [p['Name'] for p in list_plugin]
         if len(name) == 0:
-            raise self.SkipException('No plugins to show')
+            raise self.skipException('No plugins to show')
         self.assertTableStruct(
             self.listing_result(''.join(['plugin show ', name[0]])), [
                 'Field',
@@ -39,7 +39,7 @@ class SaharaPluginCLITest(base.ClientTestBase):
         name = [p['Name'] for p in list_plugin]
         version = [p['Versions'] for p in list_plugin]
         if len(name) == 0:
-            raise self.SkipException('No plugin to get configs')
+            raise self.skipException('No plugin to get configs')
         plugin_name = name[0]
         self.openstack('dataprocessing plugin configs get',
                        params=''.join([plugin_name, ' ',
