@@ -16,6 +16,8 @@ import time
 
 from oslo_log import log as logging
 from oslo_utils import timeutils
+from keystoneauth1.identity import v3
+from keystoneauth1 import session
 from saharaclient.api import base as sab
 from saharaclient import client as sahara_client
 from tempest import config
@@ -46,15 +48,20 @@ class BaseDataProcessingTest(manager.ScenarioTest):
 
         credentials = cls.os_primary.credentials
 
+        auth = v3.Password(auth_url=auth_url.replace('/v2.0', '/v3'),
+                           username=credentials.username,
+                           password=credentials.password,
+                           project_name=credentials.tenant_name,
+                           user_domain_name='default',
+                           project_domain_name='default')
+
+        ses = session.Session(auth=auth)
+
         cls.client = sahara_client.Client(
             TEMPEST_CONF.data_processing.saharaclient_version,
-            credentials.username,
-            credentials.password,
-            project_name=credentials.tenant_name,
-            endpoint_type=endpoint_type,
+            session=ses,
             service_type=catalog_type,
-            auth_url=auth_url,
-            sahara_url=TEMPEST_CONF.data_processing.sahara_url)
+            endpoint_type=endpoint_type)
 
         cls.object_client = cls.os_primary.object_client
         cls.container_client = cls.os_primary.container_client
