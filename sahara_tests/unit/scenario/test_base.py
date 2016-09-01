@@ -333,8 +333,8 @@ class TestBase(testtools.TestCase):
     @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     def test__create_swift_data(self, mock_saharaclient, mock_swiftclient):
         self.base_scenario._init_clients()
-        self.assertTrue('swift://sahara-tests-' in
-                        self.base_scenario._create_swift_data())
+        self.assertIn('swift://sahara-tests-',
+                      self.base_scenario._create_swift_data())
 
     @mock.patch('swiftclient.client.Connection.put_container',
                 return_value=None)
@@ -342,8 +342,8 @@ class TestBase(testtools.TestCase):
     def test__get_swift_container(self, mock_saharaclient,
                                   mock_swiftclient):
         self.base_scenario._init_clients()
-        self.assertTrue('sahara-tests-' in
-                        self.base_scenario._get_swift_container())
+        self.assertIn('sahara-tests-',
+                      self.base_scenario._get_swift_container())
 
     @mock.patch('saharaclient.api.base.ResourceManager._create',
                 return_value=FakeResponse(set_id='id_for_datasource'))
@@ -602,6 +602,6 @@ class TestBase(testtools.TestCase):
                             'management_ip': 'test_ip'
                         }]
                 }])):
-            self.assertTrue('/user/test/data-' in (
+            self.assertIn('/user/test/data-', (
                 self.base_scenario._create_dfs_data(input_path, None,
                                                     'test', 'hdfs')))
