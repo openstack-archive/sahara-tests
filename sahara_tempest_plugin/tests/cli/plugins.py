@@ -13,6 +13,9 @@
 from os import path
 from os import remove
 import re
+import tempfile
+
+from oslo_serialization import jsonutils
 
 from sahara_tempest_plugin.tests.cli import base
 
@@ -55,3 +58,33 @@ class SaharaPluginCLITest(base.ClientTestBase):
         result = path.exists(configs_file)
         self.assertTrue(result)
         remove(configs_file)
+
+    def openstack_plugin_update(self):
+        # check plugin list and 'fake' is available
+        list_plugin = self.listing_result('plugin list')
+        name = [p['Name'] for p in list_plugin]
+        if len(name) == 0:
+            raise self.skipException('No plugin to update')
+        if 'fake' not in name:
+            raise self.skipException('fake plugin is unavailable')
+
+        # update value of "hidden:status" to False
+        update_dict = {'plugin_labels': {'hidden': {'status': False}}}
+        self._update_with_json_file(update_dict)
+
+        # update value and verified it
+        update_dict = {'plugin_labels': {'hidden': {'status': True}}}
+        update_info = self._update_with_json_file(update_dict)
+        update_dict = jsonutils.loads(update_info)
+        self.assertTrue(update_dict['Plugin: hidden'])
+
+    def _update_with_json_file(self, update_dict):
+        update_info = jsonutils.dumps(update_dict)
+        tmp_file = tempfile.mkstemp(suffix='.json')[1]
+        with open(tmp_file, 'w+') as fd:
+            fd.write(update_info)
+        update_result = self.openstack('dataprocessing plugin '
+                                       'update -f json fake',
+                                       params=tmp_file)
+        remove(tmp_file)
+        return update_result

@@ -42,6 +42,8 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_plugin_list()
         self.openstack_plugin_show()
         self.openstack_plugin_configs_get()
+        if TEMPEST_CONF.data_processing.plugin_update_support:
+            self.openstack_plugin_update()
 
     def test_node_group_cli(self):
         master_ngt = self.openstack_node_group_template_create('master', '4')

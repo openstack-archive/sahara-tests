@@ -60,6 +60,10 @@ DataProcessingAdditionalGroup = [
                help='Version of python-saharaclient'),
     cfg.StrOpt('sahara_url',
                help='Sahara url as http://ip:port/api_version/tenant_id'),
+    # TODO(shuyingya): Delete this option once the Mitaka release is EOL.
+    cfg.BoolOpt('plugin_update_support',
+                default=True,
+                help='Does sahara support plugin update?'),
 ]
 
 
