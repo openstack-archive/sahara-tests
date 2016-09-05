@@ -36,6 +36,12 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
         # is (still) defined in Tempest
         try:
             config.register_opt_group(conf,
+                                      sahara_config.service_available_group,
+                                      sahara_config.ServiceAvailableGroup)
+        except cfg.DuplicateOptError:
+            pass
+        try:
+            config.register_opt_group(conf,
                                       sahara_config.data_processing_group,
                                       sahara_config.DataProcessingGroup)
         except cfg.DuplicateOptError:
@@ -53,7 +59,11 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
             pass
 
     def get_opt_lists(self):
-        return [(sahara_config.data_processing_group.name,
-                 sahara_config.DataProcessingGroup),
-                (sahara_config.data_processing_feature_group.name,
-                 sahara_config.DataProcessingFeaturesGroup)]
+        return [
+            (sahara_config.data_processing_group.name,
+             sahara_config.DataProcessingGroup),
+            (sahara_config.data_processing_feature_group.name,
+             sahara_config.DataProcessingFeaturesGroup),
+            (sahara_config.service_available_group.name,
+             sahara_config.ServiceAvailableGroup)
+        ]
