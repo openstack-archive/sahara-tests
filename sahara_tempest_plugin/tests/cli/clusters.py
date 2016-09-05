@@ -12,6 +12,11 @@
 
 from sahara_tempest_plugin.tests.cli import base
 from tempest.lib.common.utils import data_utils
+import fixtures
+
+VERIF_RESULT = '''\
+Cluster "%s" health verification has been started.
+'''
 
 
 class SaharaClusterCLITest(base.ClientTestBase):
@@ -39,16 +44,52 @@ class SaharaClusterCLITest(base.ClientTestBase):
                 'Field',
                 'Value'
             ])
+        self._poll_cluster_status(cluster_name)
         return cluster_name
 
     def openstack_cluster_delete(self, cluster_name):
-        self.assertTableStruct(
-            self.listing_result(''.join(['cluster delete ', cluster_name])), [
-                'Field',
-                'Value'
-            ])
+        delete_cluster = self.listing_result(''.join(['cluster delete ',
+                                                      cluster_name]))
+        self.assertTableStruct(delete_cluster, [
+            'Field',
+            'Value'
+        ])
 
     def openstack_cluster_show(self, cluster_name):
         self.find_in_listing(
             self.listing_result(''.join(['cluster show ', cluster_name])),
             cluster_name)
+
+    def openstack_cluster_update(self, cluster_name):
+        self.assertTableStruct(
+            self.listing_result(''.join(['cluster update ',
+                                         '--description cli-tests ',
+                                         cluster_name])), [
+                'Field',
+                'Value'
+            ])
+
+    def openstack_cluster_verification_show(self, cluster_name):
+        self.assertTableStruct(
+            self.listing_result(''.join(['cluster verification --show ',
+                                         cluster_name])), [
+                'Field',
+                'Value'
+            ])
+
+    def openstack_cluster_verification_start(self, cluster_name):
+        result = self.openstack('dataprocessing cluster verification --start',
+                                params=cluster_name)
+        expected_result = VERIF_RESULT % cluster_name
+        self.assertEqual(result, expected_result)
+
+    def openstack_cluster_scale(self, cluster_name, ng_worker):
+        with fixtures.Timeout(300, gentle=True):
+            scale_cluster = self.listing_result(
+                ''.join(['cluster scale --instances ', ng_worker,
+                         ':2 --wait ', cluster_name]))
+            self.assertTableStruct(scale_cluster, [
+                'Field',
+                'Value'
+            ])
+        self._poll_cluster_status(cluster_name)

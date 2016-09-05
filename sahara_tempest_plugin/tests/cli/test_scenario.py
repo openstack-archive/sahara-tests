@@ -10,7 +10,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import time
 from sahara_tempest_plugin.tests.cli import clusters
 from sahara_tempest_plugin.tests.cli import cluster_templates
 from sahara_tempest_plugin.tests.cli import images
@@ -21,7 +20,6 @@ from sahara_tempest_plugin.tests.cli import jobs
 from sahara_tempest_plugin.tests.cli import job_templates
 from sahara_tempest_plugin.tests.cli import data_sources
 from sahara_tempest_plugin.tests.cli import job_types
-from tempest.test import BaseTestCase
 
 
 class Scenario(images.SaharaImageCLITest,
@@ -38,15 +36,18 @@ class Scenario(images.SaharaImageCLITest,
     def test_plugin_cli(self):
         self.openstack_plugin_list()
         self.openstack_plugin_show()
+        self.openstack_plugin_configs_get()
 
     def test_node_group_cli(self):
         master_ngt = self.openstack_node_group_template_create('master', '4')
         worker_ngt = self.openstack_node_group_template_create('worker', '3')
         self.openstack_node_group_template_list()
-        self.openstack_node_group_template_update(master_ngt)
-        self.openstack_node_group_template_show(master_ngt)
-        self.openstack_node_group_template_delete(master_ngt)
+        new_master_ngt = self.openstack_node_group_template_update(master_ngt)
+        self.openstack_node_group_template_show(new_master_ngt)
+        self.openstack_node_group_template_delete(new_master_ngt)
         self.openstack_node_group_template_delete(worker_ngt)
+        self.wait_for_resource_deletion(new_master_ngt, 'node group template')
+        self.wait_for_resource_deletion(worker_ngt, 'node group template')
 
     def test_cluster_template_cli(self):
         ng_master = (
@@ -57,14 +58,21 @@ class Scenario(images.SaharaImageCLITest,
             self.openstack_cluster_template_create(ng_master, ng_worker))
         self.openstack_cluster_template_list()
         self.openstack_cluster_template_show(cluster_template_name)
-        self.openstack_cluster_template_update(cluster_template_name)
-        self.openstack_cluster_template_delete(cluster_template_name)
+        new_cluster_template_name = self.openstack_cluster_template_update(
+            cluster_template_name)
+        self.openstack_cluster_template_delete(new_cluster_template_name)
+        self.wait_for_resource_deletion(new_cluster_template_name, 'cluster '
+                                                                   'template')
         self.openstack_node_group_template_delete(ng_master)
         self.openstack_node_group_template_delete(ng_worker)
+        self.wait_for_resource_deletion(ng_master, 'node group template')
+        self.wait_for_resource_deletion(ng_worker, 'node group template')
 
     def test_cluster_cli(self):
         image_name = self.openstack_image_register(
             'xenial-server-cloudimg-amd64-disk1')
+        self.openstack_image_tags_set(image_name)
+        self.openstack_image_tags_remove(image_name)
         self.openstack_image_tags_add(image_name)
         self.openstack_image_show(image_name)
         self.openstack_image_list()
@@ -86,13 +94,19 @@ class Scenario(images.SaharaImageCLITest,
             self.openstack_cluster_create(cluster_template_name, image_name))
         self.openstack_cluster_list()
         self.openstack_cluster_show(cluster_name)
+        self.openstack_cluster_update(cluster_name)
+        self.openstack_cluster_verification_show(cluster_name)
+        self.openstack_cluster_verification_start(cluster_name)
+        self.openstack_cluster_scale(cluster_name, ng_worker)
         self.openstack_cluster_delete(cluster_name)
-        # FIXME: this should be replaced by a proper busy waiting
-        time.sleep(300)
+        self.wait_for_resource_deletion(cluster_name, 'cluster')
         self.openstack_cluster_template_delete(cluster_template_name)
+        self.wait_for_resource_deletion(cluster_template_name, 'cluster '
+                                                               'template')
         self.openstack_node_group_template_delete(ng_master)
         self.openstack_node_group_template_delete(ng_worker)
-        self.openstack_image_tags_remove(image_name)
+        self.wait_for_resource_deletion(ng_master, 'node group template')
+        self.wait_for_resource_deletion(ng_worker, 'node group template')
         self.openstack_image_unregister(image_name)
 
     def test_job_binary_cli(self):

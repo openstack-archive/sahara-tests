@@ -54,12 +54,16 @@ class SaharaNodeGroupCLITest(base.ClientTestBase):
             node_group_name)
 
     def openstack_node_group_template_update(self, node_group_name):
+        new_node_group_name = ''.join([node_group_name, '1'])
         self.assertTableStruct(
             self.listing_result(
-                ''.join(['node group template update ', node_group_name])), [
+                ''.join(['node group template update --name ',
+                         new_node_group_name, ' ',
+                         node_group_name])), [
                 'Field',
                 'Value'
             ])
+        return new_node_group_name
 
     def openstack_node_group_template_delete(self, node_group_name):
         self.check_if_delete('node group template', node_group_name)

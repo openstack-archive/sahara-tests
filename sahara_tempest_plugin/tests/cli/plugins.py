@@ -10,6 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from os import path
+
 from sahara_tempest_plugin.tests.cli import base
 
 
@@ -31,3 +33,16 @@ class SaharaPluginCLITest(base.ClientTestBase):
                 'Field',
                 'Value'
             ])
+
+    def openstack_plugin_configs_get(self):
+        list_plugin = self.listing_result('plugin list')
+        name = [p['Name'] for p in list_plugin]
+        version = [p['Versions'] for p in list_plugin]
+        if len(name) == 0:
+            raise self.SkipException('No plugin to get configs')
+        plugin_name = name[0]
+        self.openstack('dataprocessing plugin configs get',
+                       params=''.join([plugin_name, ' ',
+                                       version[0]]))
+        result = path.exists(plugin_name)
+        self.assertTrue(result)
