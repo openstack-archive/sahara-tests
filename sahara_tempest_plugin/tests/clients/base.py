@@ -14,7 +14,6 @@
 
 import time
 
-from oslo_log import log as logging
 from oslo_utils import timeutils
 from saharaclient.api import base as sab
 from saharaclient import client as sahara_client
@@ -29,8 +28,6 @@ TEMPEST_CONF = config.CONF
 # cluster status
 CLUSTER_STATUS_ACTIVE = "Active"
 CLUSTER_STATUS_ERROR = "Error"
-
-LOG = logging.getLogger(__name__)
 
 
 class BaseDataProcessingTest(manager.ScenarioTest):
