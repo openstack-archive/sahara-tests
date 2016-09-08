@@ -1,0 +1,8 @@
+---
+prelude: >
+    Tests no longer depend on fake plugin to run
+other:
+  - Adapt Sahara Tests code to stop relying only on the fake
+    plugin and use the default plugin available. However, it's
+    worth noting that - if available - the fake plugin will
+    be used.

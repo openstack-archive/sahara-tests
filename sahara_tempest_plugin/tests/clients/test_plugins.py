@@ -20,7 +20,8 @@ class PluginsTest(base.BaseDataProcessingTest):
     def _check_plugins_list(self):
         plugins = self.client.plugins.list()
         plugins_names = [plugin.name for plugin in plugins]
-        self.assertIn('fake', plugins_names)
+        plugin = self.get_plugin()
+        self.assertIn(plugin.name, plugins_names)
 
         return plugins_names
 

@@ -24,6 +24,7 @@ from tempest import exceptions as tempest_exc
 from tempest.lib import exceptions
 from tempest.scenario import manager
 
+from sahara_tempest_plugin.common import plugin_utils
 
 TEMPEST_CONF = config.CONF
 
@@ -78,36 +79,23 @@ class BaseDataProcessingTest(manager.ScenarioTest):
 
         cls.test_image_id = cls.get_image_id(test_image_name)
 
-        cls.worker_template = {
-            'description': 'Test node group template',
-            'plugin_name': 'fake',
-            'hadoop_version': '0.1',
-            'node_processes': [
-                'datanode',
-                'tasktracker'
-            ],
-            'flavor_id': TEMPEST_CONF.compute.flavor_ref,
-            'floating_ip_pool': cls.floating_ip_pool
-        }
+        default_plugin = cls.get_plugin()
+        plugin_dict = default_plugin.to_dict()
+        default_version = plugin_utils.get_default_version(plugin_dict)
 
-        cls.master_template = {
-            'description': 'Test node group template',
-            'plugin_name': 'fake',
-            'hadoop_version': '0.1',
-            'node_processes': [
-                'namenode',
-                'jobtracker'
-            ],
-            'flavor_id': TEMPEST_CONF.compute.flavor_ref,
-            'floating_ip_pool': cls.floating_ip_pool,
-            'auto_security_group': True
-        }
+        cls.worker_template = (
+            plugin_utils.get_node_group_template('worker1',
+                                                 default_version,
+                                                 cls.floating_ip_pool))
 
-        cls.cluster_template = {
-            'description': 'Test cluster template',
-            'plugin_name': 'fake',
-            'hadoop_version': '0.1'
-        }
+        cls.master_template = (
+            plugin_utils.get_node_group_template('master1',
+                                                 default_version,
+                                                 cls.floating_ip_pool))
+
+        cls.cluster_template = (
+            plugin_utils.get_cluster_template(
+                default_version=default_version))
 
         cls.swift_data_source_with_creds = {
             'url': 'swift://sahara-container/input-source',
@@ -165,6 +153,15 @@ class BaseDataProcessingTest(manager.ScenarioTest):
                 return image['id']
         raise exceptions.NotFound('Image \'%s\' not found in the image list.'
                                   % (image_name))
+
+    @classmethod
+    def get_plugin(cls):
+        plugins = cls.client.plugins.list()
+        plugin_name = plugin_utils.get_default_plugin()
+        for plugin in plugins:
+            if plugin.name == plugin_name:
+                return plugin
+        raise exceptions.NotFound('No available plugins for testing')
 
     def create_node_group_template(self, name, **kwargs):
 
