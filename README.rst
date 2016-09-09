@@ -14,6 +14,7 @@ In sahara_tests folder we have next tools:
     - Sahara tempest tests
 
 * License: Apache License, Version 2.0
+* `Sahara-scenario documentation`_
 * `PyPi`_ - package installation
 * `Launchpad project`_ - release management
 * `Blueprints`_ - feature specifications
@@ -21,6 +22,7 @@ In sahara_tests folder we have next tools:
 * `Specs`_
 * `Release notes`_
 
+.. _Sahara-scenario documentation: http://docs.openstack.org/developer/sahara-tests/
 .. _PyPi: https://pypi.python.org/pypi/sahara-tests
 .. _Launchpad project: https://launchpad.net/sahara-tests
 .. _Blueprints: https://blueprints.launchpad.net/sahara-tests
