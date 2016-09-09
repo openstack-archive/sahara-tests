@@ -32,6 +32,8 @@ CLUSTER_STATUS_ERROR = "Error"
 
 class BaseDataProcessingTest(manager.ScenarioTest):
 
+    credentials = ('admin', 'primary')
+
     @classmethod
     def resource_setup(cls):
         cls.set_network_resources()
@@ -41,7 +43,7 @@ class BaseDataProcessingTest(manager.ScenarioTest):
         catalog_type = TEMPEST_CONF.data_processing.catalog_type
         auth_url = TEMPEST_CONF.identity.uri
 
-        credentials = cls.os_primary.credentials
+        credentials = cls.os_admin.credentials
 
         cls.client = sahara_client.Client(
             TEMPEST_CONF.data_processing.saharaclient_version,
