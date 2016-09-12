@@ -20,3 +20,14 @@ class SaharaJobTypeCLITest(base.ClientTestBase):
             'Name',
             'Plugins'
         ])
+
+    def openstack_job_type_configs_get(self):
+        list_job_type = self.listing_result('job type list')
+        job_type_names = [p['Name'] for p in list_job_type]
+        if len(job_type_names) == 0:
+            raise self.skipException('No job types to get configs')
+        self.assertTableStruct(self.listing_result(
+            ''.join(['job type configs get ', job_type_names[0]])), [
+            'Field',
+            'Value'
+        ])
