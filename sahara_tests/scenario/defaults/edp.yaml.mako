@@ -85,6 +85,7 @@ edp_jobs_flow:
         fs.swift.service.sahara.password: ${os_password}
       args:
         - '{input_datasource}'
+        - '{output_datasource}'
   mapr_pig_job:
     - type: Pig
       input_datasource:
