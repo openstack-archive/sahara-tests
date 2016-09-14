@@ -11,7 +11,6 @@ Details
 
 Key values (mako variables):
 
-* ${OS_USERNAME}, ${OS_PASSWORD}, ${OS_TENANT_NAME}, ${OS_AUTH_URL} - OpenStack credentials and access details
 * ${network_type} - network type (neutron or nova-network);
 * ${network_private_name}, ${network_public_name} - names of private (tenant) and public networks;
 * ${cluster_name} - name of cluster, which generating from $HOST-$ZUUL_CHANGE-$CLUSTER_HASH. Where:
