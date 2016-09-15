@@ -23,14 +23,14 @@ class SaharaImageCLITest(base.ClientTestBase):
             'Tags'
         ])
 
-    def openstack_image_register(self, name_to_register):
+    def openstack_image_register(self, name_to_register, username):
         images_list = self.openstack('image list')
         images = self.parser.listing(images_list)
         images_name = [p['Name'] for p in images]
         flag = None
         for image_name in images_name:
             if image_name == name_to_register:
-                flag = ''.join([' --username ubuntu ', image_name])
+                flag = (' --username %s %s' % (username, image_name))
         if flag is None:
             raise self.skipException('No available image for testing')
         self.assertTableStruct(

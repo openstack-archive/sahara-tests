@@ -10,6 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from tempest import config
+
 from sahara_tempest_plugin.tests.cli import clusters
 from sahara_tempest_plugin.tests.cli import cluster_templates
 from sahara_tempest_plugin.tests.cli import images
@@ -20,6 +22,8 @@ from sahara_tempest_plugin.tests.cli import jobs
 from sahara_tempest_plugin.tests.cli import job_templates
 from sahara_tempest_plugin.tests.cli import data_sources
 from sahara_tempest_plugin.tests.cli import job_types
+
+TEMPEST_CONF = config.CONF
 
 
 class Scenario(images.SaharaImageCLITest,
@@ -70,7 +74,8 @@ class Scenario(images.SaharaImageCLITest,
 
     def test_cluster_cli(self):
         image_name = self.openstack_image_register(
-            'xenial-server-cloudimg-amd64-disk1')
+            TEMPEST_CONF.data_processing.test_image_name,
+            TEMPEST_CONF.data_processing.test_ssh_user)
         self.openstack_image_tags_set(image_name)
         self.openstack_image_tags_remove(image_name)
         self.openstack_image_tags_add(image_name)
