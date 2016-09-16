@@ -96,7 +96,7 @@ You can set authentication variables in three ways:
    List of variables:
      - OS_USERNAME
      - OS_PASSWORD
-     - OS_TENANT_NAME
+     - OS_PROJECT_NAME
      - OS_AUTH_URL
 
 ..
@@ -175,7 +175,7 @@ The following variables are currently used by defaults templates:
 | network_type                | string | neutron or nova-network |
 +-----------------------------+--------+-------------------------+
 | network_private_name        | string | private network name    |
-|                             |        | for OS_TENANT_NAME      |
+|                             |        | for OS_PROJECT_NAME     |
 +-----------------------------+--------+-------------------------+
 | network_public_name         | string | public network name     |
 +-----------------------------+--------+-------------------------+

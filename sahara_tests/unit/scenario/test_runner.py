@@ -430,11 +430,11 @@ class RunnerUnitTest(testtools.TestCase):
         username = os.environ.get('OS_USERNAME', '')
         password = os.environ.get('OS_PASSWORD', '')
         auth_url = os.environ.get('OS_AUTHURL', '')
-        project_name = os.environ.get('OS_TENANT_NAME', '')
+        project_name = os.environ.get('OS_PROJECT_NAME', '')
         os.environ['OS_USERNAME'] = 'demo_env'
         os.environ['OS_PASSWORD'] = 'demopwd_env'
         os.environ['OS_AUTH_URL'] = 'http://localhost:5000/v2.0'
-        os.environ['OS_TENANT_NAME'] = 'project_env'
+        os.environ['OS_PROJECT_NAME'] = 'project_env'
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
@@ -449,10 +449,11 @@ class RunnerUnitTest(testtools.TestCase):
         }
         self.assertTrue(self._isDictContainSubset(
             expected, mock_validate.call_args_list[0][0][0]['credentials']))
+
         os.environ['OS_USERNAME'] = username
         os.environ['OS_PASSWORD'] = password
         os.environ['OS_AUTHURL'] = auth_url
-        os.environ['OS_TENANT_NAME'] = project_name
+        os.environ['OS_PROJECT_NAME'] = project_name
 
     @mock.patch('sahara_tests.scenario.validation.validate')
     @mock.patch('subprocess.Popen',

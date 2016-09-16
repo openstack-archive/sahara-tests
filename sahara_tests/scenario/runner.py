@@ -257,7 +257,7 @@ def generate_config(files, template_variables, auth_values, verbose_run):
                         test_scenario['edp_jobs_flow'][key])
                 else:
                     raise ValueError('Job flow exist')
-    config.update(auth_values)
+    config['credentials'].update(auth_values['credentials'])
     return config
 
 
