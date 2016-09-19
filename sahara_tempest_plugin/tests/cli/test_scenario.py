@@ -129,7 +129,11 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_job_template_list()
 
     def test_data_source_cli(self):
+        data_source_name = self.openstack_data_source_create()
         self.openstack_data_source_list()
+        self.openstack_data_source_show(data_source_name)
+        self.openstack_data_source_update(data_source_name)
+        self.openstack_data_source_delete(data_source_name)
 
     def test_job_type_cli(self):
         self.openstack_job_type_list()
