@@ -86,6 +86,7 @@ class Scenario(images.SaharaImageCLITest,
                                                   ram=512, vcpus=1, disk=4,
                                                   id=20)['flavor']
         self.addCleanup(flavors_client.delete_flavor, flavor_ref['id'])
+        self.addCleanup(self.openstack_image_unregister, image_name)
 
         ng_master = self.openstack_node_group_template_create('cli-cluster'
                                                               '-master',
