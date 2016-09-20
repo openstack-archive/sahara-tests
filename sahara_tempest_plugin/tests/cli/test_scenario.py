@@ -127,7 +127,13 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_job_list()
 
     def test_job_template_cli(self):
+        job_binary_name = self.openstack_job_binary_create()
+        job_template_name = self.openstack_job_template_create(job_binary_name)
         self.openstack_job_template_list()
+        self.openstack_job_template_show(job_template_name)
+        self.openstack_job_template_update(job_template_name)
+        self.openstack_job_template_delete(job_template_name)
+        self.openstack_job_binary_delete(job_binary_name)
 
     def test_data_source_cli(self):
         data_source_name = self.openstack_data_source_create()
