@@ -30,6 +30,7 @@ from swiftclient import client as swift_client
 from swiftclient import exceptions as swift_exc
 from tempest.lib import exceptions as exc
 
+from sahara_tests.scenario import timeouts
 from sahara_tests.scenario import utils
 
 
@@ -42,8 +43,6 @@ def get_session(auth_url=None, username=None, password=None,
                                 user_domain_name='default',
                                 project_domain_name='default')
     return session.Session(auth=auth, verify=verify, cert=cert)
-
-from sahara_tests.scenario import timeouts
 
 
 class Client(object):
@@ -93,6 +92,10 @@ class SaharaClient(Client):
 
     def scale_cluster(self, cluster_id, body):
         return self.sahara_client.clusters.scale(cluster_id, body)
+
+    def start_cluster_verification(self, cluster_id):
+        return self.sahara_client.clusters.verification_update(cluster_id,
+                                                               'START')
 
     def create_datasource(self, *args, **kwargs):
         data = self.sahara_client.data_sources.create(*args, **kwargs)

@@ -39,7 +39,6 @@ class FakeSaharaClient(object):
                                      NodeGroupTemplateManager(None))
         self.plugins = plugins.PluginManager(None)
         self.images = images.ImageManager(None)
-
         self.data_sources = data_sources.DataSourceManager(None)
         self.jobs = jobs.JobsManager(None)
         self.job_executions = job_executions.JobExecutionsManager(None)
@@ -58,7 +57,7 @@ class FakeCluster(object):
 class FakeResponse(object):
     def __init__(self, set_id=None, set_status=None, status_description=None,
                  node_groups=None, url=None, job_id=None, name=None,
-                 job_type=None):
+                 job_type=None, verification=None):
         self.id = set_id
         self.status = set_status
         self.status_description = status_description
@@ -67,6 +66,7 @@ class FakeResponse(object):
         self.job_id = job_id
         self.name = name
         self.type = job_type
+        self.verification = verification
 
 
 class TestBase(testtools.TestCase):
@@ -434,7 +434,9 @@ class TestBase(testtools.TestCase):
     @mock.patch('sahara_tests.scenario.base.BaseTestCase._create_datasources',
                 return_value=('id_for_datasource', 'id_for_datasource'))
     @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test_check_run_jobs(self, mock_saharaclient, mock_datasources,
+    @mock.patch('sahara_tests.scenario.base.BaseTestCase.check_verification')
+    def test_check_run_jobs(self, mock_verification,
+                            mock_saharaclient, mock_datasources,
                             mock_job_binaries, mock_job,
                             mock_node_group_template, mock_cluster_template,
                             mock_cluster, mock_cluster_status, mock_create,
@@ -605,3 +607,45 @@ class TestBase(testtools.TestCase):
             self.assertIn('/user/test/data-', (
                 self.base_scenario._create_dfs_data(input_path, None,
                                                     'test', 'hdfs')))
+
+    @mock.patch('saharaclient.api.base.ResourceManager._get',
+                return_value=FakeResponse(
+                    set_status=base.CLUSTER_STATUS_ACTIVE,
+                    verification={'verification': {
+                        'status': 'GREEN',
+                        'cluster_id': 'id_cluster'
+                    }}))
+    @mock.patch('saharaclient.api.clusters.ClusterManager.verification_update')
+    @mock.patch('keystoneauth1.session.Session')
+    @mock.patch('sahara_tests.scenario.base.BaseTestCase.'
+                'check_feature_available', return_value=True)
+    def test_check_verification_did_not_start(self, mock_feature,
+                                              mock_session, mock_verification,
+                                              mock_get_status):
+        self.base_scenario._init_clients()
+        self.assertIsNone(self.base_scenario.check_verification('id_cluster'))
+
+    @mock.patch('saharaclient.api.base.ResourceManager._get',
+                return_value=FakeResponse(
+                    set_status=base.CLUSTER_STATUS_ACTIVE))
+    @mock.patch('saharaclient.api.clusters.ClusterManager.verification_update')
+    @mock.patch('keystoneauth1.session.Session')
+    @mock.patch('sahara_tests.scenario.base.BaseTestCase.'
+                'check_feature_available', return_value=True)
+    @mock.patch('sahara_tests.scenario.base'
+                '.BaseTestCase._get_health_status', return_value='GREEN')
+    def test_verification_start(self, mock_status, mock_feature,
+                                mock_session, mock_verification,
+                                mock_get_status):
+        self.base_scenario._init_clients()
+        self.assertIsNone(self.base_scenario.check_verification('id_cluster'))
+
+    @mock.patch('saharaclient.api.base.ResourceManager._get',
+                return_value=FakeResponse(
+                    set_status=base.CLUSTER_STATUS_ACTIVE))
+    @mock.patch('saharaclient.api.clusters.ClusterManager.verification_update')
+    @mock.patch('keystoneauth1.session.Session')
+    def test_verification_skipped(self, mock_session, mock_verification,
+                                  mock_get_status):
+        self.base_scenario._init_clients()
+        self.assertIsNone(self.base_scenario.check_verification('id_cluster'))
