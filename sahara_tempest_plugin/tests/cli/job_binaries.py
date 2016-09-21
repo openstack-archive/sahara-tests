@@ -47,9 +47,14 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
         return job_binary_name
 
     def openstack_job_binary_download(self, job_binary_name):
+        if path.exists(job_binary_name):
+            remove(job_binary_name)
+
         self.openstack('dataprocessing job binary download',
                        params=job_binary_name)
+
         self.assertTrue(path.exists(job_binary_name))
+        remove(job_binary_name)
 
     def openstack_job_binary_show(self, job_binary_name):
         self.find_in_listing(self.listing_result('job binary show %s'

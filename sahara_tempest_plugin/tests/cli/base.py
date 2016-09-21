@@ -84,6 +84,12 @@ class ClientTestBase(base.ClientTestBase):
         # have the first letter capitalized.
         self.assertEqual(delete_cmd.lower(), result.lower())
 
+    def delete_resource(self, command, name):
+        list_of_resources = self.listing_result('%s list' % command)
+        list_of_resource_names = [r['Name'] for r in list_of_resources]
+        if name in list_of_resource_names:
+            self.openstack('dataprocessing %s delete' % command, params=name)
+
     def get_default_plugin(self):
         plugins = self.listing_result('plugin list')
         default_plugin_name = plugin_utils.get_default_plugin()
@@ -142,9 +148,8 @@ class ClientTestBase(base.ClientTestBase):
             while True:
                 list_of_types = self.listing_result(''.join([type, ' list']))
                 list_names = [p['Name'] for p in list_of_types]
-                for resource_name in list_names:
-                    if resource_name == name:
-                        name_exist = True
+                if name in list_names:
+                    name_exist = True
                 if not name_exist:
                     break
 
