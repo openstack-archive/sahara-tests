@@ -74,6 +74,9 @@ edp_jobs_flow:
       input_datasource:
         type: swift
         source: edp-examples/edp-spark/sample_input.txt
+      output_datasource:
+        type: swift
+        destination: edp-output
       main_lib:
         type: database
         source: edp-examples/edp-spark/spark-wordcount.jar
