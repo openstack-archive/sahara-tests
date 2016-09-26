@@ -18,6 +18,8 @@ from tempest.lib.cli import base
 from tempest.test import BaseTestCase
 from tempest.lib import exceptions as exc
 
+from sahara_tempest_plugin.common import plugin_utils
+
 DEL_RESULT = '''\
 {} "{}" has been removed successfully.
 '''
@@ -81,15 +83,13 @@ class ClientTestBase(base.ClientTestBase):
         # have the first letter capitalized.
         self.assertEqual(delete_cmd.lower(), result.lower())
 
-    def find_fake_plugin(self):
-        found_plugin = None
+    def get_default_plugin(self):
         plugins = self.listing_result('plugin list')
+        default_plugin_name = plugin_utils.get_default_plugin()
         for plugin in plugins:
-            if plugin['Name'] == 'fake':
-                found_plugin = plugin
-        if found_plugin is None:
-            raise self.skipException('No available plugins for testing')
-        return found_plugin
+            if plugin['Name'] == default_plugin_name:
+                return plugin
+        raise self.skipException('No available plugins for testing')
 
     def find_id_of_pool(self):
         floating_pool_list = self.neutron('floatingip-list')

@@ -48,7 +48,10 @@ class SaharaImageCLITest(base.ClientTestBase):
             ])
 
     def openstack_image_tags_add(self, image_name):
-        flag = ''.join([image_name, ' --tags fake 0.1'])
+        plugin = self.get_default_plugin()
+        flag = '%s --tags %s %s' % (image_name,
+                                    plugin['Name'],
+                                    plugin['Versions'])
         self.assertTableStruct(
             self.listing_result(''.join(['image tags add ', flag])), [
                 'Field',

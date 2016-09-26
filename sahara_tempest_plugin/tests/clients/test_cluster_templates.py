@@ -18,9 +18,6 @@ from tempest.lib.common.utils import data_utils
 from sahara_tempest_plugin.tests.clients import base
 
 
-TEMPEST_CONF = config.CONF
-
-
 class ClusterTemplateTest(base.BaseDataProcessingTest):
     def _check_create_cluster_template(self):
         ng_template_name = data_utils.rand_name('sahara-ng-template')
@@ -28,19 +25,10 @@ class ClusterTemplateTest(base.BaseDataProcessingTest):
                                                       **self.worker_template)
 
         full_cluster_template = self.cluster_template.copy()
-        full_cluster_template['node_groups'] = [
-            {
-                'name': 'master-node',
-                'flavor_id': TEMPEST_CONF.compute.flavor_ref,
-                'node_processes': ['namenode'],
-                'count': 1
-            },
-            {
-                'name': 'worker-node',
-                'node_group_template_id': ng_template.id,
-                'count': 3
-            }
-        ]
+
+        # The 'node_groups' field in the response body
+        # has some extra info that post body does not have.
+        del self.cluster_template['node_groups']
 
         template_name = data_utils.rand_name('sahara-cluster-template')
 

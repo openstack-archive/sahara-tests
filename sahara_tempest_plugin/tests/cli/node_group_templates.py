@@ -26,7 +26,7 @@ class SaharaNodeGroupCLITest(base.ClientTestBase):
             ])
 
     def openstack_node_group_template_create(self, ng_type, flavor_id):
-        plugin = self.find_fake_plugin()
+        plugin = self.get_default_plugin()
         id_net_pool = self.find_id_of_pool()
         node_group_name = data_utils.rand_name(ng_type)
         flags = ("%(ngt_name)s %(plugin)s %(plugin-version)s "

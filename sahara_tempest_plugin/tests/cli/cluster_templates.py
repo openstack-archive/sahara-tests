@@ -25,7 +25,6 @@ class SaharaClusterTemplateCLITest(base.ClientTestBase):
         ])
 
     def openstack_cluster_template_create(self, ng_master, ng_worker):
-        self.find_fake_plugin()
         cluster_template_name = data_utils.rand_name('cl-tmp')
         flag = ("%(ct_name)s %(ngm)s %(ngw)s "
                 % {'ngw': ''.join([ng_worker, ':3']),
