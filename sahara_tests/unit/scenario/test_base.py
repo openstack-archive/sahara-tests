@@ -201,13 +201,10 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('neutronclient.v2_0.client.Client.list_networks',
                 return_value={'networks': [{'id': '2314'}]})
-    @mock.patch('saharaclient.client.Client',
-                return_value=FakeSaharaClient())
     @mock.patch('saharaclient.api.node_group_templates.'
                 'NodeGroupTemplateManager.create',
                 return_value=FakeResponse(set_id='id_ng'))
-    def test__create_node_group_template(self, mock_del, mock_ng,
-                                         mock_saharaclient):
+    def test__create_node_group_template(self, mock_del, mock_saharaclient):
         self.base_scenario._init_clients()
         self.assertEqual({'worker': 'id_ng', 'master': 'id_ng'},
                          self.base_scenario._create_node_group_templates())
@@ -227,10 +224,8 @@ class TestBase(testtools.TestCase):
     @mock.patch('sahara_tests.scenario.clients.NeutronClient'
                 '.delete_security_group_for_neutron',
                 return_value=None)
-    def test__create_security_group_uuid(self, mock_del,
-                                         mock_add_rule,
-                                         mock_sg,
-                                         mock_neutron, mock_ng):
+    def test__create_security_group_uuid(self, mock_del, mock_add_rule,
+                                         mock_sg, mock_neutron, mock_ng):
         self.base_scenario.network['public_network'] = (
             '692dcc5b-1205-4645-8a12-2558579ed17e')
         self.base_scenario._init_clients()
@@ -265,12 +260,10 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',
                 return_value='mock_net')
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('saharaclient.api.cluster_templates.'
                 'ClusterTemplateManager.create',
                 return_value=FakeResponse(set_id='id_ct'))
-    def test__create_cluster_template(self, mock_ct, mock_saharaclient,
-                                      mock_neutron):
+    def test__create_cluster_template(self, mock_ct, mock_neutron):
         self.base_scenario._init_clients()
         self.assertEqual('id_ct',
                          self.base_scenario._create_cluster_template())
@@ -279,31 +272,26 @@ class TestBase(testtools.TestCase):
                 return_value=FakeResponse(set_id='image'))
     @mock.patch('sahara_tests.scenario.clients.GlanceClient.get_image_id',
                 return_value='mock_image')
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('saharaclient.api.clusters.ClusterManager.create',
                 return_value=FakeResponse(set_id='id_cluster'))
-    def test__create_cluster(self, mock_cluster_manager, mock_saharaclient,
-                             mock_glance, mock_image):
+    def test__create_cluster(self, mock_cluster_manager, mock_glance,
+                             mock_image):
         self.base_scenario._init_clients()
         self.assertEqual('id_cluster',
                          self.base_scenario._create_cluster('id_ct'))
 
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',
                 return_value='mock_net')
     @mock.patch('saharaclient.api.base.ResourceManager._get',
                 return_value=FakeResponse(
                     set_status=base.CLUSTER_STATUS_ACTIVE))
-    @mock.patch('sahara_tests.scenario.base.BaseTestCase._check_event_logs')
-    def test__poll_cluster_status(self, mock_status, mock_neutron,
-                                  mock_saharaclient, mock_check_event_logs):
+    def test__poll_cluster_status(self, mock_status, mock_neutron):
         self.base_scenario._init_clients()
         self.assertIsNone(
             self.base_scenario._poll_cluster_status('id_cluster'))
 
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('saharaclient.api.base.ResourceManager._get')
-    def test_check_event_log_feature(self, mock_resp, mock_saharaclient):
+    def test_check_event_log_feature(self, mock_resp):
         self.base_scenario._init_clients()
 
         self.assertIsNone(self.base_scenario._check_event_logs(
@@ -321,8 +309,7 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('saharaclient.api.base.ResourceManager._update',
                 return_value=FakeResponse(set_id='id_internal_db_data'))
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test__create_internal_db_data(self, mock_saharaclient, mock_update):
+    def test__create_internal_db_data(self, mock_update):
         self.base_scenario._init_clients()
         self.assertEqual('internal-db://id_internal_db_data',
                          self.base_scenario._create_internal_db_data(
@@ -330,17 +317,14 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('swiftclient.client.Connection.put_container',
                 return_value=None)
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test__create_swift_data(self, mock_saharaclient, mock_swiftclient):
+    def test__create_swift_data(self, mock_swiftclient):
         self.base_scenario._init_clients()
         self.assertIn('swift://sahara-tests-',
                       self.base_scenario._create_swift_data())
 
     @mock.patch('swiftclient.client.Connection.put_container',
                 return_value=None)
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test__get_swift_container(self, mock_saharaclient,
-                                  mock_swiftclient):
+    def test__get_swift_container(self, mock_swiftclient):
         self.base_scenario._init_clients()
         self.assertIn('sahara-tests-',
                       self.base_scenario._get_swift_container())
@@ -351,9 +335,7 @@ class TestBase(testtools.TestCase):
                 return_value=None)
     @mock.patch('swiftclient.client.Connection.put_object',
                 return_value=None)
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test__create_datasources(self, mock_saharaclient,
-                                 mock_swiftcontainer, mock_swiftobject,
+    def test__create_datasources(self, mock_swiftcontainer, mock_swiftobject,
                                  mock_create):
         self.base_scenario._init_clients()
         self.assertEqual(('id_for_datasource', 'id_for_datasource'),
@@ -366,9 +348,7 @@ class TestBase(testtools.TestCase):
                 return_value=None)
     @mock.patch('swiftclient.client.Connection.put_container',
                 return_value=None)
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test__create_create_job_binaries(self, mock_saharaclient,
-                                         mock_swiftcontainer,
+    def test__create_create_job_binaries(self, mock_swiftcontainer,
                                          mock_swiftobject,
                                          mock_sahara_create):
         self.base_scenario._init_clients()
@@ -393,8 +373,7 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('saharaclient.api.base.ResourceManager._create',
                 return_value=FakeResponse(set_id='id_for_job'))
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test__create_job(self, mock_client, mock_sahara_client):
+    def test__create_job(self, mock_client):
         self.base_scenario._init_clients()
         self.assertEqual('id_for_job',
                          self.base_scenario._create_job(
@@ -433,10 +412,8 @@ class TestBase(testtools.TestCase):
                 return_value=(['id_for_job_binaries'], []))
     @mock.patch('sahara_tests.scenario.base.BaseTestCase._create_datasources',
                 return_value=('id_for_datasource', 'id_for_datasource'))
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('sahara_tests.scenario.base.BaseTestCase.check_verification')
-    def test_check_run_jobs(self, mock_verification,
-                            mock_saharaclient, mock_datasources,
+    def test_check_run_jobs(self, mock_verification, mock_datasources,
                             mock_job_binaries, mock_job,
                             mock_node_group_template, mock_cluster_template,
                             mock_cluster, mock_cluster_status, mock_create,
@@ -471,16 +448,13 @@ class TestBase(testtools.TestCase):
                       "type=Java has status KILLED",
                       self.base_scenario._results[-1]['traceback'][-1])
 
-    @mock.patch('sahara_tests.scenario.base.BaseTestCase.'
-                '_poll_cluster_status',
+    @mock.patch('sahara_tests.scenario.base.BaseTestCase._poll_cluster_status',
                 return_value=None)
     @mock.patch('saharaclient.api.base.ResourceManager._get',
                 return_value=FakeResponse(set_id='id_scale_get'))
     @mock.patch('saharaclient.api.base.ResourceManager._update',
                 return_value=FakeResponse(set_id='id_scale_update'))
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
-    def test_check_scale(self, mock_saharaclient, mock_update, mock_get,
-                         mock_poll):
+    def test_check_scale(self, mock_update, mock_get, mock_poll):
         self.base_scenario._init_clients()
         self.base_scenario.ng_id_map = {'vanilla-worker': 'set_id-w',
                                         'vanilla-master': 'set_id-m'}
@@ -489,20 +463,17 @@ class TestBase(testtools.TestCase):
         self.base_scenario.cluster_id = 'cluster_id'
         self.assertIsNone(self.base_scenario.check_scale())
 
-    @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     @mock.patch('sahara_tests.scenario.clients.NeutronClient.get_network_id',
                 return_value='mock_net')
     @mock.patch('saharaclient.api.base.ResourceManager._get',
                 return_value=FakeResponse(set_status='Error',
                                           status_description=""))
-    def test_errormsg(self, mock_status, mock_neutron, mock_saharaclient):
+    def test_errormsg(self, mock_status, mock_neutron):
         self.base_scenario._init_clients()
         with testtools.ExpectedException(exc.TempestException):
             self.base_scenario._poll_cluster_status('id_cluster')
 
-    @mock.patch('sahara_tests.scenario.clients.SaharaClient.__init__',
-                return_value=None)
-    def test_get_nodes_with_process(self, mock_init):
+    def test_get_nodes_with_process(self):
         self.base_scenario._init_clients()
         with mock.patch(
                 'sahara_tests.scenario.clients.SaharaClient.get_cluster',
@@ -528,8 +499,7 @@ class TestBase(testtools.TestCase):
             self.assertEqual(
                 [], self.base_scenario._get_nodes_with_process('test'))
 
-    @mock.patch('keystoneauth1.session.Session')
-    def test_get_node_list_with_volumes(self, mock_keystone):
+    def test_get_node_list_with_volumes(self):
         self.base_scenario._init_clients()
         with mock.patch(
                 'sahara_tests.scenario.clients.SaharaClient.get_cluster',
@@ -552,10 +522,8 @@ class TestBase(testtools.TestCase):
                     'volume_mount_prefix': 2
                 }], self.base_scenario._get_node_list_with_volumes())
 
-    @mock.patch('sahara_tests.scenario.clients.SaharaClient.__init__',
-                return_value=None)
     @mock.patch('sahara_tests.scenario.clients.SaharaClient.get_datasource')
-    def test_put_io_data_to_configs(self, get_datasources, sahara_mock):
+    def test_put_io_data_to_configs(self, get_datasources):
         self.base_scenario._init_clients()
         get_datasources.side_effect = [
             mock.Mock(id='1', url="swift://cont/input"),
@@ -571,8 +539,7 @@ class TestBase(testtools.TestCase):
     @mock.patch('sahara_tests.scenario.base.BaseTestCase.addCleanup')
     @mock.patch('novaclient.v2.flavors.FlavorManager.create',
                 return_value=FakeResponse(set_id='flavor_id'))
-    @mock.patch('keystoneauth1.session.Session')
-    def test_get_flavor_id(self, mock_keystone, mock_create_flavor, mock_base):
+    def test_get_flavor_id(self, mock_create_flavor, mock_base):
         self.base_scenario._init_clients()
         self.assertEqual('flavor_id',
                          self.base_scenario._get_flavor_id({
@@ -586,8 +553,7 @@ class TestBase(testtools.TestCase):
                          }))
 
     @mock.patch('sahara_tests.scenario.base.BaseTestCase._run_command_on_node')
-    @mock.patch('keystoneauth1.session.Session')
-    def test_create_hdfs_data(self, mock_session, mock_ssh):
+    def test_create_hdfs_data(self, mock_ssh):
         self.base_scenario._init_clients()
         output_path = '/user/test/data/output'
         self.assertEqual(output_path,
@@ -616,11 +582,10 @@ class TestBase(testtools.TestCase):
                         'cluster_id': 'id_cluster'
                     }}))
     @mock.patch('saharaclient.api.clusters.ClusterManager.verification_update')
-    @mock.patch('keystoneauth1.session.Session')
     @mock.patch('sahara_tests.scenario.base.BaseTestCase.'
                 'check_feature_available', return_value=True)
     def test_check_verification_did_not_start(self, mock_feature,
-                                              mock_session, mock_verification,
+                                              mock_verification,
                                               mock_get_status):
         self.base_scenario._init_clients()
         self.assertIsNone(self.base_scenario.check_verification('id_cluster'))
@@ -629,14 +594,12 @@ class TestBase(testtools.TestCase):
                 return_value=FakeResponse(
                     set_status=base.CLUSTER_STATUS_ACTIVE))
     @mock.patch('saharaclient.api.clusters.ClusterManager.verification_update')
-    @mock.patch('keystoneauth1.session.Session')
     @mock.patch('sahara_tests.scenario.base.BaseTestCase.'
                 'check_feature_available', return_value=True)
-    @mock.patch('sahara_tests.scenario.base'
-                '.BaseTestCase._get_health_status', return_value='GREEN')
+    @mock.patch('sahara_tests.scenario.base.BaseTestCase._get_health_status',
+                return_value='GREEN')
     def test_verification_start(self, mock_status, mock_feature,
-                                mock_session, mock_verification,
-                                mock_get_status):
+                                mock_verification, mock_get_status):
         self.base_scenario._init_clients()
         self.assertIsNone(self.base_scenario.check_verification('id_cluster'))
 
@@ -644,8 +607,6 @@ class TestBase(testtools.TestCase):
                 return_value=FakeResponse(
                     set_status=base.CLUSTER_STATUS_ACTIVE))
     @mock.patch('saharaclient.api.clusters.ClusterManager.verification_update')
-    @mock.patch('keystoneauth1.session.Session')
-    def test_verification_skipped(self, mock_session, mock_verification,
-                                  mock_get_status):
+    def test_verification_skipped(self, mock_verification, mock_get_status):
         self.base_scenario._init_clients()
         self.assertIsNone(self.base_scenario.check_verification('id_cluster'))
