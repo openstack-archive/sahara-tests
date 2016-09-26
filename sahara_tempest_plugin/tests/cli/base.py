@@ -14,12 +14,14 @@ import os
 import fixtures
 import time
 
+from tempest import config
 from tempest.lib.cli import base
 from tempest.test import BaseTestCase
 from tempest.lib import exceptions as exc
 
 from sahara_tempest_plugin.common import plugin_utils
 
+TEMPEST_CONF = config.CONF
 DEL_RESULT = '''\
 {} "{}" has been removed successfully.
 '''
@@ -47,6 +49,7 @@ class ClientTestBase(base.ClientTestBase):
 
         self.client_manager_admin = BaseTestCase.get_client_manager('admin')
         auth_provider = self.client_manager_admin.auth_provider
+        self.project_network = BaseTestCase.get_tenant_network('admin')
 
         return base.CLIClient(
             username=auth_provider.credentials.get('username'),
@@ -57,9 +60,6 @@ class ClientTestBase(base.ClientTestBase):
 
     def openstack(self, *args, **kwargs):
         return self.clients.openstack(*args, **kwargs)
-
-    def neutron(self, *args, **kwargs):
-        return self.clients.neutron(*args, **kwargs)
 
     def listing_result(self, command):
         command_for_item = self.openstack('dataprocessing', params=command)
@@ -92,29 +92,12 @@ class ClientTestBase(base.ClientTestBase):
         raise self.skipException('No available plugins for testing')
 
     def find_id_of_pool(self):
-        floating_pool_list = self.neutron('floatingip-list')
+        floating_pool_list = self.openstack('network list --external')
         floating_pool = self.parser.listing(floating_pool_list)
-        network_list = self.openstack('network list')
-        networks = self.parser.listing(network_list)
-        network_name = [p['Name'] for p in networks]
-        pools_name = [p['Name'] for p in floating_pool]
-        if not network_name:
-            raise self.skipException('Network list is empty')
-        if not pools_name:
+        if not floating_pool:
             raise self.skipException('Floating pool ip list is empty')
-        name_net_pool = None
-        id_net_pool = None
-        for net_name in network_name:
-            for pool_name in pools_name:
-                if net_name == pool_name:
-                    name_net_pool = net_name
-        if name_net_pool is None:
-            raise self.skipException('Network list and floating ip list do '
-                                     'not have common networks')
-        for network in networks:
-            if network['Name'] == name_net_pool:
-                id_net_pool = network['ID']
-        return id_net_pool
+        # if not empty, there should be at least one element
+        return floating_pool[0]['ID']
 
     def _get_cluster_status(self, cluster_name):
         status = None
@@ -129,7 +112,8 @@ class ClientTestBase(base.ClientTestBase):
         return status
 
     def _poll_cluster_status(self, cluster_name):
-        with fixtures.Timeout(300, gentle=True):
+        with fixtures.Timeout(TEMPEST_CONF.data_processing.cluster_timeout,
+                              gentle=True):
             while True:
                 status = self._get_cluster_status(cluster_name)
                 if status == 'Active':
