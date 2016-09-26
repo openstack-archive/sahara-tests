@@ -516,6 +516,7 @@ class BaseTestCase(base.BaseTestCase):
         ng_id_map = {}
         floating_ip_pool = None
         security_group = None
+        proxy_exist = False
 
         if self.network['type'] == 'neutron':
             floating_ip_pool = self.neutron.get_network_id(
@@ -526,6 +527,8 @@ class BaseTestCase(base.BaseTestCase):
         node_groups = []
         for ng in self.testcase['node_group_templates']:
             node_groups.append(ng)
+            if ng.get('is_proxy_gateway', False):
+                proxy_exist = True
 
         for ng in node_groups:
             kwargs = dict(ng)
@@ -533,7 +536,9 @@ class BaseTestCase(base.BaseTestCase):
             kwargs['flavor_id'] = self._get_flavor_id(kwargs['flavor'])
             del kwargs['flavor']
             kwargs['name'] = utils.rand_name(kwargs['name'])
-            kwargs['floating_ip_pool'] = floating_ip_pool
+            if (not proxy_exist) or (proxy_exist and kwargs.get(
+                    'is_proxy_gateway', False)):
+                kwargs['floating_ip_pool'] = floating_ip_pool
             if not kwargs.get('auto_security_group', True):
                 if security_group is None:
                     sg_name = utils.rand_name('scenario')
