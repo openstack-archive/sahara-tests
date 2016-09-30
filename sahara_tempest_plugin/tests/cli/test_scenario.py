@@ -11,6 +11,7 @@
 #    under the License.
 
 from tempest import config
+from tempest.lib import decorators
 
 from sahara_tempest_plugin.tests.cli import clusters
 from sahara_tempest_plugin.tests.cli import cluster_templates
@@ -72,6 +73,7 @@ class Scenario(images.SaharaImageCLITest,
         self.wait_for_resource_deletion(ng_master, 'node group template')
         self.wait_for_resource_deletion(ng_worker, 'node group template')
 
+    @decorators.skip_because(bug="1629295")
     def test_cluster_cli(self):
         image_name = self.openstack_image_register(
             TEMPEST_CONF.data_processing.test_image_name,
