@@ -32,13 +32,15 @@ class SaharaClusterCLITest(base.ClientTestBase):
 
     def openstack_cluster_create(self, cluster_template_name, image_name):
         cluster_name = data_utils.rand_name('cluster')
-        id_net_pool = self.find_id_of_pool()
+        # FIXME: this is unstable interface, but apparently there are no
+        # suitable ready-to-use replacements.
+        id_net_project = self.project_network['id']
         flags = ("%(name)s %(cl-tm)s %(image)s %(network)s"
-                 % {'network': ''.join([' --neutron-network ', id_net_pool]),
-                    'image': ''.join([' --image ', image_name]),
-                    'cl-tm': ''.join([' --cluster-template ',
-                                      cluster_template_name]),
-                    'name': ''.join([' --name ', cluster_name])})
+                 % {'network': '--neutron-network %s' % (id_net_project),
+                    'image': '--image %s' % (image_name),
+                    'cl-tm': '--cluster-template %s' %
+                             (cluster_template_name),
+                    'name': '--name %s' % (cluster_name)})
         self.assertTableStruct(
             self.listing_result(''.join(['cluster create ', flags])), [
                 'Field',
