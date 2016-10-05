@@ -1,172 +1,35 @@
 System(scenario) tests for Sahara project
 =========================================
 
-How to run
-----------
-
-Information about authentication can be found in section `Authentication`_.
-
-Scenario framework has default templates for testing Sahara. For
-use them, need to specify plugin and version (for transient check and
-fake plugin, version is not necessary):
-
-.. sourcecode:: console
-
-    $ tox -e venv -- sahara-scenario -p vanilla -v 2.7.1
-..
-
-Create the YAML and/or the YAML mako template files for scenario tests
-``etc/scenario/simple-testcase.yaml``.
-You can take a look at sample YAML files `How to write scenario files`_.
-
-If you want to run scenario tests for one plugin, you should use the
-YAML files with a scenario for the specific plugin:
-
-.. sourcecode:: console
-
-    $ tox -e venv -- sahara-scenario etc/scenario/simple-testcase.yaml
-..
-
-or, if the file is a YAML Mako template:
-
-.. sourcecode:: console
-
-    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
-..
-
-where templatevars.ini contains the values of the variables referenced
-by ``vanilla-2.7.1.yaml.mako``.
-
-For example, you want to run tests for the Vanilla plugin with the Hadoop
-version 2.7.1 In this case you should create ``templatevars.ini`` with
-the appropriate values (see the section `Variables and defaults templates`_)
-and use the following tox env:
-
-.. sourcecode:: console
-
-    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
-..
-
-If you want to run scenario tests for a few plugins or their versions, you
-should use the several YAML and/or YAML Mako template files:
-
-.. sourcecode:: console
-
-    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/cdh-5.4.0.yaml.mako sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako ...
-..
-
-Here are a few more examples.
-
-.. sourcecode:: console
-
-    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/credentials.yaml.mako sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
-
-..
-
-will run tests for Vanilla plugin with the Hadoop version 2.7.1 and credential
-located in ``sahara_tests/scenario/defaults/credentials.yaml.mako``,
-replacing the variables
-included into ``vanilla-2.7.1.yaml.mako`` with the values defined into
-``templatevars.ini``.
-For more information about writing scenario YAML files, see the section
-section `How to write scenario files`_.
-
-``tox -e venv -- sahara-scenario sahara_tests/scenario/defaults`` will run
-tests from the test directory.
-
-Also, you can validate your yaml-files using flag ``--validate`` via command:
-
-.. sourcecode:: console
-
-    $ tox -e venv -- sahara-scenario --validate -V templatevars.ini sahara_tests/scenario/defaults/credantials.yaml.mako sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
-
-..
-
-For generating report use flag `--report`.
-
 _`Authentication`
 -----------------
 
-You can set authentication variables in three ways:
+You need to be authenticated to run these tests. To authenticate you should
+create openrc file (like in devstack) and source it.
 
-1. Use environment variables(like openrc in devstack)
+.. sourcecode:: bash
 
-.. sourcecode:: console
-
-   List of variables:
-     - OS_USERNAME
-     - OS_PASSWORD
-     - OS_PROJECT_NAME
-     - OS_AUTH_URL
-
-..
-
-2. Use flags in run-commad
-
-.. sourcecode:: console
-
-   List of flags:
-     --os-username
-     --os-password
-     --os-project-name
-     --os-auth-url
-..
-
-3. Use a ``clouds.yaml`` file
-
-Create a ``clouds.yaml`` file containing your cloud information.
-os-client-config will look for that file in the home directory, then
-``~/.config/openstack`` then ``/etc/openstack``. It's also possible to set
-``OS_CLIENT_CONFIG_FILE`` environment variable to that file's absolute
-path.
-After creating the file, you can set ``OS_CLOUD`` variable or ``--os-cloud``
-flag to the name of the cloud you have created and those values will be used.
-
-Example of a ``clouds.yaml`` file:
-
-.. sourcecode:: yaml
-
-    clouds:
-      scenario_cloud:
-        auth:
-          username: admin
-          password: nova
-          project_name: admin
-          auth_url: http://localhost:5000/v2.0
+     #!/bin/sh
+     export OS_TENANT_NAME='admin'
+     export OS_PROJECT_NAME='admin'
+     export OS_USERNAME='admin'
+     export OS_PASSWORD='admin'
+     export OS_AUTH_URL='http://localhost:5000/v2.0'
 
 ..
-
-Using this example, ``OS_CLOUD`` or ``--os-cloud`` value would be
-``scenario_cloud``. Note that more than one cloud can be defined in
-the same file.
-
-More information can be found
-`here
-<http://docs.openstack.org/developer/os-client-config/#config-files>`_
 
 
 Template variables
 ------------------
-The variables used in the Mako template files are replaced with
-the values from a config file, whose name is passed to the test
-runner through the ``-V`` parameter.
+You need to define these variables because they are used in mako template
+files and replace the values from scenario files. These names pass to the test
+runner through the ``-V`` parameter and a special config file.
 
 The format of the config file is an INI-style file, as accepted by the Python
 ConfigParser module. The key/values must be specified in the DEFAULT section.
 
-Example of template variables file:
-
-.. sourcecode:: ini
-
-    [DEFAULT]
-    network_type: neutron
-    network_private_name: private
-    ...
-
-..
-
 Variables and defaults templates
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following variables are currently used by defaults templates:
 
 +-----------------------------+--------+-------------------------+
@@ -179,7 +42,7 @@ The following variables are currently used by defaults templates:
 +-----------------------------+--------+-------------------------+
 | network_public_name         | string | public network name     |
 +-----------------------------+--------+-------------------------+
-| <plugin_name_version>_name  | string | name of the image to be |
+| <plugin_name_version>_image | string | name of the image to be |
 |                             |        | used for the specific   |
 |                             |        | plugin/version          |
 +-----------------------------+--------+-------------------------+
@@ -187,13 +50,70 @@ The following variables are currently used by defaults templates:
 |                             |        | different size          |
 +-----------------------------+--------+-------------------------+
 
+After finishing with authentication and configuration of file with template
+variables, you can run Sahara tests using Sahara Scenario Framework.
+
+How to run
+----------
+
+Scenario framework has default templates for testing Sahara. To
+use them, specify plugin and version (for transient check and fake plugin,
+version is not necessary):
+
+.. sourcecode:: console
+
+    $ tox -e venv -- sahara-scenario -p vanilla -v 2.7.1
+..
+
+Create the YAML and/or the YAML mako template files for scenario tests
+``etc/scenario/simple-testcase.yaml``.
+You can take a look at sample YAML files `How to write scenario files`_.
+
+The file ``templatevars.ini`` contains the values of the variables referenced
+by any testcase you are going to run.
+
+If you want to run tests for the Vanilla plugin with the Hadoop version 2.7.1,
+you should create ``templatevars.ini`` with the appropriate values (see the
+section `Variables and defaults templates`_) and use the following tox env:
+
+.. sourcecode:: console
+
+    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
+..
+
+Credentials locate in ``sahara_tests/scenario/defaults/credentials.yaml.mako``.
+This file replace the variables included into testcase YAML or YAML Mako files
+with the values defined into ``templatevars.ini``.
+
+.. sourcecode:: console
+
+    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/credentials.yaml.mako sahara_tests/scenario/defaults/vanilla-2.7.1.yaml.mako
+
+..
+
+The most useful and comfortable way to run sahara-scenario tests for Vanilla
+Plugin:
+
+.. sourcecode:: console
+
+    $ tox -e venv -- sahara-scenario -V templatevars.ini sahara_tests/scenario/defaults/credantials.yaml.mako -p vanilla -v 2.7.1
+
+..
+
+For more information about writing scenario YAML files, see the section
+section `How to write scenario files`_.
+
 
 _`How to write scenario files`
-==============================
+------------------------------
 
-You can write all sections in one or several files, which can
-be simple YAML files or YAML-based Mako templates (.yaml.mako
-or yml.mako).
+The example of full scenario file with all these parameters you can find in
+``etc/scenario/simple-testcase.yaml``.
+
+You can write all sections in one or several files, which can be simple YAML
+files or YAML-based Mako templates (.yaml.mako or yml.mako). Fox example,
+the most common sections you can keep in ``templatevars.ini`` and
+``sahara_tests/scenario/defaults/credentials.yaml.mako``.
 
 Field "concurrency"
 -------------------
@@ -231,20 +151,20 @@ Section "network"
 
 This section is dictionary-type.
 
-+---------------------------+-------+----------+---------+-------------------+
-|          Fields           |  Type | Required | Default | Value             |
-+===========================+=======+==========+=========+===================+
-| private_network           |string |  True    | private | name or id of     |
-|                           |       |          |         | private network   |
-+---------------------------+-------+----------+---------+-------------------+
-| public_network            |string |  True    | public  | name or id of     |
-|                           |       |          |         | private network   |
-+---------------------------+-------+----------+---------+-------------------+
-| type                      |string |          | neutron | "neutron" or      |
-|                           |       |          |         | "nova-network"    |
-+---------------------------+-------+----------+---------+-------------------+
-|auto_assignment_floating_ip|boolean|          | False   |                   |
-+---------------------------+-------+----------+---------+-------------------+
++-----------------------------+---------+----------+---------+----------------+
+|          Fields             |  Type   | Required | Default | Value          |
++=============================+=========+==========+=========+================+
+| private_network             | string  |  True    | private | name or id of  |
+|                             |         |          |         | private network|
++-----------------------------+---------+----------+---------+----------------+
+| public_network              | string  |  True    | public  | name or id of  |
+|                             |         |          |         | private network|
++-----------------------------+---------+----------+---------+----------------+
+| type                        | string  |          | neutron | "neutron" or   |
+|                             |         |          |         | "nova-network" |
++-----------------------------+---------+----------+---------+----------------+
+| auto_assignment_floating_ip | boolean |          | False   |                |
++-----------------------------+---------+----------+---------+----------------+
 
 
 Section "clusters"
@@ -260,6 +180,7 @@ This sections is an array-type.
      - Required
      - Default
      - Value
+
    * - plugin_name
      - string
      - True
