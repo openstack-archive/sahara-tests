@@ -43,14 +43,14 @@ class SaharaPluginCLITest(base.ClientTestBase):
         if len(name) == 0:
             raise self.skipException('No plugin to get configs')
         plugin_name = name[0]
+        plugin_version = version[0].split(',')[0].strip()
         outmsg = self.openstack('dataprocessing plugin configs get',
-                                params=''.join([plugin_name, ' ',
-                                               version[0]]))
+                                params='%s %s' % (plugin_name, plugin_version))
         outfile_match = re.search('configs was saved in "(.+)"', outmsg)
         if outfile_match:
             configs_file = outfile_match.group(1)
         else:
-            configs_file = '%s_%s' % (plugin_name, version[0])
+            configs_file = '%s_%s' % (plugin_name, plugin_version)
 
         result = path.exists(configs_file)
         self.assertTrue(result)
