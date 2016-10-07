@@ -1,4 +1,4 @@
-<%page args="use_auto_security_group='true'"/>
+<%page args="use_auto_security_group='true', ci_flavor_id='m1.small', medium_flavor_id='m1.medium', large_flavor_id='m1.large'"/>
 
 clusters:
   - plugin_name: cdh
