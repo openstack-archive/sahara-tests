@@ -57,6 +57,9 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
                                       DataProcessingFeaturesGroup)
         except cfg.DuplicateOptError:
             pass
+        config.CONF.data_processing = conf['data-processing']
+        config.CONF.data_processing_feature_enabled = conf[
+            'data-processing-feature-enabled']
 
     def get_opt_lists(self):
         return [
