@@ -12,8 +12,6 @@ clusters:
           - jobtracker
           - datanode
           - tasktracker
-        volumes_per_node: 2
-        volumes_size: 1
         auto_security_group: ${use_auto_security_group}
       - name: worker
         flavor: ${ci_flavor_id}
