@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true', use_auto_security_group='true'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small'"/>
 
 clusters:
   - plugin_name: spark

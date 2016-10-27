@@ -21,6 +21,7 @@ Key values (mako variables):
 * flavor ids:
     * ${ci_flavor} - 2GB RAM, 1 VCPU, 40GB Root disk;
     * ${medium_flavor} - 4GB RAM, 2 VCPUs, 40GB Root disk;
+    * ${large_flavor} - 8GB RAM, 4 VCPUs, 80GB Root disk;
 
 Main URLs
 ---------
