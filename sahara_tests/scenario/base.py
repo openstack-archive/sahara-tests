@@ -555,6 +555,14 @@ class BaseTestCase(base.BaseTestCase):
         if isinstance(flavor, str):
             return self.nova.get_flavor_id(flavor)
         else:
+            # if the name already exists, use it
+            if flavor.get('name'):
+                try:
+                    return self.nova.get_flavor_id(flavor['name'])
+                except exc.NotFound:
+                    print("Custom flavor %s not found, it will be created" %
+                          (flavor['name']))
+
             flavor_id = self.nova.create_flavor(flavor).id
             self.addCleanup(self.nova.delete_flavor, flavor_id)
             return flavor_id

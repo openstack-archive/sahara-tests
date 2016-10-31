@@ -205,7 +205,8 @@ class NovaClient(Client):
         self.nova_client = nova_client.Client('2', *args, **kwargs)
 
     def get_flavor_id(self, flavor_name):
-        if uuidutils.is_uuid_like(flavor_name) or flavor_name.isdigit():
+        if (uuidutils.is_uuid_like(flavor_name) or
+                (isinstance(flavor_name, str) and flavor_name.isdigit())):
             return flavor_name
         for flavor in self.nova_client.flavors.list():
             if flavor.name == flavor_name:
