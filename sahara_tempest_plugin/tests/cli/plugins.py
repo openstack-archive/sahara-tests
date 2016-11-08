@@ -11,6 +11,8 @@
 #    under the License.
 
 from os import path
+from os import remove
+import re
 
 from sahara_tempest_plugin.tests.cli import base
 
@@ -41,8 +43,15 @@ class SaharaPluginCLITest(base.ClientTestBase):
         if len(name) == 0:
             raise self.skipException('No plugin to get configs')
         plugin_name = name[0]
-        self.openstack('dataprocessing plugin configs get',
-                       params=''.join([plugin_name, ' ',
-                                       version[0]]))
-        result = path.exists(plugin_name)
+        outmsg = self.openstack('dataprocessing plugin configs get',
+                                params=''.join([plugin_name, ' ',
+                                               version[0]]))
+        outfile_match = re.search('configs was saved in "(.+)"', outmsg)
+        if outfile_match:
+            configs_file = outfile_match.group(1)
+        else:
+            configs_file = '%s_%s' % (plugin_name, version[0])
+
+        result = path.exists(configs_file)
         self.assertTrue(result)
+        remove(configs_file)
