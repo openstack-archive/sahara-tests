@@ -1,4 +1,4 @@
-<%page args="use_auto_security_group='true'"/>
+<%page args="use_auto_security_group='true', mapr_master_flavor_id='mapr.master', mapr_worker_flavor_id='mapr.worker'"/>
 
 clusters:
   - plugin_name: mapr
@@ -7,6 +7,7 @@ clusters:
     node_group_templates:
       - name: master
         flavor:
+          name: ${mapr_master_flavor_id}
           vcpus: 4
           ram: 8192
           root_disk: 80
@@ -31,6 +32,7 @@ clusters:
         auto_security_group: ${use_auto_security_group}
       - name: worker
         flavor:
+          name: ${mapr_worker_flavor_id}
           vcpus: 2
           ram: 4096
           root_disk: 40
