@@ -69,6 +69,12 @@ class FakeResponse(object):
         self.verification = verification
 
 
+class FakeFlavor(object):
+    def __init__(self, flavor_id=None, name=None):
+        self.id = flavor_id
+        self.name = name
+
+
 class TestBase(testtools.TestCase):
     def setUp(self):
         super(TestBase, self).setUp()
@@ -538,10 +544,49 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('sahara_tests.scenario.base.BaseTestCase.addCleanup')
     @mock.patch('novaclient.v2.flavors.FlavorManager.create',
-                return_value=FakeResponse(set_id='flavor_id'))
-    def test_get_flavor_id(self, mock_create_flavor, mock_base):
+                return_value=FakeFlavor(flavor_id='created_flavor_id'))
+    def test_get_flavor_id_anonymous(self, mock_create_flavor, mock_base):
         self.base_scenario._init_clients()
-        self.assertEqual('flavor_id',
+        self.assertEqual('created_flavor_id',
+                         self.base_scenario._get_flavor_id({
+                             "id": 'created_flavor_id',
+                             "vcpus": 1,
+                             "ram": 512,
+                             "root_disk": 1,
+                             "ephemeral_disk": 1,
+                             "swap_disk": 1
+                         }))
+
+    @mock.patch('sahara_tests.scenario.base.BaseTestCase.addCleanup')
+    @mock.patch('novaclient.v2.flavors.FlavorManager.create',
+                return_value=FakeFlavor(flavor_id='created_flavor_id'))
+    @mock.patch('novaclient.v2.flavors.FlavorManager.list',
+                return_value=[FakeFlavor(flavor_id='existing_flavor_id',
+                                         name='test-flavor')])
+    def test_get_flavor_name_found(self, mock_list_flavor, mock_create_flavor,
+                                   mock_base):
+        self.base_scenario._init_clients()
+        self.assertEqual('existing_flavor_id',
+                         self.base_scenario._get_flavor_id({
+                             'name': 'test-flavor',
+                             "id": 'created_flavor_id',
+                             "vcpus": 1,
+                             "ram": 512,
+                             "root_disk": 1,
+                             "ephemeral_disk": 1,
+                             "swap_disk": 1
+                         }))
+
+    @mock.patch('sahara_tests.scenario.base.BaseTestCase.addCleanup')
+    @mock.patch('novaclient.v2.flavors.FlavorManager.create',
+                return_value=FakeFlavor(flavor_id='created_flavor_id'))
+    @mock.patch('novaclient.v2.flavors.FlavorManager.list',
+                return_value=[FakeFlavor(flavor_id='another_flavor_id',
+                                         name='another-flavor')])
+    def test_get_flavor_id_not_found(self, mock_list_flavor,
+                                     mock_create_flavor, mock_base):
+        self.base_scenario._init_clients()
+        self.assertEqual('created_flavor_id',
                          self.base_scenario._get_flavor_id({
                              'name': 'test-flavor',
                              "id": 'created_flavor_id',
