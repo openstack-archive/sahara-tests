@@ -154,6 +154,7 @@ class Scenario(images.SaharaImageCLITest,
                                             input_file, output_file)
         self.openstack_job_list()
         self.openstack_job_show(job_id)
+        self.openstack_job_update(job_id)
         self.openstack_job_delete(job_id)
         self.openstack_data_source_delete(input_file)
         self.openstack_data_source_delete(output_file)
