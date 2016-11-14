@@ -80,3 +80,10 @@ class SaharaImageCLITest(base.ClientTestBase):
                 'Field',
                 'Value'
             ])
+
+    def negative_unregister_not_existing_image(self, image_name):
+        """Test to unregister already unregistrated image"""
+        command_to_execute = 'image unregister'
+        self.check_negative_scenarios(base.TEMPEST_ERROR_MESSAGE,
+                                      command_to_execute,
+                                      image_name)

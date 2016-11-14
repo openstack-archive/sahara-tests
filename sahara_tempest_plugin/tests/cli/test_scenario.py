@@ -117,6 +117,7 @@ class Scenario(images.SaharaImageCLITest,
         self.wait_for_resource_deletion(ng_master, 'node group template')
         self.wait_for_resource_deletion(ng_worker, 'node group template')
         self.openstack_image_unregister(image_name)
+        self.negative_unregister_not_existing_image(image_name)
 
     def test_job_binary_cli(self):
         job_binary_name = self.openstack_job_binary_create()
@@ -125,6 +126,7 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_job_binary_update(job_binary_name)
         self.openstack_job_binary_download(job_binary_name)
         self.openstack_job_binary_delete(job_binary_name)
+        self.negative_delete_removed_job_binary(job_binary_name)
 
     def test_job_template_cli(self):
         job_binary_name = self.openstack_job_binary_create()

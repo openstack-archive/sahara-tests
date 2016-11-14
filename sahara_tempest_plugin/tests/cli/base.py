@@ -25,6 +25,7 @@ TEMPEST_CONF = config.CONF
 DEL_RESULT = '''\
 {} "{}" has been removed successfully.
 '''
+TEMPEST_ERROR_MESSAGE = 'No matches found.'
 
 
 class ClientTestBase(base.ClientTestBase):
@@ -135,3 +136,24 @@ class ClientTestBase(base.ClientTestBase):
                         name_exist = True
                 if not name_exist:
                     break
+
+    def check_negative_scenarios(self, error_message, cmd, name):
+        msg_exist = None
+        try:
+            self.openstack('dataprocessing %s' % cmd, params=name)
+        except exc.CommandFailed as e:
+            # lower() is required because "result" string could
+            # have the first letter capitalized.
+            output_msg = str(e).splitlines()
+            for msg in output_msg:
+                if msg.lower() == error_message.lower():
+                    self.assertEqual(error_message.lower(), msg.lower())
+                    msg_exist = True
+            if not msg_exist:
+                raise exc.TempestException('%s is not a part of output of '
+                                           'executed command %s'
+                                           % (error_message, cmd))
+        else:
+            raise exc.TempestException('%s %s in negative scenarios have been '
+                                       'executed without any errors'
+                                       % (cmd, name))

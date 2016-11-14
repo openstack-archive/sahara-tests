@@ -71,3 +71,11 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
         for job_binary in list_job_binary:
             if job_binary['Name'] == job_binary_name:
                 raise self.skipException('Job binary is not delete')
+
+    def negative_delete_removed_job_binary(self, job_binary_name):
+        """Test to remove already deleted job binary"""
+        command_to_execute = 'job binary delete'
+        self.check_negative_scenarios(base.TEMPEST_ERROR_MESSAGE,
+                                      command_to_execute,
+                                      job_binary_name)
+
