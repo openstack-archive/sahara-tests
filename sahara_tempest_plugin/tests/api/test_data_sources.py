@@ -13,7 +13,7 @@
 #    under the License.
 
 from sahara_tempest_plugin.tests.api import base as dp_base
-from tempest.common.utils import data_utils
+from tempest.lib.common.utils import data_utils
 from tempest import test
 
 

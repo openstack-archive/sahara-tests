@@ -17,9 +17,9 @@ import time
 from oslo_utils import timeutils
 from saharaclient.api import base as sab
 from tempest import config
-from tempest import exceptions
 from tempest.lib.common.utils import data_utils
 from tempest.lib import decorators
+from tempest.lib import exceptions
 from tempest import test
 
 from sahara_tempest_plugin.tests.clients import base
