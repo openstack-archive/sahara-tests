@@ -50,7 +50,7 @@ class SaharaPluginCLITest(base.ClientTestBase):
         if outfile_match:
             configs_file = outfile_match.group(1)
         else:
-            configs_file = '%s_%s' % (plugin_name, plugin_version)
+            configs_file = '%s-%s' % (plugin_name, plugin_version)
 
         result = path.exists(configs_file)
         self.assertTrue(result)
