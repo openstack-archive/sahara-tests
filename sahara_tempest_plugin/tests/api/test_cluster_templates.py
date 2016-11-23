@@ -13,8 +13,7 @@
 #    under the License.
 
 from sahara_tempest_plugin.tests.api import base as dp_base
-from tempest.common.utils import data_utils
-from tempest import exceptions
+from tempest.lib.common.utils import data_utils
 from tempest import test
 
 
@@ -35,7 +34,7 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
         # pre-define a node group templates
         node_group_template_w = cls.get_node_group_template('worker1')
         if node_group_template_w is None:
-            raise exceptions.InvalidConfiguration(
+            raise dp_base.InvalidSaharaTestConfiguration(
                 message="No known Sahara plugin was found")
 
         node_group_template_w['name'] = data_utils.rand_name(

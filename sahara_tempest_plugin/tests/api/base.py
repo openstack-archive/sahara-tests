@@ -13,8 +13,7 @@
 #    under the License.
 
 from tempest import config
-from tempest import exceptions
-from tempest.lib import exceptions as lib_exc
+from tempest.lib import exceptions
 import tempest.test
 
 from sahara_tempest_plugin import clients
@@ -22,6 +21,10 @@ from sahara_tempest_plugin.common import plugin_utils
 
 
 CONF = config.CONF
+
+
+class InvalidSaharaTestConfiguration(exceptions.TempestException):
+    message = "Invalid configuration for Sahara tests"
 
 
 class BaseDataProcessingTest(tempest.test.BaseTestCase):
@@ -52,7 +55,7 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         cls.default_version = plugin_utils.get_default_version(plugin)
 
         if cls.default_plugin is not None and cls.default_version is None:
-            raise exceptions.InvalidConfiguration(
+            raise InvalidSaharaTestConfiguration(
                 message="No known Sahara plugin version was found")
 
         # add lists for watched resources
@@ -83,7 +86,7 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         for resource_id in resource_id_list:
             try:
                 method(resource_id)
-            except lib_exc.NotFound:
+            except exceptions.NotFound:
                 # ignore errors while auto removing created resource
                 pass
 
@@ -218,7 +221,7 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         def is_resource_deleted(resource_id):
             try:
                 get_resource(resource_id)
-            except lib_exc.NotFound:
+            except exceptions.NotFound:
                 return True
             return False
 

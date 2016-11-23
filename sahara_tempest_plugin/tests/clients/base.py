@@ -20,7 +20,6 @@ from keystoneauth1 import session
 from saharaclient.api import base as sab
 from saharaclient import client as sahara_client
 from tempest import config
-from tempest import exceptions as tempest_exc
 from tempest.lib import exceptions
 from tempest.scenario import manager
 
@@ -31,6 +30,10 @@ TEMPEST_CONF = config.CONF
 # cluster status
 CLUSTER_STATUS_ACTIVE = "Active"
 CLUSTER_STATUS_ERROR = "Error"
+
+
+class ClusterErrorException(exceptions.TempestException):
+    message = "Cluster failed to build and is in ERROR status"
 
 
 class BaseDataProcessingTest(manager.ScenarioTest):
@@ -246,7 +249,7 @@ class BaseDataProcessingTest(manager.ScenarioTest):
             if cluster.status == CLUSTER_STATUS_ACTIVE:
                 return
             if cluster.status == CLUSTER_STATUS_ERROR:
-                raise tempest_exc.BuildErrorException(
+                raise ClusterErrorException(
                     'Cluster failed to build and is in %s status.' %
                     CLUSTER_STATUS_ERROR)
             time.sleep(TEMPEST_CONF.data_processing.request_timeout)
