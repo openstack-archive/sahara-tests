@@ -12,9 +12,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sahara_tempest_plugin.tests.api import base as dp_base
+from testtools import testcase as tc
+
+from tempest.lib import decorators
 from tempest.lib.common.utils import data_utils
-from tempest import test
+
+from sahara_tempest_plugin.tests.api import base as dp_base
 
 
 class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
@@ -86,13 +89,13 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
 
         return resp_body['id'], template_name
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('3525f1f1-3f9c-407d-891a-a996237e728b')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('3525f1f1-3f9c-407d-891a-a996237e728b')
     def test_cluster_template_create(self):
         self._create_cluster_template()
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('7a161882-e430-4840-a1c6-1d928201fab2')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('7a161882-e430-4840-a1c6-1d928201fab2')
     def test_cluster_template_list(self):
         template_info = self._create_cluster_template()
 
@@ -102,8 +105,8 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
                           for template in templates]
         self.assertIn(template_info, templates_info)
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('2b75fe22-f731-4b0f-84f1-89ab25f86637')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('2b75fe22-f731-4b0f-84f1-89ab25f86637')
     def test_cluster_template_get(self):
         template_id, template_name = self._create_cluster_template()
 
@@ -113,8 +116,8 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
         self.assertEqual(template_name, template['name'])
         self.assertDictContainsSubset(self.cluster_template, template)
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('ff1fd989-171c-4dd7-91fd-9fbc71b09675')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('ff1fd989-171c-4dd7-91fd-9fbc71b09675')
     def test_cluster_template_delete(self):
         template_id, _ = self._create_cluster_template()
 

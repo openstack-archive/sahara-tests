@@ -13,6 +13,7 @@
 #    under the License.
 
 import time
+from testtools import testcase as tc
 
 from oslo_utils import timeutils
 from saharaclient.api import base as sab
@@ -20,7 +21,6 @@ from tempest import config
 from tempest.lib.common.utils import data_utils
 from tempest.lib import decorators
 from tempest.lib import exceptions
-from tempest import test
 
 from sahara_tempest_plugin.tests.clients import base
 
@@ -284,7 +284,7 @@ class JobExecutionTest(base.BaseDataProcessingTest):
                                        job_exec in job_exec_list])
 
     @decorators.skip_because(bug="1430252")
-    @test.attr(type='slow')
+    @tc.attr('slow')
     def test_job_executions(self):
         image_id = self.test_image_id
         self._check_register_image(image_id)

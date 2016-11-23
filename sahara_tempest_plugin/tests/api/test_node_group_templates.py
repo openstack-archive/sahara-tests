@@ -12,9 +12,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sahara_tempest_plugin.tests.api import base as dp_base
+from testtools import testcase as tc
+
+from tempest.lib import decorators
 from tempest.lib.common.utils import data_utils
-from tempest import test
+
+from sahara_tempest_plugin.tests.api import base as dp_base
 
 
 class NodeGroupTemplateTest(dp_base.BaseDataProcessingTest):
@@ -53,13 +56,13 @@ class NodeGroupTemplateTest(dp_base.BaseDataProcessingTest):
 
         return resp_body['id'], template_name
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('63164051-e46d-4387-9741-302ef4791cbd')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('63164051-e46d-4387-9741-302ef4791cbd')
     def test_node_group_template_create(self):
         self._create_node_group_template()
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('eb39801d-2612-45e5-88b1-b5d70b329185')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('eb39801d-2612-45e5-88b1-b5d70b329185')
     def test_node_group_template_list(self):
         template_info = self._create_node_group_template()
 
@@ -70,8 +73,8 @@ class NodeGroupTemplateTest(dp_base.BaseDataProcessingTest):
                           for template in templates]
         self.assertIn(template_info, templates_info)
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('6ee31539-a708-466f-9c26-4093ce09a836')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('6ee31539-a708-466f-9c26-4093ce09a836')
     def test_node_group_template_get(self):
         template_id, template_name = self._create_node_group_template()
 
@@ -81,8 +84,8 @@ class NodeGroupTemplateTest(dp_base.BaseDataProcessingTest):
         self.assertEqual(template_name, template['name'])
         self.assertDictContainsSubset(self.node_group_template, template)
 
-    @test.attr(type='smoke')
-    @test.idempotent_id('f4f5cb82-708d-4031-81c4-b0618a706a2f')
+    @tc.attr('smoke')
+    @decorators.idempotent_id('f4f5cb82-708d-4031-81c4-b0618a706a2f')
     def test_node_group_template_delete(self):
         template_id, _ = self._create_node_group_template()
 
