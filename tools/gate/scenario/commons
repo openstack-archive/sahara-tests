@@ -16,10 +16,8 @@
 # limitations under the License.
 
 export NETWORK=${1:-neutron}
-export ENGINE=${2:-heat}
 export IS_TRANSIENT=true
 export AUTO_SECURITY_GROUP=true
-
 # Normalize network name
 if [[ $NETWORK == nova* ]]; then
     export NETWORK="nova-network"
