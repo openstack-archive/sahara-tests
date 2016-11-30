@@ -12,7 +12,7 @@ network:
 clusters:
     - plugin_name: vanilla
       plugin_version: 2.7.1
-      image: ${vanilla_two_six_image}
+      image: ${vanilla_26_image}
       image_username: ubuntu
       hdfs_username: hadoop
       node_group_templates:

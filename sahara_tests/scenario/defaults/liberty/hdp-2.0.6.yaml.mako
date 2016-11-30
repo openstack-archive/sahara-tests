@@ -3,7 +3,7 @@
 clusters:
   - plugin_name: hdp
     plugin_version: 2.0.6
-    image: ${hdp_two_image}
+    image: ${hdp_206_image}
     node_group_templates:
       - name: master
         flavor: ${ci_flavor_id}

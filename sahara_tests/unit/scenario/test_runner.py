@@ -315,7 +315,7 @@ class RunnerUnitTest(testtools.TestCase):
                     '--args', 'network_type:neutron',
                     'network_private_name:private',
                     'network_public_name:public',
-                    'vanilla_two_six_image:hadoop_2_6_latest',
+                    'vanilla_26_image:hadoop_2_6_latest',
                     'ci_flavor_id:2']
         runner.main()
         expected = {
@@ -417,9 +417,9 @@ class RunnerUnitTest(testtools.TestCase):
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'http://127.0.0.1:5000/v2', '--args',
-                    'ambari_2_1_image:ambari', 'fake_plugin_image:fake',
-                    'mapr_500mrv2_image:mapr', 'spark_1_3_image:spark',
-                    'hdp_two_image:hdp']
+                    'ambari_22_image:ambari', 'fake_plugin_image:fake',
+                    'mapr_500mrv2_image:mapr', 'spark_131_image:spark',
+                    'hdp_206_image:hdp']
         runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')

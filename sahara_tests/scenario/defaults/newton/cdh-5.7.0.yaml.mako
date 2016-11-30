@@ -3,7 +3,7 @@
 clusters:
   - plugin_name: cdh
     plugin_version: 5.7.0
-    image: ${cdh_5_7_0_image}
+    image: ${cdh_570_image}
     node_group_templates:
       - name: worker-dn
         flavor: ${ci_flavor_id}

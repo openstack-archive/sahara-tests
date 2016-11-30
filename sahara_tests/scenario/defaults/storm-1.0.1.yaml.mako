@@ -3,7 +3,7 @@
 clusters:
   - plugin_name: storm
     plugin_version: 1.0.1
-    image: ${storm_1_0_image}
+    image: ${storm_101_image}
     node_group_templates:
       - name: master
         flavor: ${ci_flavor_id}

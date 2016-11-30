@@ -3,7 +3,7 @@
 clusters:
   - plugin_name: spark
     plugin_version: 1.6.0
-    image: ${spark_1_6_image}
+    image: ${spark_160_image}
     node_group_templates:
       - name: master
         flavor: ${ci_flavor_id}
