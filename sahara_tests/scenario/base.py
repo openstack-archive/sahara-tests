@@ -585,7 +585,7 @@ class BaseTestCase(base.BaseTestCase):
                 'count': count})
 
         kwargs.update(self.plugin_opts)
-        kwargs['name'] = utils.rand_name(kwargs['name'])
+        kwargs['name'] = utils.rand_name(kwargs.get('name', 'ct'))
         if self.network['type'] == 'neutron':
             kwargs['net_id'] = self.neutron.get_network_id(
                 self.network['private_network'])

@@ -481,7 +481,7 @@ This section is dictionary-type.
      - Value
    * - name
      - string
-     - True
+     -
      -
      - name for cluster template
    * - description
@@ -514,7 +514,7 @@ This section is dictionary-type.
 +--------------+---------+----------+---------+------------------+
 |    Fields    |  Type   | Required | Default |       Value      |
 +==============+=========+==========+=========+==================+
-| name         | string  | True     | Empty   | name for cluster |
+| name         | string  |          | Empty   | name for cluster |
 +--------------+---------+----------+---------+------------------+
 | description  | string  |          | Empty   | description      |
 +--------------+---------+----------+---------+------------------+

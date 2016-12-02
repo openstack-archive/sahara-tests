@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small', cluster_name='vanilla-271'"/>
 
 clusters:
   - plugin_name: vanilla
@@ -44,7 +44,6 @@ clusters:
         auto_security_group: ${use_auto_security_group}
         is_proxy_gateway: ${is_proxy_gateway}
     cluster_template:
-      name: vanilla271
       node_group_templates:
         master-rm-nn-hvs-sp: 1
         master-oo-hs-sn: 1

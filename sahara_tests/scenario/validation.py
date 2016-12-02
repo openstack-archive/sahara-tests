@@ -246,7 +246,7 @@ SCHEMA = {
                                 }
                             }
                         },
-                        "required": ["name", "node_group_templates"],
+                        "required": ["node_group_templates"],
                         "additionalProperties": False
                     },
                     "cluster": {
@@ -264,7 +264,6 @@ SCHEMA = {
                                 "type": "boolean"
                             }
                         },
-                        "required": ["name"],
                         "additionalProperties": False,
                     },
                     "timeout_check_transient": {
