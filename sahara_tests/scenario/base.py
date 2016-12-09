@@ -48,17 +48,21 @@ def track_result(check_name, exit_with_error=True):
     def decorator(fct):
         @functools.wraps(fct)
         def wrapper(self, *args, **kwargs):
+            started_at = timeutils.utcnow()
             test_info = {
                 'check_name': check_name,
                 'status': CHECK_OK_STATUS,
+                'start_time': started_at,
                 'duration': None,
-                'traceback': None
+                'traceback': None,
+                'exception_time': None
             }
             self._results.append(test_info)
-            started_at = timeutils.utcnow()
             try:
                 return fct(self, *args, **kwargs)
             except Exception:
+                test_info['exception_time'] = timeutils.utcnow().strftime(
+                    '%Y%m%d_%H%M%S')
                 test_info['status'] = CHECK_FAILED_STATUS
                 test_info['traceback'] = traceback.format_exception(
                     *sys.exc_info())
@@ -797,12 +801,15 @@ class BaseTestCase(base.BaseTestCase):
 
     def tearDown(self):
         tbs = []
-        table = prettytable.PrettyTable(["Check", "Status", "Duration, s"])
+        table = prettytable.PrettyTable(["Check", "Status", "Duration, s",
+                                         "Start time"])
         table.align["Check"] = "l"
         for check in self._results:
             table.add_row(
-                [check['check_name'], check['status'], check['duration']])
+                [check['check_name'], check['status'], check['duration'],
+                 check['start_time']])
             if check['status'] == CHECK_FAILED_STATUS:
+                tbs.append(check['exception_time'])
                 tbs.extend(check['traceback'])
                 tbs.append("")
         print("Results of testing plugin", self.plugin_opts['plugin_name'],
