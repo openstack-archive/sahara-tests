@@ -108,8 +108,7 @@ class ClientTestBase(base.ClientTestBase):
 
     def _get_cluster_status(self, cluster_name):
         status = None
-        show_cluster = self.listing_result(''.join(['cluster show ',
-                                                    cluster_name]))
+        show_cluster = self.listing_result('cluster show %s' % cluster_name)
         for line in show_cluster:
             if line['Field'] == 'Status':
                 status = line['Value']
@@ -146,7 +145,7 @@ class ClientTestBase(base.ClientTestBase):
         # if name exists in the command "type list" than tests should fail
         with fixtures.Timeout(300, gentle=True):
             while True:
-                list_of_types = self.listing_result(''.join([type, ' list']))
+                list_of_types = self.listing_result('%s list' % type)
                 list_names = [p['Name'] for p in list_of_types]
                 if name in list_names:
                     name_exist = True

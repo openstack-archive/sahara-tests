@@ -54,15 +54,18 @@ class Scenario(images.SaharaImageCLITest,
                         worker_ngt)
 
         self.openstack_node_group_template_list()
-        new_master_ngt = self.openstack_node_group_template_update(master_ngt)
+        new_master_ngt = self.openstack_node_group_template_update(
+            master_ngt, update_field='name')
         self.addCleanup(self.delete_resource, 'node group template',
                         new_master_ngt)
 
         self.openstack_node_group_template_show(new_master_ngt)
         self.openstack_node_group_template_delete(new_master_ngt)
+        self.negative_try_to_delete_protected_node_group(worker_ngt)
         self.openstack_node_group_template_delete(worker_ngt)
         self.wait_for_resource_deletion(new_master_ngt, 'node group template')
         self.wait_for_resource_deletion(worker_ngt, 'node group template')
+        self.negative_delete_removed_node_group(worker_ngt)
 
     def test_cluster_template_cli(self):
         ng_master = (
