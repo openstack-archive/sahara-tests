@@ -112,6 +112,17 @@ class ClientTestBase(base.ClientTestBase):
                                      'status')
         return status
 
+    def _get_resource_id(self, resource, resource_name):
+        resource_id = None
+        show_resource = self.listing_result('%s show %s'
+                                            % (resource, resource_name))
+        for line in show_resource:
+            if line['Field'] == 'Id':
+                resource_id = line['Value']
+        if resource_id is None:
+            raise self.skipException('No such %s exists' % resource)
+        return resource_id
+
     def _poll_cluster_status(self, cluster_name):
         with fixtures.Timeout(TEMPEST_CONF.data_processing.cluster_timeout,
                               gentle=True):

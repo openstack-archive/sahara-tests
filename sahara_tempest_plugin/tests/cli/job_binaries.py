@@ -47,7 +47,7 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
         return job_binary_name
 
     def openstack_job_binary_download(self, job_binary_name):
-        self.openstack('dataprocessing job binary download ',
+        self.openstack('dataprocessing job binary download',
                        params=job_binary_name)
         self.assertTrue(path.exists(job_binary_name))
 
@@ -56,13 +56,33 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
                                                  % job_binary_name),
                              job_binary_name)
 
-    def openstack_job_binary_update(self, job_binary_name):
-        self.assertTableStruct(
-            self.listing_result('job binary update --description cli-tests '
-                                '% s' % job_binary_name), [
-                'Field',
-                'Value'
-            ])
+    def openstack_job_binary_update(self, job_binary_name, flag=None):
+        cmd = 'job binary update --%s' % flag
+        if flag == 'description':
+            self.assertTableStruct(
+                self.listing_result('%s cli-tests %s'
+                                    % (cmd, job_binary_name)), [
+                    'Field',
+                    'Value'
+                ])
+        elif flag == 'name':
+            new_job_binary_name = data_utils.rand_name(job_binary_name)
+            self.assertTableStruct(
+                self.listing_result('%s %s %s'
+                                    % (cmd, new_job_binary_name,
+                                       job_binary_name)), [
+                    'Field',
+                    'Value'
+                ])
+            return new_job_binary_name
+        else:
+            # here we check only updating with public/protected flags for now
+            self.assertTableStruct(
+                self.listing_result('%s %s' % (cmd, job_binary_name)), [
+                    'Field',
+                    'Value'
+                ]
+            )
 
     def openstack_job_binary_delete(self, job_binary_name):
         self.openstack('dataprocessing job binary delete',
@@ -79,3 +99,20 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
                                       command_to_execute,
                                       job_binary_name)
 
+    def negative_try_to_update_protected_jb(self, job_binary_name):
+        """Test to try to update proteted job binary"""
+        self.openstack_job_binary_update(job_binary_name, flag='protected')
+        error_message = ("JobBinary with id '%s' could not be updated because "
+                         "it's marked as protected" %
+                         self._get_resource_id('job binary',
+                                               job_binary_name))
+        command_to_execute = 'job binary update --name test'
+        self.check_negative_scenarios(error_message,
+                                      command_to_execute,
+                                      job_binary_name)
+
+    def filter_job_binaries_in_list(self):
+        """Filter job binaries list with --column flag"""
+        job_binaries_list = self.listing_result('job binary list '
+                                                '--column Name')
+        self.assertTableStruct(job_binaries_list, ['Name'])

@@ -123,8 +123,11 @@ class Scenario(images.SaharaImageCLITest,
         job_binary_name = self.openstack_job_binary_create()
         self.openstack_job_binary_list()
         self.openstack_job_binary_show(job_binary_name)
-        self.openstack_job_binary_update(job_binary_name)
+        self.openstack_job_binary_update(job_binary_name, flag='description')
         self.openstack_job_binary_download(job_binary_name)
+        self.filter_job_binaries_in_list()
+        self.negative_try_to_update_protected_jb(job_binary_name)
+        self.openstack_job_binary_update(job_binary_name, flag='unprotected')
         self.openstack_job_binary_delete(job_binary_name)
         self.negative_delete_removed_job_binary(job_binary_name)
 
