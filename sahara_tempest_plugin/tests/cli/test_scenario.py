@@ -46,8 +46,16 @@ class Scenario(images.SaharaImageCLITest,
     def test_node_group_cli(self):
         master_ngt = self.openstack_node_group_template_create('master', '4')
         worker_ngt = self.openstack_node_group_template_create('worker', '3')
+        self.addCleanup(self.delete_resource, 'node group template',
+                        master_ngt)
+        self.addCleanup(self.delete_resource, 'node group template',
+                        worker_ngt)
+
         self.openstack_node_group_template_list()
         new_master_ngt = self.openstack_node_group_template_update(master_ngt)
+        self.addCleanup(self.delete_resource, 'node group template',
+                        new_master_ngt)
+
         self.openstack_node_group_template_show(new_master_ngt)
         self.openstack_node_group_template_delete(new_master_ngt)
         self.openstack_node_group_template_delete(worker_ngt)
@@ -59,12 +67,23 @@ class Scenario(images.SaharaImageCLITest,
             self.openstack_node_group_template_create('tmp-master', '4'))
         ng_worker = (
             self.openstack_node_group_template_create('tmp-worker', '3'))
+        self.addCleanup(self.delete_resource, 'node group template',
+                        ng_master)
+        self.addCleanup(self.delete_resource, 'node group template',
+                        ng_worker)
+
         cluster_template_name = (
             self.openstack_cluster_template_create(ng_master, ng_worker))
+        self.addCleanup(self.delete_resource, 'cluster template',
+                        cluster_template_name)
+
         self.openstack_cluster_template_list()
         self.openstack_cluster_template_show(cluster_template_name)
         new_cluster_template_name = self.openstack_cluster_template_update(
             cluster_template_name)
+        self.addCleanup(self.delete_resource, 'cluster template',
+                        new_cluster_template_name)
+
         self.openstack_cluster_template_delete(new_cluster_template_name)
         self.wait_for_resource_deletion(new_cluster_template_name, 'cluster '
                                                                    'template')
@@ -96,10 +115,21 @@ class Scenario(images.SaharaImageCLITest,
         ng_worker = self.openstack_node_group_template_create('cli-cluster'
                                                               '-worker',
                                                               'sahara-flavor')
+        self.addCleanup(self.delete_resource, 'node group template',
+                        ng_master)
+        self.addCleanup(self.delete_resource, 'node group template',
+                        ng_worker)
+
         cluster_template_name = (
             self.openstack_cluster_template_create(ng_master, ng_worker))
+        self.addCleanup(self.delete_resource, 'cluster template',
+                        cluster_template_name)
+
         cluster_name = (
             self.openstack_cluster_create(cluster_template_name, image_name))
+        self.addCleanup(self.delete_resource, 'cluster',
+                        cluster_name)
+
         self._run_job_on_cluster(cluster_name)
         self.openstack_cluster_list()
         self.openstack_cluster_show(cluster_name)
@@ -121,6 +151,8 @@ class Scenario(images.SaharaImageCLITest,
 
     def test_job_binary_cli(self):
         job_binary_name = self.openstack_job_binary_create()
+        self.addCleanup(self.delete_resource, 'job binary', job_binary_name)
+
         self.openstack_job_binary_list()
         self.openstack_job_binary_show(job_binary_name)
         self.openstack_job_binary_update(job_binary_name, flag='description')
@@ -133,7 +165,12 @@ class Scenario(images.SaharaImageCLITest,
 
     def test_job_template_cli(self):
         job_binary_name = self.openstack_job_binary_create()
+        self.addCleanup(self.delete_resource, 'job binary', job_binary_name)
+
         job_template_name = self.openstack_job_template_create(job_binary_name)
+        self.addCleanup(self.delete_resource, 'job template',
+                        job_template_name)
+
         self.openstack_job_template_list()
         self.openstack_job_template_show(job_template_name)
         self.openstack_job_template_update(job_template_name)
@@ -142,6 +179,8 @@ class Scenario(images.SaharaImageCLITest,
 
     def test_data_source_cli(self):
         data_source_name = self.openstack_data_source_create()
+        self.addCleanup(self.delete_resource, 'data source', data_source_name)
+
         self.openstack_data_source_list()
         self.openstack_data_source_show(data_source_name)
         self.openstack_data_source_update(data_source_name)
@@ -153,10 +192,17 @@ class Scenario(images.SaharaImageCLITest,
 
     def _run_job_on_cluster(self, cluster_name):
         job_template_name = self.openstack_job_template_name()
+        self.addCleanup(self.delete_resource, 'job template',
+                        job_template_name)
+
         input_file = self.openstack_data_source_create()
         output_file = self.openstack_data_source_create()
+        self.addCleanup(self.delete_resource, 'data source', input_file)
+        self.addCleanup(self.delete_resource, 'data source', output_file)
         job_id = self.openstack_job_execute(cluster_name, job_template_name,
                                             input_file, output_file)
+        self.addCleanup(self.delete_resource, 'job', job_id)
+
         self.openstack_job_list()
         self.openstack_job_show(job_id)
         self.openstack_job_update(job_id)

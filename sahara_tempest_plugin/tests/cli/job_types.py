@@ -10,6 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from os import remove
+
 from sahara_tempest_plugin.tests.cli import base
 
 
@@ -31,3 +33,4 @@ class SaharaJobTypeCLITest(base.ClientTestBase):
             'Field',
             'Value'
         ])
+        remove(job_type_names[0])
