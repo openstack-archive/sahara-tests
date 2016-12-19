@@ -98,3 +98,16 @@ class NodeGroupTemplateTest(dp_base.BaseDataProcessingTest):
         templates = templates['node_group_templates']
         templates_ids = [template['id'] for template in templates]
         self.assertNotIn(template_id, templates_ids)
+
+    @tc.attr('smoke')
+    @decorators.idempotent_id('b048b603-832f-4ca5-9d5f-7a0e042f16b5')
+    def test_node_group_template_update(self):
+        template_id, template_name = self._create_node_group_template()
+
+        new_template_name = 'updated-template-name'
+        body = {'name': new_template_name}
+        updated_template = self.client.update_node_group_template(template_id,
+                                                                  **body)
+        updated_template = updated_template['node_group_template']
+
+        self.assertEqual(new_template_name, updated_template['name'])
