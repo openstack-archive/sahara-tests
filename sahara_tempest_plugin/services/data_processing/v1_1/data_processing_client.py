@@ -168,6 +168,12 @@ class DataProcessingClient(rest_client.RestClient):
         return self._request_check_and_parse_resp(self.post, uri,
                                                   202, body=json.dumps(body))
 
+    def update_node_group_template(self, tmpl_id, **kwargs):
+        """Updates the details of a single node group template."""
+        uri = 'node-group-templates/%s' % tmpl_id
+        return self._request_check_and_parse_resp(self.put, uri, 202,
+                                                  body=json.dumps(kwargs))
+
     def delete_data_source(self, source_id):
         """Deletes the specified data source by id."""
 
