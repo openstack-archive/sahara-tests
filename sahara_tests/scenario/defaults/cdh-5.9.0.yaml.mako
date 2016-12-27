@@ -1,9 +1,9 @@
-<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small', medium_flavor_id='m1.medium', large_flavor_id='m1.large'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small', large_flavor_id='m1.large'"/>
 
 clusters:
   - plugin_name: cdh
-    plugin_version: 5.5.0
-    image: ${cdh_550_image}
+    plugin_version: 5.9.0
+    image: ${cdh_590_image}
     node_group_templates:
       - name: worker-dn
         flavor: ${ci_flavor_id}
@@ -39,7 +39,7 @@ clusters:
         is_proxy_gateway: ${is_proxy_gateway}
         auto_security_group: ${use_auto_security_group}
       - name: master-core
-        flavor: ${medium_flavor_id}
+        flavor: ${large_flavor_id}
         node_processes:
           - HDFS_NAMENODE
           - YARN_RESOURCEMANAGER
@@ -48,7 +48,7 @@ clusters:
           - ZOOKEEPER_SERVER
         auto_security_group: ${use_auto_security_group}
       - name: master-additional
-        flavor: ${medium_flavor_id}
+        flavor: ${large_flavor_id}
         node_processes:
           - OOZIE_SERVER
           - YARN_JOBHISTORY
@@ -58,7 +58,7 @@ clusters:
           - HIVE_SERVER2
           - SPARK_YARN_HISTORY_SERVER
         auto_security_group: ${use_auto_security_group}
-        # In 5.5 the defaults of following configs are too large,
+        # In 5.9 the defaults of following configs are too large,
         # restrict them to save memory for scenario testing.
         node_configs:
             HIVEMETASTORE:
@@ -66,7 +66,7 @@ clusters:
             HIVESERVER:
                 hiveserver2_java_heapsize: 2147483648
     cluster_template:
-      name: cdh550
+      name: cdh590
       node_group_templates:
         manager: 1
         master-core: 1
