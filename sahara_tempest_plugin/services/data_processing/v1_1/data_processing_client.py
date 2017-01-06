@@ -180,6 +180,12 @@ class DataProcessingClient(rest_client.RestClient):
         uri = 'data-sources/%s' % source_id
         return self._request_and_check_resp(self.delete, uri, 204)
 
+    def update_data_source(self, source_id, **kwargs):
+        """Updates a data source"""
+        uri = 'data-sources/%s' % source_id
+        return self._request_check_and_parse_resp(self.put, uri, 202,
+                                                  body=json.dumps(kwargs))
+
     def list_job_binary_internals(self):
         """List all job binary internals for a user."""
 

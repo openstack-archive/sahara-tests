@@ -81,6 +81,23 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
         self.assertEqual(source_name, source['name'])
         self.assertDictContainsSubset(source_body, source)
 
+    def _delete_data_source(self, source_id):
+        # delete the data source by id
+        self.client.delete_data_source(source_id)
+        self.wait_for_resource_deletion(source_id, self.client.get_data_source)
+
+        # assert data source does not exist anymore
+        sources = self.client.list_data_sources()['data_sources']
+        sources_ids = [source['id'] for source in sources]
+        self.assertNotIn(source_id, sources_ids)
+
+    def _update_data_source(self, source_id):
+        new_source_name = data_utils.rand_name('sahara-data-source')
+        body = {'name': new_source_name}
+        updated_source = self.client.update_data_source(source_id, **body)
+        source = updated_source['data_source']
+        self.assertEqual(new_source_name, source['name'])
+
     @tc.attr('smoke')
     @decorators.idempotent_id('9e0e836d-c372-4fca-91b7-b66c3e9646c8')
     def test_swift_data_source_create(self):
@@ -105,9 +122,14 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
     def test_swift_data_source_delete(self):
         source_id, _ = (
             self._create_data_source(self.swift_data_source_with_creds))
+        self._delete_data_source(source_id)
 
-        # delete the data source by id
-        self.client.delete_data_source(source_id)
+    @tc.attr('smoke')
+    @decorators.idempotent_id('44398efb-c2a8-4a20-97cd-509c49b5d25a')
+    def test_swift_data_source_update(self):
+        source_id, _ = (
+            self._create_data_source(self.swift_data_source_with_creds))
+        self._update_data_source(source_id)
 
     @tc.attr('smoke')
     @decorators.idempotent_id('88505d52-db01-4229-8f1d-a1137da5fe2d')
@@ -132,9 +154,13 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
     @decorators.idempotent_id('e398308b-4230-4f86-ba10-9b0b60a59c8d')
     def test_local_hdfs_data_source_delete(self):
         source_id, _ = self._create_data_source(self.local_hdfs_data_source)
+        self._delete_data_source(source_id)
 
-        # delete the data source by id
-        self.client.delete_data_source(source_id)
+    @tc.attr('smoke')
+    @decorators.idempotent_id('16a71f3b-0095-431c-b542-c871e1f95e1f')
+    def test_local_hdfs_data_source_update(self):
+        source_id, _ = self._create_data_source(self.local_hdfs_data_source)
+        self._update_data_source(source_id)
 
     @tc.attr('smoke')
     @decorators.idempotent_id('bfd91128-e642-4d95-a973-3e536962180c')
@@ -159,12 +185,10 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
     @decorators.idempotent_id('295924cd-a085-4b45-aea8-0707cdb2da7e')
     def test_external_hdfs_data_source_delete(self):
         source_id, _ = self._create_data_source(self.external_hdfs_data_source)
+        self._delete_data_source(source_id)
 
-        # delete the data source by id
-        self.client.delete_data_source(source_id)
-        self.wait_for_resource_deletion(source_id, self.client.get_data_source)
-
-        # assert data source does not exist anymore
-        sources = self.client.list_data_sources()['data_sources']
-        sources_ids = [source['id'] for source in sources]
-        self.assertNotIn(source_id, sources_ids)
+    @tc.attr('smoke')
+    @decorators.idempotent_id('9b317861-95db-44bc-9b4b-80d23feade3f')
+    def test_external_hdfs_data_source_update(self):
+        source_id, _ = self._create_data_source(self.external_hdfs_data_source)
+        self._update_data_source(source_id)
