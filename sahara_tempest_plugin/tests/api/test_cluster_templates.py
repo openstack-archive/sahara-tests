@@ -130,3 +130,16 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
         templates_info = [template['id']
                           for template in templates]
         self.assertNotIn(template_id, templates_info)
+
+    @tc.attr('smoke')
+    @decorators.idempotent_id('40235aa0-cd4b-494a-9c12-2d0e8a92157a')
+    def test_cluster_template_update(self):
+        template_id, _ = self._create_cluster_template()
+
+        new_template_name = data_utils.rand_name('sahara-cluster-template')
+        body = {'name': new_template_name}
+        updated_template = self.client.update_cluster_template(template_id,
+                                                               **body)
+        updated_template = updated_template['cluster_template']
+
+        self.assertEqual(new_template_name, updated_template['name'])

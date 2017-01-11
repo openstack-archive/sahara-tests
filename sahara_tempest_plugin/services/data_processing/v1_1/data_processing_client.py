@@ -140,6 +140,12 @@ class DataProcessingClient(rest_client.RestClient):
         uri = 'cluster-templates/%s' % tmpl_id
         return self._request_and_check_resp(self.delete, uri, 204)
 
+    def update_cluster_template(self, tmpl_id, **kwargs):
+        """Updates the specificed cluster template."""
+        uri = 'cluster-templates/%s' % tmpl_id
+        return self._request_check_and_parse_resp(self.put, uri, 202,
+                                                  body=json.dumps(kwargs))
+
     def list_data_sources(self):
         """List all data sources for a user."""
 
