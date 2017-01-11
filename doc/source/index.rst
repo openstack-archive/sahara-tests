@@ -1,5 +1,5 @@
 Welcome to sahara-tests's documentation!
-===========================================
+========================================
 
 Tests for the
 `Sahara project
@@ -16,6 +16,13 @@ User guide
    :maxdepth: 1
 
    scenario
+
+**Tempest Plugin**
+
+.. toctree::
+   :maxdepth: 1
+
+   tempest-plugin
 
 Source
 ------
