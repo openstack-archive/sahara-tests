@@ -163,10 +163,10 @@ def read_scenario_config(scenario_config, template_vars=None,
         scenario_template = mako_template.Template(filename=scenario_config,
                                                    strict_undefined=True)
         template = scenario_template.render_unicode(**template_vars)
-        yaml_file = yaml.load(template)
+        yaml_file = yaml.safe_load(template)
     else:
         with open(scenario_config, 'r') as yaml_file:
-            yaml_file = yaml.load(yaml_file)
+            yaml_file = yaml.safe_load(yaml_file)
     if verbose:
         print("YAML from %s:\n%s" % (scenario_config,
                                      yaml.safe_dump(yaml_file,
