@@ -23,5 +23,5 @@ class TestValidation(testtools.TestCase):
     def test_validation(self):
         with open("sahara_tests/unit/scenario/vanilla2_7_1.yaml",
                   "r") as yaml_file:
-            config = yaml.load(yaml_file)
+            config = yaml.safe_load(yaml_file)
         self.assertIsNone(validation.validate(config))
