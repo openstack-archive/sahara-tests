@@ -1,0 +1,35 @@
+---
+prelude: |
+    Fixes and addition for the API and CLI tests.
+
+    Support for CDH 5.9 in scenario tests.
+
+    Less parameters required for scenario tests.
+features:
+  - The Tempest-based tests have received an increase of the coverage
+    for both API and CLI tests (job, plugins, templates; negative
+    testing).
+  - CDH 5.9 can be tested thanks to the addition of the specific
+    templates.
+  - Few parameters are not required anymore by the templates in scenario
+    tests; a default value is provided (name of templates, etc).
+  - The flavors used in templates are now parameters too.
+  - If a flavor name is provided in addition to its specification and
+    a flavor with that name exists, it is used and not created again.
+  - The dependencies on non-public Tempest interfaces have been
+    removed.
+upgrade:
+  - the name of the variables/parameters used for the name of
+    the images in the scenario tests have been changes to follow
+    a more consistent pattern.
+critical:
+  - The Tempest plugin was fixed after the removal of
+    the data_processing plugin from the tempest repository.
+    Most of the work was in place, only a small change was
+    missing.
+fixes:
+  - The artifacts created during the execution of CLI tests
+    are properly cleaned at the end of the tests.
+other:
+  - The documentation was improved (scenario tests) and
+    extended (Tempest plugin).
