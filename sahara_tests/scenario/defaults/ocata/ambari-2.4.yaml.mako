@@ -2,7 +2,7 @@
 
 clusters:
   - plugin_name: ambari
-    plugin_version: '2.3'
+    plugin_version: '2.4'
     image: ${ambari_22_image}
     node_group_templates:
       - name: master
@@ -58,8 +58,10 @@ clusters:
             timeout: 30
     cluster:
       name: ${cluster_name}
-    scenario:
-      - run_jobs
+    scaling:
+      - operation: add
+        node_group: worker
+        size: 1
     edp_jobs_flow:
       - java_job
       - spark_pi

@@ -375,11 +375,11 @@ class RunnerUnitTest(testtools.TestCase):
     @mock.patch('subprocess.Popen',
                 return_value=_create_subprocess_communicate_mock())
     @mock.patch('sys.exit', return_value=None)
-    def test_default_templates_kilo(self, mock_sys, mock_sub, mock_validate):
+    def test_default_templates(self, mock_sys, mock_sub, mock_validate):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.3.1', '-r', 'liberty',
+                    '-p', 'spark', '-v', '1.6.0', '-r', 'newton',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'http://127.0.0.1:5000/v2']
@@ -387,7 +387,7 @@ class RunnerUnitTest(testtools.TestCase):
         self.assertEqual('spark',
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_name'])
-        self.assertEqual('1.3.1',
+        self.assertEqual('1.6.0',
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_version'])
 
@@ -398,7 +398,7 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.3.1', '--release', 'liberty',
+                    '-p', 'spark', '-v', '1.6.0', '--release', 'newton',
                     '--count', '4',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
@@ -412,14 +412,15 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    'sahara_tests/scenario/defaults/liberty',
+                    'sahara_tests/scenario/defaults/newton',
                     'sahara_tests/scenario/defaults/edp.yaml.mako',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'http://127.0.0.1:5000/v2', '--args',
                     'ambari_22_image:ambari', 'fake_plugin_image:fake',
-                    'mapr_500mrv2_image:mapr', 'spark_131_image:spark',
-                    'hdp_206_image:hdp']
+                    'mapr_510mrv2_image:mapr', 'mapr_520mrv2_image:mapr',
+                    'cdh_570_image:cdh', 'spark_160_image:spark',
+                    'storm_101_image:storm']
         runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')

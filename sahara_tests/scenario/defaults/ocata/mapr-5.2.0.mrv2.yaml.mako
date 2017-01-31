@@ -2,8 +2,8 @@
 
 clusters:
   - plugin_name: mapr
-    plugin_version: 5.0.0.mrv2
-    image: ${mapr_500mrv2_image}
+    plugin_version: 5.2.0.mrv2
+    image: ${mapr_520mrv2_image}
     node_group_templates:
       - name: master
         flavor:
@@ -42,7 +42,7 @@ clusters:
           - FileServer
         auto_security_group: ${use_auto_security_group}
     cluster_template:
-      name: mapr500mrv2
+      name: mapr520mrv2
       node_group_templates:
         master: 1
         worker: 1
