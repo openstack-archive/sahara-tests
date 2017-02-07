@@ -18,6 +18,7 @@ from tempest import config
 from tempest.lib.cli import base
 from tempest.test import BaseTestCase
 from tempest.lib import exceptions as exc
+from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.common import plugin_utils
 
@@ -67,14 +68,12 @@ class ClientTestBase(base.ClientTestBase):
         result = self.parser.listing(command_for_item)
         return result
 
-    def find_in_listing(self, result, name):
-        check_table = None
+    def find_in_listing(self, result, value, field='name'):
         for line in result:
-            if line['Field'] == 'Name':
-                self.assertEqual(line['Value'], name)
-                check_table = True
-        if check_table is None:
-            raise self.skipException('No table to show information')
+            if line['Field'].lower() == field.lower():
+                self.assertEqual(line['Value'].lower(), value.lower())
+                return
+        raise self.skipException('No table to show information')
 
     def check_if_delete(self, command, name):
         delete_cmd = self.openstack('dataprocessing %s delete' % command,
@@ -83,6 +82,14 @@ class ClientTestBase(base.ClientTestBase):
         # lower() is required because "command" in the result string could
         # have the first letter capitalized.
         self.assertEqual(delete_cmd.lower(), result.lower())
+
+    def update_resource_value(self, command, value, params):
+        new_value = data_utils.rand_name(value)
+        command = '%s update %s' % (command, value)
+        params = '%s %s' % (params, new_value)
+        update_result = self.listing_result('%s %s' % (command, params))
+        self.find_in_listing(update_result, new_value)
+        return new_value
 
     def delete_resource(self, command, name):
         list_of_resources = self.listing_result('%s list' % command)

@@ -25,6 +25,7 @@ from sahara_tempest_plugin.tests.cli import data_sources
 from sahara_tempest_plugin.tests.cli import job_types
 
 TEMPEST_CONF = config.CONF
+NODE_GROUP_TEMPLATE = 'node group template'
 
 
 class Scenario(images.SaharaImageCLITest,
@@ -48,54 +49,53 @@ class Scenario(images.SaharaImageCLITest,
     def test_node_group_cli(self):
         master_ngt = self.openstack_node_group_template_create('master', '4')
         worker_ngt = self.openstack_node_group_template_create('worker', '3')
-        self.addCleanup(self.delete_resource, 'node group template',
-                        master_ngt)
-        self.addCleanup(self.delete_resource, 'node group template',
-                        worker_ngt)
+        self.addCleanup(self.delete_resource, NODE_GROUP_TEMPLATE, master_ngt)
+        self.addCleanup(self.delete_resource, NODE_GROUP_TEMPLATE, worker_ngt)
 
         self.openstack_node_group_template_list()
         new_master_ngt = self.openstack_node_group_template_update(
             master_ngt, update_field='name')
-        self.addCleanup(self.delete_resource, 'node group template',
+        self.addCleanup(self.delete_resource, NODE_GROUP_TEMPLATE,
                         new_master_ngt)
 
         self.openstack_node_group_template_show(new_master_ngt)
         self.openstack_node_group_template_delete(new_master_ngt)
         self.negative_try_to_delete_protected_node_group(worker_ngt)
         self.openstack_node_group_template_delete(worker_ngt)
-        self.wait_for_resource_deletion(new_master_ngt, 'node group template')
-        self.wait_for_resource_deletion(worker_ngt, 'node group template')
+        self.wait_for_resource_deletion(new_master_ngt, NODE_GROUP_TEMPLATE)
+        self.wait_for_resource_deletion(worker_ngt, NODE_GROUP_TEMPLATE)
         self.negative_delete_removed_node_group(worker_ngt)
 
     def test_cluster_template_cli(self):
+        cluster_template_cmd = 'cluster template'
         ng_master = (
             self.openstack_node_group_template_create('tmp-master', '4'))
         ng_worker = (
             self.openstack_node_group_template_create('tmp-worker', '3'))
-        self.addCleanup(self.delete_resource, 'node group template',
+        self.addCleanup(self.delete_resource, NODE_GROUP_TEMPLATE,
                         ng_master)
-        self.addCleanup(self.delete_resource, 'node group template',
+        self.addCleanup(self.delete_resource, NODE_GROUP_TEMPLATE,
                         ng_worker)
 
         cluster_template_name = (
             self.openstack_cluster_template_create(ng_master, ng_worker))
-        self.addCleanup(self.delete_resource, 'cluster template',
+        self.addCleanup(self.delete_resource, cluster_template_cmd,
                         cluster_template_name)
 
         self.openstack_cluster_template_list()
         self.openstack_cluster_template_show(cluster_template_name)
         new_cluster_template_name = self.openstack_cluster_template_update(
             cluster_template_name)
-        self.addCleanup(self.delete_resource, 'cluster template',
+        self.addCleanup(self.delete_resource, cluster_template_cmd,
                         new_cluster_template_name)
 
         self.openstack_cluster_template_delete(new_cluster_template_name)
-        self.wait_for_resource_deletion(new_cluster_template_name, 'cluster '
-                                                                   'template')
+        self.wait_for_resource_deletion(new_cluster_template_name,
+                                        cluster_template_cmd)
         self.openstack_node_group_template_delete(ng_master)
         self.openstack_node_group_template_delete(ng_worker)
-        self.wait_for_resource_deletion(ng_master, 'node group template')
-        self.wait_for_resource_deletion(ng_worker, 'node group template')
+        self.wait_for_resource_deletion(ng_master, NODE_GROUP_TEMPLATE)
+        self.wait_for_resource_deletion(ng_worker, NODE_GROUP_TEMPLATE)
 
     @decorators.skip_because(bug="1629295")
     def test_cluster_cli(self):

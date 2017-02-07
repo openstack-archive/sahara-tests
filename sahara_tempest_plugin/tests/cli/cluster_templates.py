@@ -45,17 +45,11 @@ class SaharaClusterTemplateCLITest(base.ClientTestBase):
             cluster_template_name)
 
     def openstack_cluster_template_update(self, cluster_template_name):
-        new_cluster_template_name = ''.join([cluster_template_name, '1'])
-        self.assertTableStruct(
-            self.listing_result(
-                ''.join(['cluster template update --name ',
-                         new_cluster_template_name, ' ',
-                         cluster_template_name])),
-            [
-                'Field',
-                'Value'
-            ])
-        return new_cluster_template_name
+        cmd = 'cluster template'
+        new_template_name = self.update_resource_value(cmd,
+                                                       cluster_template_name,
+                                                       '--name')
+        return new_template_name
 
     def openstack_cluster_template_delete(self, cluster_template_name):
         self.check_if_delete('cluster template', cluster_template_name)

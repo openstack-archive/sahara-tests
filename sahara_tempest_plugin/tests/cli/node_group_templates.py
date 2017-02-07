@@ -61,23 +61,19 @@ class SaharaNodeGroupCLITest(base.ClientTestBase):
             this arg, there are several available updates of node group:
             name, public/private, protected/unprotected
         """
-        new_node_group_name = None
-        cmd = 'node group template update %s' % node_group_name
+        cmd = 'node group template'
         if update_field == 'name':
-            new_node_group_name = data_utils.rand_name(node_group_name)
-            update_cmd = '--%s %s' % (update_field, new_node_group_name)
-        elif update_field:
+            new_node_group_name = self.update_resource_value(cmd,
+                                                             node_group_name,
+                                                             '--name')
+            return new_node_group_name
+        elif update_field in ('protected', 'unprotected'):
             # here we check only updating with public/protected flags for now
-            update_cmd = '--%s' % update_field
-        else:
-            # if update_field is None, update_command should be empty
-            update_cmd = ''
-        self.assertTableStruct(
-            self.listing_result('%s %s' % (cmd, update_cmd)), [
-                'Field',
-                'Value'
-            ])
-        return new_node_group_name
+            update_cmd = 'update %s --%s' % (node_group_name, update_field)
+            result = self.listing_result('%s %s' % (cmd, update_cmd))
+            is_protected_value = str(update_field == 'protected')
+            self.find_in_listing(result, is_protected_value, 'is protected')
+            self.assertTableStruct(result, ['Field', 'Value'])
 
     def openstack_node_group_template_delete(self, node_group_name):
         self.check_if_delete('node group template', node_group_name)
