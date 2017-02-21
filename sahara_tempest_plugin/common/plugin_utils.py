@@ -107,6 +107,67 @@ BASE_CDH_DESC = {
     }
 }
 
+BASE_AMBARI_HDP_DESC = {
+    'NODES': {
+        'master1': {
+            'count': 1,
+            'node_processes': ['Ambari', 'MapReduce History Server',
+                               'Spark History Server', 'NameNode',
+                               'ResourceManager', 'SecondaryNameNode',
+                               'YARN Timeline Server', 'ZooKeeper',
+                               'Kafka Broker']
+        },
+        'master2': {
+            'count': 1,
+            'node_processes': ['Hive Metastore', 'HiveServer', 'Oozie']
+        },
+        'worker1': {
+            'count': 3,
+            'node_processes': ['DataNode', 'NodeManager']
+        }
+    },
+    'cluster_configs': {
+        'HDFS': {
+            'dfs.datanode.du.reserved': 0
+        }
+    }
+}
+
+BASE_MAPR_DESC = {
+    'NODES': {
+        'master1': {
+            'count': 1,
+            'node_processes': ['Metrics', 'Webserver', 'ZooKeeper',
+                               'HTTPFS', 'Oozie', 'FileServer', 'CLDB',
+                               'Flume', 'Hue', 'NodeManager', 'HistoryServer',
+                               'ResourceManager', 'HiveServer2',
+                               'HiveMetastore',
+                               'Sqoop2-Client', 'Sqoop2-Server']
+        },
+        'worker1': {
+            'count': 1,
+            'node_processes': ['NodeManager', 'FileServer']
+        }
+    }
+}
+
+BASE_STORM_DESC = {
+    'NODES': {
+        'master1': {
+            'count': 1,
+            'node_processes': ['nimbus']
+        },
+        'master2': {
+            'count': 1,
+            'node_processes': ['zookeeper']
+        },
+        'worker1': {
+            'count': 1,
+            'node_processes': ['supervisor']
+        }
+    }
+}
+
 
 DEFAULT_TEMPLATES = {
     'fake': OrderedDict([
@@ -124,40 +185,7 @@ DEFAULT_TEMPLATES = {
         })
     ]),
     'vanilla': OrderedDict([
-        ('2.6.0', copy.deepcopy(BASE_VANILLA_DESC)),
         ('2.7.1', copy.deepcopy(BASE_VANILLA_DESC)),
-        ('1.2.1', {
-            'NODES': {
-                'master1': {
-                    'count': 1,
-                    'node_processes': ['namenode', 'jobtracker']
-                },
-                'worker1': {
-                    'count': 1,
-                    'node_processes': ['datanode', 'tasktracker'],
-                    'node_configs': {
-                        'HDFS': {
-                            'Data Node Heap Size': 1024
-                        },
-                        'MapReduce': {
-                            'Task Tracker Heap Size': 1024
-                        }
-                    }
-                }
-            },
-            'cluster_configs': {
-                'HDFS': {
-                    'dfs.replication': 1
-                },
-                'MapReduce': {
-                    'mapred.map.tasks.speculative.execution': False,
-                    'mapred.child.java.opts': '-Xmx500m'
-                },
-                'general': {
-                    'Enable Swift': False
-                }
-            }
-        })
     ]),
     'hdp': OrderedDict([
         ('2.0.6', {
@@ -185,14 +213,26 @@ DEFAULT_TEMPLATES = {
             }
         })
     ]),
+    'ambari': OrderedDict([
+        ('2.3', copy.deepcopy(BASE_AMBARI_HDP_DESC)),
+        ('2.4', copy.deepcopy(BASE_AMBARI_HDP_DESC))
+    ]),
     'spark': OrderedDict([
-        ('1.0.0', copy.deepcopy(BASE_SPARK_DESC)),
-        ('1.3.1', copy.deepcopy(BASE_SPARK_DESC))
+        ('1.3.1', copy.deepcopy(BASE_SPARK_DESC)),
+        ('1.6.0', copy.deepcopy(BASE_SPARK_DESC))
     ]),
     'cdh': OrderedDict([
         ('5.4.0', copy.deepcopy(BASE_CDH_DESC)),
-        ('5.3.0', copy.deepcopy(BASE_CDH_DESC)),
-        ('5', copy.deepcopy(BASE_CDH_DESC))
+        ('5.5.0', copy.deepcopy(BASE_CDH_DESC)),
+        ('5.7.0', copy.deepcopy(BASE_CDH_DESC)),
+        ('5.9.0', copy.deepcopy(BASE_CDH_DESC))
+    ]),
+    'mapr': OrderedDict([
+        ('5.1.0.mrv2', copy.deepcopy(BASE_MAPR_DESC)),
+        ('5.2.0.mrv2', copy.deepcopy(BASE_MAPR_DESC))
+    ]),
+    'storm': OrderedDict([
+        ('1.0.1', copy.deepcopy(BASE_STORM_DESC))
     ])
 }
 

@@ -1,0 +1,7 @@
+---
+prelude: >
+    Long overdue general updates of the test templates
+fixes:
+  - The default templates used by tests have been updated;
+    added (MapR, Ambari and Storm, and some versions of CDH),
+    or removed (obsolete versions of Vanilla and CDH).
