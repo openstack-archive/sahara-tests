@@ -33,7 +33,6 @@ export SAHARA_DIR=${SAHARA_DIR:-$DEST/sahara}
 export SAHARA_TESTS_DIR=${SAHARA_TESTS_DIR:-$DEST/sahara-tests}
 
 
-export LOCALRC_PATH=$DEVSTACK_DIR/localrc
 export LOCALCONF_PATH=$DEVSTACK_DIR/local.conf
 
 function sahara_register_fake_plugin_image {

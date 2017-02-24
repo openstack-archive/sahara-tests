@@ -21,7 +21,8 @@ set -ex
 
 source commons $@
 
-echo "IMAGE_URLS=$SAHARA_FAKE_PLUGIN_IMAGE" >> $LOCALRC_PATH
+echo "[[local|localrc]]" >> $LOCALCONF_PATH
+echo "IMAGE_URLS=$SAHARA_FAKE_PLUGIN_IMAGE" >> $LOCALCONF_PATH
 
 # Here we can set some configurations for local.conf
 # for example, to pass some config options directly to sahara.conf file
