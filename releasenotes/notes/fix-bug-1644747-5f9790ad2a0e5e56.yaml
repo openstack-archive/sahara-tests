@@ -1,0 +1,7 @@
+---
+prelude: >
+    Clean resources created in CLI tests
+fixes:
+  - Fix bug in which after running CLI tests,
+    projects and networks created for these tests
+    were not deleted at the end of the run.

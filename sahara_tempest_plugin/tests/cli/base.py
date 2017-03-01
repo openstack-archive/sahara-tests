@@ -179,3 +179,12 @@ class ClientTestBase(base.ClientTestBase):
             raise exc.TempestException('%s %s in negative scenarios have been '
                                        'executed without any errors'
                                        % (cmd, name))
+
+    @classmethod
+    def tearDownClass(cls):
+        if hasattr(super(ClientTestBase, cls), 'tearDownClass'):
+            super(ClientTestBase, cls).tearDownClass()
+        # this'll be needed as long as BaseTestCase functions
+        # are used in this class, otherwise projects, users,
+        # networks and routers created won't be deleted
+        BaseTestCase.clear_credentials()
