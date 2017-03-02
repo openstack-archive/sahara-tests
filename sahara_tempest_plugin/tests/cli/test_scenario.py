@@ -193,7 +193,8 @@ class Scenario(images.SaharaImageCLITest,
 
     def test_job_type_cli(self):
         self.openstack_job_type_list()
-        self.openstack_job_type_configs_get()
+        self.openstack_job_type_configs_get(flag='file')
+        self.filter_job_type_in_list()
 
     def _run_job_on_cluster(self, cluster_name):
         job_template_name = self.openstack_job_template_name()

@@ -12,7 +12,11 @@
 
 from os import remove
 
+from tempest.lib.common.utils import data_utils
+
 from sahara_tempest_plugin.tests.cli import base
+
+GET_CONFIG_RESULT = '"%s" job configs were saved in "%s"file'
 
 
 class SaharaJobTypeCLITest(base.ClientTestBase):
@@ -23,14 +27,25 @@ class SaharaJobTypeCLITest(base.ClientTestBase):
             'Plugins'
         ])
 
-    def openstack_job_type_configs_get(self):
+    def openstack_job_type_configs_get(self, flag=None):
         list_job_type = self.listing_result('job type list')
         job_type_names = [p['Name'] for p in list_job_type]
         if len(job_type_names) == 0:
             raise self.skipException('No job types to get configs')
-        self.assertTableStruct(self.listing_result(
-            ''.join(['job type configs get ', job_type_names[0]])), [
-            'Field',
-            'Value'
-        ])
-        remove(job_type_names[0])
+        cmd = 'job type configs get'
+        type_name = job_type_names[0]
+        if flag == 'file':
+            file_name = data_utils.rand_name('filename')
+            cmd = '%s --%s %s %s' % (cmd, flag, file_name, type_name)
+        else:
+            file_name = type_name
+            cmd = '%s %s' % (cmd, type_name)
+        result = self.openstack('dataprocessing %s' % cmd)
+        expected_result = GET_CONFIG_RESULT % (type_name, file_name)
+        self.assertEqual(result, expected_result)
+        remove(file_name)
+
+    def filter_job_type_in_list(self):
+        """Filter job types list with --column flag"""
+        list_job_types = self.listing_result('job type list --column Name')
+        self.assertTableStruct(list_job_types, ['Name'])
