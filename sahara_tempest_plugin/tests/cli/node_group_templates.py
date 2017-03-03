@@ -99,3 +99,20 @@ class SaharaNodeGroupCLITest(base.ClientTestBase):
                                       node_group_name)
         self.openstack_node_group_template_update(node_group_name,
                                                   update_field='unprotected')
+
+    def filter_node_group_list_with_plugin(self):
+        """Test to filter node group templates with the plugin"""
+        plugins_list = self.listing_result('plugin list')
+        plugins_names = [p['Name'] for p in plugins_list]
+        if len(plugins_names) == 0:
+            raise self.skipException('No plugin to filter node group')
+        filter_cmd = self.listing_result(
+            'node group template list --plugin %s' % plugins_names[0])
+        for ng in filter_cmd:
+            self.assertEqual(plugins_names[0], ng['Plugin name'])
+        self.assertTableStruct(filter_cmd, [
+            'Name',
+            'Id',
+            'Plugin version',
+            'Plugin name'
+        ])

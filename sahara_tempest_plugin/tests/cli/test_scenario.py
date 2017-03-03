@@ -51,7 +51,7 @@ class Scenario(images.SaharaImageCLITest,
         worker_ngt = self.openstack_node_group_template_create('worker', '3')
         self.addCleanup(self.delete_resource, NODE_GROUP_TEMPLATE, master_ngt)
         self.addCleanup(self.delete_resource, NODE_GROUP_TEMPLATE, worker_ngt)
-
+        self.filter_node_group_list_with_plugin()
         self.openstack_node_group_template_list()
         new_master_ngt = self.openstack_node_group_template_update(
             master_ngt, update_field='name')

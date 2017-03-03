@@ -1,0 +1,6 @@
+---
+prelude: >
+  Create new cli test in Sahara Tempest plugin for node group templates
+features:
+  - Now we can filter node group template with column flag by plugin
+    and check if it was filtered successfully
