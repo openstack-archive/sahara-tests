@@ -1,0 +1,7 @@
+---
+other:
+  - The dependency on tempest.scenario.manager.py has been
+    removed. There are still dependencies on internal
+    Tempest interfaces but they are more difficult to replace
+    due to lack of tempest.lib alternatives, and
+    scenario.manager.py is undergoing an heavy refactoring.

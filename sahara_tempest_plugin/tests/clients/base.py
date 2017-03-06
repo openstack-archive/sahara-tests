@@ -21,7 +21,7 @@ from saharaclient.api import base as sab
 from saharaclient import client as sahara_client
 from tempest import config
 from tempest.lib import exceptions
-from tempest.scenario import manager
+import tempest.test
 
 from sahara_tempest_plugin.common import plugin_utils
 
@@ -36,7 +36,7 @@ class ClusterErrorException(exceptions.TempestException):
     message = "Cluster failed to build and is in ERROR status"
 
 
-class BaseDataProcessingTest(manager.ScenarioTest):
+class BaseDataProcessingTest(tempest.test.BaseTestCase):
 
     credentials = ('admin', 'primary')
 
@@ -66,6 +66,16 @@ class BaseDataProcessingTest(manager.ScenarioTest):
             service_type=catalog_type,
             endpoint_type=endpoint_type)
 
+        if TEMPEST_CONF.service_available.glance:
+            # Check if glance v1 is available to determine which client to use.
+            if TEMPEST_CONF.image_feature_enabled.api_v1:
+                cls.image_client = cls.os_admin.image_client
+            elif TEMPEST_CONF.image_feature_enabled.api_v2:
+                cls.image_client = cls.os_admin.image_client_v2
+            else:
+                raise lib_exc.InvalidConfiguration(
+                    'Either api_v1 or api_v2 must be True in '
+                    '[image-feature-enabled].')
         cls.object_client = cls.os_primary.object_client
         cls.container_client = cls.os_primary.container_client
         cls.networks_client = cls.os_primary.compute_networks_client
