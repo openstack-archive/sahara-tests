@@ -16,7 +16,6 @@
 
 import os
 
-from oslo_config import cfg
 from tempest import config
 from tempest.test_discover import plugins
 
@@ -32,34 +31,16 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
         return full_test_dir, base_path
 
     def register_opts(self, conf):
-        # Ignore the duplicate error: it means that the same content
-        # is (still) defined in Tempest
-        try:
-            config.register_opt_group(conf,
-                                      sahara_config.service_available_group,
-                                      sahara_config.ServiceAvailableGroup)
-        except cfg.DuplicateOptError:
-            pass
-        try:
-            config.register_opt_group(conf,
-                                      sahara_config.data_processing_group,
-                                      sahara_config.DataProcessingGroup)
-        except cfg.DuplicateOptError:
-            pass
+        conf.register_opt(sahara_config.service_option,
+                          group='service_available')
+        conf.register_group(sahara_config.data_processing_group)
+        conf.register_opts(sahara_config.DataProcessingGroup +
+                           sahara_config.DataProcessingAdditionalGroup,
+                           sahara_config.data_processing_group)
 
-        conf.register_opts(sahara_config.DataProcessingAdditionalGroup,
-                           sahara_config.data_processing_group.name)
-
-        try:
-            config.register_opt_group(conf, sahara_config.
-                                      data_processing_feature_group,
-                                      sahara_config.
-                                      DataProcessingFeaturesGroup)
-        except cfg.DuplicateOptError:
-            pass
-        config.CONF.data_processing = conf['data-processing']
-        config.CONF.data_processing_feature_enabled = conf[
-            'data-processing-feature-enabled']
+        conf.register_group(sahara_config.data_processing_feature_group)
+        conf.register_opts(sahara_config.DataProcessingFeaturesGroup,
+                           sahara_config.data_processing_feature_group)
 
     def get_opt_lists(self):
         return [
@@ -67,19 +48,11 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
              sahara_config.DataProcessingGroup),
             (sahara_config.data_processing_feature_group.name,
              sahara_config.DataProcessingFeaturesGroup),
-            (sahara_config.service_available_group.name,
-             sahara_config.ServiceAvailableGroup)
         ]
 
     def get_service_clients(self):
-        # Ignore the ArgsAlreadyParsed error: it means that
-        # the same content is (still) defined in Tempest
-        try:
-            data_processing_config = (
-                config.service_client_config('data-processing'))
-        except cfg.ArgsAlreadyParsedError:
-            # the service name must be returned with the other params
-            data_processing_config = {'service': 'data-processing'}
+        data_processing_config = (
+            config.service_client_config('data-processing'))
 
         params = {
             'name': 'data_processing',
