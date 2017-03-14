@@ -40,9 +40,9 @@ function sahara_register_fake_plugin_image {
     props+=" --property _sahara_tag_0.1=True"
     props+=" --property _sahara_tag_fake=True"
     props+=" --property _sahara_username=$SAHARA_FAKE_PLUGIN_IMAGE_USERNAME"
-
-    openstack --os-url $GLANCE_SERVICE_PROTOCOL://$GLANCE_HOSTPORT --os-image-api-version 1 image set \
-        $SAHARA_FAKE_PLUGIN_IMAGE_NAME $props
+    openstack dataprocessing image register --username $SAHARA_FAKE_PLUGIN_IMAGE_USERNAME \
+        $SAHARA_FAKE_PLUGIN_IMAGE_NAME
+    openstack dataprocessing image tags add $SAHARA_FAKE_PLUGIN_IMAGE_NAME --tags 0.1 fake
 }
 
 function sahara_register_flavor {
