@@ -16,11 +16,28 @@
 # limitations under the License.
 
 #TODO(slukjanov): replace with special image for fake plugin (cloud ubuntu?)
-export SAHARA_FAKE_PLUGIN_IMAGE=https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
-export SAHARA_FAKE_PLUGIN_IMAGE_NAME=$(basename $SAHARA_FAKE_PLUGIN_IMAGE .img)
-export SAHARA_FAKE_PLUGIN_IMAGE_USERNAME=ubuntu
-export SAHARA_FLAVOR_NAME=sahara-flavor
-export SAHARA_FLAVOR_ID=20
-export SAHARA_FLAVOR_RAM=512
-export SAHARA_FLAVOR_DISK=10
-export SAHARA_FLAVOR_VCPUS=1
+if [ $PLUGIN == fake ] ; then
+    export SAHARA_IMAGE=https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+    export SAHARA_IMAGE_NAME=$(basename $SAHARA_IMAGE .img)
+    export SAHARA_IMAGE_USERNAME=ubuntu
+    export SAHARA_PLUGIN_NAME=fake
+    export SAHARA_PLUGIN_VERSION=0.1
+    export SAHARA_SCENARIO_TEMPLATE=fake.yaml.mako
+    export SAHARA_FLAVOR_NAME=sahara-flavor
+    export SAHARA_FLAVOR_ID=20
+    export SAHARA_FLAVOR_RAM=512
+    export SAHARA_FLAVOR_DISK=10
+    export SAHARA_FLAVOR_VCPUS=1
+else
+    export SAHARA_IMAGE=http://sahara-files.mirantis.com/images/upstream/newton/sahara-newton-spark-1.6.0-ubuntu.qcow2
+    export SAHARA_IMAGE_NAME=$(basename $SAHARA_IMAGE .qcow2)
+    export SAHARA_IMAGE_USERNAME=ubuntu
+    export SAHARA_PLUGIN_NAME=spark
+    export SAHARA_PLUGIN_VERSION=1.6.0
+    export SAHARA_SCENARIO_TEMPLATE=spark-1.6.0.yaml.mako
+    export SAHARA_FLAVOR_NAME=sahara-flavor
+    export SAHARA_FLAVOR_ID=20
+    export SAHARA_FLAVOR_RAM=1536
+    export SAHARA_FLAVOR_DISK=20
+    export SAHARA_FLAVOR_VCPUS=1
+fi

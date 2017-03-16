@@ -1,35 +1,39 @@
-<%page args="is_transient='false', use_auto_security_group='true', ci_flavor_id='m1.small'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true', cluster_name='ct', ci_flavor_id='m1.small'"/>
 
 clusters:
-  - plugin_name: fake
-    plugin_version: "0.1"
+  - plugin_name: spark
+    plugin_version: 1.6.0
     image: ${plugin_image}
     node_group_templates:
-      - name: aio
+      - name: master
         flavor: ${ci_flavor_id}
         node_processes:
+          - master
           - namenode
-          - jobtracker
           - datanode
-          - tasktracker
-        volumes_per_node: 2
-        volumes_size: 1
+          - slave
         auto_security_group: ${use_auto_security_group}
+        is_proxy_gateway: ${is_proxy_gateway}
       - name: worker
         flavor: ${ci_flavor_id}
         node_processes:
           - datanode
-          - jobtracker
+          - slave
         auto_security_group: ${use_auto_security_group}
     cluster_template:
-      name: fake01
+      name: spark160
       node_group_templates:
-        aio: 1
-    cluster:
-      name: ${cluster_name}
-      is_transient: ${is_transient}
+        master: 1
+      cluster_configs:
+        HDFS:
+          dfs.replication: 1
     scaling:
       - operation: add
         node_group: worker
         size: 1
-    edp_jobs_flow: fake
+    scenario:
+      - scale
+    edp_jobs_flow:
+      - spark_pi
+    cluster:
+      name: ${cluster_name}

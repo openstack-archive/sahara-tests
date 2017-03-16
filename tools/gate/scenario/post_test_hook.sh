@@ -27,7 +27,7 @@ source $DEVSTACK_DIR/openrc admin admin
 set -x
 
 # Make public and register in Sahara as admin
-sahara_register_fake_plugin_image
+sahara_register_image
 
 # Register sahara specific flavor for gate
 sahara_register_flavor
@@ -41,7 +41,7 @@ sudo -E -u jenkins tee template_vars.ini <<EOF
 network_type: ${NETWORK}
 network_private_name: ${PRIVATE_NETWORK_NAME}
 network_public_name: ${PUBLIC_NETWORK_NAME}
-fake_plugin_image: ${SAHARA_FAKE_PLUGIN_IMAGE_NAME}
+plugin_image: ${SAHARA_IMAGE_NAME}
 ci_flavor_id: '${SAHARA_FLAVOR_ID}'
 cluster_name: fake-cluster
 is_transient: ${IS_TRANSIENT}
@@ -53,7 +53,7 @@ echo "Running scenario tests"
 sudo -u jenkins tox -e venv -- sahara-scenario --verbose -V template_vars.ini \
     etc/scenario/gate/credentials.yaml.mako \
     etc/scenario/gate/edp.yaml.mako \
-    etc/scenario/gate/fake.yaml.mako \
+    etc/scenario/gate/$SAHARA_SCENARIO_TEMPLATE \
     --os-cloud devstack \
     | tee scenario.log
 

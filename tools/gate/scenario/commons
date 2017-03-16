@@ -16,6 +16,7 @@
 # limitations under the License.
 
 export NETWORK=${1:-neutron}
+export PLUGIN=${2:-fake}
 export IS_TRANSIENT=true
 export AUTO_SECURITY_GROUP=true
 # Normalize network name
@@ -35,10 +36,11 @@ export SAHARA_TESTS_DIR=${SAHARA_TESTS_DIR:-$DEST/sahara-tests}
 
 export LOCALCONF_PATH=$DEVSTACK_DIR/local.conf
 
-function sahara_register_fake_plugin_image {
-    openstack dataprocessing image register --username $SAHARA_FAKE_PLUGIN_IMAGE_USERNAME \
-        $SAHARA_FAKE_PLUGIN_IMAGE_NAME
-    openstack dataprocessing image tags add $SAHARA_FAKE_PLUGIN_IMAGE_NAME --tags 0.1 fake
+function sahara_register_image {
+    openstack dataprocessing image register --username $SAHARA_IMAGE_USERNAME \
+        $SAHARA_IMAGE_NAME
+    openstack dataprocessing image tags add $SAHARA_IMAGE_NAME --tags \
+        $SAHARA_PLUGIN_VERSION $SAHARA_PLUGIN_NAME
 }
 
 function sahara_register_flavor {
