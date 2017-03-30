@@ -131,7 +131,7 @@ def read_template_variables(variable_file=None, verbose=False,
               "%s" % (variable_file, cpe))
     finally:
         if verbose:
-            print("Template variables:\n%s" % (variables))
+            six.print_("Template variables:\n%s" % (variables), flush=True)
     # continue anyway, as the templates could require no variables
     return variables
 
@@ -168,10 +168,12 @@ def read_scenario_config(scenario_config, template_vars=None,
         with open(scenario_config, 'r') as yaml_file:
             yaml_file = yaml.safe_load(yaml_file)
     if verbose:
-        print("YAML from %s:\n%s" % (scenario_config,
-                                     yaml.safe_dump(yaml_file,
-                                                    allow_unicode=True,
-                                                    default_flow_style=False)))
+        six.print_("YAML from %s:\n%s" % (scenario_config,
+                                          yaml.safe_dump(
+                                              yaml_file,
+                                              allow_unicode=True,
+                                              default_flow_style=False)),
+                   flush=True)
     return yaml_file
 
 
