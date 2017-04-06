@@ -131,6 +131,170 @@ Plugin:
 For more information about writing scenario YAML files, see the section
 section `How to write scenario files`_.
 
+Virtual environment flags
+-------------------------
+
+You can use the following flags to the Sahara scenario tests.
+
+Optional arguments
+~~~~~~~~~~~~~~~~~~
+
++-------------------+----------------------------+
+|   Arguments       |   Description              |
++===================+============================+
+| --help, -h        | show help message and exit |
++-------------------+----------------------------+
+| --variable_file,  | path to the file with      |
+| -V                | template variables         |
++-------------------+----------------------------+
+| --verbose         | increase output verbosity  |
++-------------------+----------------------------+
+| --validate        | validate yaml-files,       |
+|                   | tests will not be run      |
++-------------------+----------------------------+
+| --args ARGS       | pairs of argument          |
+|                   | key:value                  |
++-------------------+----------------------------+
+| --plugin,         | specify plugin name        |
+| -p PLUGIN         |                            |
++-------------------+----------------------------+
+| --plugin_version, | specify plugin version     |
+| -v PLUGIN_VERSION |                            |
++-------------------+----------------------------+
+| --release,        | specify Sahara release     |
+| -r RELEASE        |                            |
++-------------------+----------------------------+
+|  --report         | write results to file      |
++-------------------+----------------------------+
+| --count COUNT     | specify count of runs      |
++-------------------+----------------------------+
+| --os-cloud name   | name of cloud to connect   |
++-------------------+----------------------------+
+| --os-auth-type,   |                            |
+| --os-auth-plugin  | authentication type to use |
+| name              |                            |
++-------------------+----------------------------+
+
+Authentication options
+~~~~~~~~~~~~~~~~~~~~~~
+
+Options specific to the password plugin.
+
++--------------------------+--------------------------------+
+|   Arguments              |   Description                  |
++==========================+================================+
+| --os-auth-url            | authentication URL             |
+| OS_AUTH_URL              |                                |
++--------------------------+--------------------------------+
+| --os-domain-id           | domain ID to scope to          |
+| OS_DOMAIN_ID             |                                |
++--------------------------+--------------------------------+
+| --os-domain-name         | domain name to scope to        |
+| OS_DOMAIN_NAME           |                                |
++--------------------------+--------------------------------+
+| --os-project-id          |                                |
+| --os-tenant-id           | project ID to scope to         |
+| OS_PROJECT_ID            |                                |
++--------------------------+--------------------------------+
+| --os-project-name        |                                |
+| --os-tenant-name         | project name to scope to       |
+| OS_PROJECT_NAME          |                                |
++--------------------------+--------------------------------+
+| --os-project-domain-id   | domain ID containing project   |
+| OS_PROJECT_DOMAIN_ID     |                                |
++--------------------------+--------------------------------+
+| --os-project-domain-name | domain name containing project |
+| OS_PROJECT_DOMAIN_NAME   |                                |
++--------------------------+--------------------------------+
+| --os-trust-id            | trust ID                       |
+| OS_TRUST_ID              |                                |
++--------------------------+--------------------------------+
+|                          | optional domain ID to use with |
+|                          | v3 and v2 parameters. It will  |
+| --os-default-domain-id   | be used for both the user and  |
+| OS_DEFAULT_DOMAIN_ID     | project domain in v3 and       |
+|                          | ignored in v2 authentication.  |
++--------------------------+--------------------------------+
+|                          | optional domain name to use    |
+|                          | with v3 API and v2parameters.  |
+| --os-default-domain-name | It will be used for both       |
+| OS_DEFAULT_DOMAIN_NAME   | the user and project domain    |
+|                          | in v3 and ignored in v2        |
+|                          | authentication.                |
++--------------------------+--------------------------------+
+| --os-user-id             | user ID                        |
+| OS_USER_ID               |                                |
++--------------------------+--------------------------------+
+| --os-username,           |                                |
+| --os-user-name           | username                       |
+| OS_USERNAME              |                                |
++--------------------------+--------------------------------+
+| --os-user-domain-id      | user's domain id               |
+| OS_USER_DOMAIN_ID        |                                |
++--------------------------+--------------------------------+
+| --os-user-domain-name    | user's domain name             |
+| OS_USER_DOMAIN_NAME      |                                |
++--------------------------+--------------------------------+
+| --os-password            | user's password                |
+| OS_PASSWORD              |                                |
++--------------------------+--------------------------------+
+
+API Connection Options
+~~~~~~~~~~~~~~~~~~~~~~
+
+Options controlling the HTTP API connections.
+
++--------------------------+--------------------------------------+
+|   Arguments              |   Description                        |
++==========================+======================================+
+|                          | explicitly allow client to           |
+|                          | perform "insecure" TLS (https)       |
+| --insecure               | requests. The server's               |
+|                          | certificate will not be verified     |
+|                          | against any certificate authorities. |
+|                          | This option should be used with      |
+|                          | caution.                             |
++--------------------------+--------------------------------------+
+|                          | specify a CA bundle file to use in   |
+| --os-cacert              | verifying a TLS(https) server        |
+| <ca-certificate>         | certificate. Defaults to env         |
+|                          | [OS_CACERT].                         |
++--------------------------+--------------------------------------+
+| --os-cert <certificate>  | defaults to env[OS_CERT]             |
++--------------------------+--------------------------------------+
+| --os-key <key>           | defaults to env[OS_KEY]              |
++--------------------------+--------------------------------------+
+| --timeout <seconds>      | set request timeout (in seconds)     |
++--------------------------+--------------------------------------+
+
+Service Options
+~~~~~~~~~~~~~~~
+
+Options control the specialization of the API connection from information
+found in the catalog.
+
++------------------------+----------------------------+
+|   Arguments            |   Description              |
++========================+============================+
+| --os-service-type      | service type to request    |
+| <name>                 | from the catalog           |
++------------------------+----------------------------+
+| --os-service-name      | service name to request    |
+| <name>                 | from the catalog           |
++------------------------+----------------------------+
+| --os-interface <name>  | API Interface to use:      |
+|                        | [public, internal, admin]  |
++------------------------+----------------------------+
+| --os-region-name       | region of the cloud to use |
+| <name>                 |                            |
++------------------------+----------------------------+
+|                        | endpoint to use instead    |
+| --os-endpoint-override | of the endpoint in the     |
+| <name>                 | catalog                    |
++------------------------+----------------------------+
+| --os-api-version       | which version of the       |
+| <name>                 | service API to use         |
++------------------------+----------------------------+
 
 _`How to write scenario files`
 ------------------------------
