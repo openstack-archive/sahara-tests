@@ -26,15 +26,23 @@ if [[ $NETWORK == nova* ]]; then
     export AUTO_SECURITY_GROUP=false
 fi
 
-source settings
-
 export DEST=${DEST:-$BASE/new}
 export DEVSTACK_DIR=${DEVSTACK_DIR:-$DEST/devstack}
 export SAHARA_DIR=${SAHARA_DIR:-$DEST/sahara}
 export SAHARA_TESTS_DIR=${SAHARA_TESTS_DIR:-$DEST/sahara-tests}
+export SAHARA_IMAGE_ELEMENTS_DIR=${SAHARA_IMAGE_ELEMENTS_DIR:-$DEST/sahara-image-elements}
 
+source settings
 
 export LOCALCONF_PATH=$DEVSTACK_DIR/local.conf
+
+function sahara_build_image {
+    cd $SAHARA_IMAGE_ELEMENTS_DIR
+
+    sudo -E chown -R jenkins:stack $SAHARA_IMAGE_ELEMENTS_DIR
+
+    ./tools/gate/build-images $PLUGIN
+}
 
 function sahara_register_image {
     openstack dataprocessing image register --username $SAHARA_IMAGE_USERNAME \

@@ -29,7 +29,7 @@ if [ $PLUGIN == fake ] ; then
     export SAHARA_FLAVOR_DISK=10
     export SAHARA_FLAVOR_VCPUS=1
 else
-    export SAHARA_IMAGE=http://sahara-files.mirantis.com/images/upstream/newton/sahara-newton-spark-1.6.0-ubuntu.qcow2
+    export SAHARA_IMAGE=file://$SAHARA_IMAGE_ELEMENTS_DIR/ubuntu_sahara_spark_latest.qcow2
     export SAHARA_IMAGE_NAME=$(basename $SAHARA_IMAGE .qcow2)
     export SAHARA_IMAGE_USERNAME=ubuntu
     export SAHARA_PLUGIN_NAME=spark

@@ -21,6 +21,10 @@ set -ex
 
 source commons $@
 
+if [ "$PLUGIN" == "spark" ]; then
+    sahara_build_image
+fi
+
 echo "[[local|localrc]]" >> $LOCALCONF_PATH
 echo "IMAGE_URLS=$SAHARA_IMAGE" >> $LOCALCONF_PATH
 
