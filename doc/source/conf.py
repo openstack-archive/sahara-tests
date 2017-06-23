@@ -13,6 +13,8 @@
 
 import sys, os
 
+import openstackdocstheme
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -25,8 +27,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['oslosphinx',
-              'reno.sphinxext']
+extensions = ['reno.sphinxext']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -92,7 +93,8 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'openstackdocs'
+html_theme_path = [openstackdocstheme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -126,6 +128,14 @@ html_static_path = ['_static']
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 #html_last_updated_fmt = '%b %d, %Y'
+
+giturl = u'http://git.openstack.org/cgit/openstack/sahara-tests/tree/releasenotes/source'
+# html_context allows us to pass arbitrary values into the html template
+html_context = {
+    "bug_tag": "releasenotes",
+    "giturl": giturl,
+    "bug_project": "sahara-tests"
+}
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.

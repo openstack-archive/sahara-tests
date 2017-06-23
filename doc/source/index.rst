@@ -42,9 +42,8 @@ Source
 .. _Specs: http://specs.openstack.org/openstack/sahara-specs/
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
