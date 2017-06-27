@@ -28,8 +28,8 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
             'url': 'swift://sahara-container.sahara/input-source',
             'description': 'Test data source',
             'credentials': {
-                'user': cls.os.credentials.username,
-                'password': cls.os.credentials.password
+                'user': cls.os_primary.credentials.username,
+                'password': cls.os_primary.credentials.password
             },
             'type': 'swift'
         }

@@ -31,8 +31,8 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
             'url': 'swift://sahara-container.sahara/example.jar',
             'description': 'Test job binary',
             'extra': {
-                'user': cls.os.credentials.username,
-                'password': cls.os.credentials.password
+                'user': cls.os_primary.credentials.username,
+                'password': cls.os_primary.credentials.password
             }
         }
         # Create extra cls.swift_job_binary variable to use for comparison to

@@ -43,7 +43,7 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
     @classmethod
     def setup_clients(cls):
         super(BaseDataProcessingTest, cls).setup_clients()
-        cls.client = cls.os.data_processing.DataProcessingClient()
+        cls.client = cls.os_primary.data_processing.DataProcessingClient()
 
     @classmethod
     def resource_setup(cls):
