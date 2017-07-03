@@ -14,11 +14,16 @@
 
 # Sahara-tests Release Notes documentation build configuration file
 
-import openstackdocstheme
-
 extensions = [
     'reno.sphinxext',
+    'openstackdocstheme'
 ]
+
+# openstackdocstheme options
+repository_name = 'openstack/sahara-tests'
+bug_project = 'sahara-tests'
+bug_tag = 'releasenotes'
+html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -89,7 +94,6 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'openstackdocs'
-html_theme_path = [openstackdocstheme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -128,16 +132,6 @@ html_static_path = ['_static']
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 # html_last_updated_fmt = '%b %d, %Y'
-
-giturl = (
-    u'http://git.openstack.org/cgit/openstack/sahara-tests/tree/doc/source'
-)
-# html_context allows us to pass arbitrary values into the html template
-html_context = {
-    "bug_tag": "doc",
-    "giturl": giturl,
-    "bug_project": "sahara-tests"
-}
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
