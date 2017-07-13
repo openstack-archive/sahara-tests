@@ -31,7 +31,7 @@ In sahara_tests folder we have next tools:
 * `Specs`_
 * `Release notes`_
 
-.. _Sahara-scenario documentation: http://docs.openstack.org/developer/sahara-tests/
+.. _Sahara-scenario documentation: https://docs.openstack.org/sahara-tests/latest/scenario.html
 .. _PyPi: https://pypi.python.org/pypi/sahara-tests
 .. _Launchpad project: https://launchpad.net/sahara-tests
 .. _Blueprints: https://blueprints.launchpad.net/sahara-tests

@@ -2,8 +2,7 @@ Welcome to sahara-tests's documentation!
 ========================================
 
 Tests for the
-`Sahara project
-<http://docs.openstack.org/developer/sahara/>`_.
+`Sahara project <https://docs.openstack.org/sahara/latest/>`_.
 
 It provides Sahara scenario tests framework and tempest tests.
 

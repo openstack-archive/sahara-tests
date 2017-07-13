@@ -9,8 +9,8 @@ your Devstack or using Rally.
 Run Tempest tests on Devstack
 -----------------------------
 
-See how to configure Tempest
-`here <http://docs.openstack.org/developer/tempest/configuration.html>`_.
+See how to configure Tempest at
+`Tempest Configuration Guide <https://docs.openstack.org/tempest/latest/configuration.html>`_.
 
 Tempest automatically discovers installed plugins. That's why you just need to
 install the Python packages that contains the Sahara Tempest plugin in the
@@ -35,8 +35,7 @@ tests by using ``ostestr`` command, for instance:
 ..
 
 The command ``tempest run`` is another way to run tests. See the additional
-information about using this `command <http://docs.openstack.org/developer/
-tempest/run.html#tempest-run>`_.
+information about using this `command <https://docs.openstack.org/tempest/latest/run.html>`_.
 
 For example, the following command will run all the Tempest tests.
 
@@ -57,9 +56,9 @@ the following command will run all the cli-tests:
 
 Useful links:
 
-* `Running Tempest tests with testr <http://docs.openstack.org/developer/tempest/overview.html#legacy-run-method>`_.
-* `Using Tempest plugins <http://docs.openstack.org/developer/tempest/plugin.html#using-plugins>`_.
-* `Tempest Quickstart <http://docs.openstack.org/developer/tempest/overview.html#quickstart>`_.
+* `Running Tempest tests with testr <https://docs.openstack.org/tempest/latest/overview.html#legacy-run-method>`_.
+* `Using Tempest plugins <https://docs.openstack.org/tempest/latest/plugin.html#using-plugins>`_.
+* `Tempest Quickstart <https://docs.openstack.org/tempest/latest/overview.html#quickstart>`_.
 
 Run Tempest tests using Rally
 -----------------------------
@@ -68,9 +67,7 @@ First of all, be sure that Rally is installed and working. There should be
 a Rally deployment with correct working Sahara service in it.
 
 Full information can be found on this
-`link
-<http://docs.openstack.org/developer/rally/tutorial/
-step_10_verifying_cloud_via_tempest.html>`_.
+`link <https://docs.openstack.org/rally/latest/quick_start/tutorial/step_10_verifying_cloud_via_tempest_verifier.html>`_.
 
 Using this information, you can install ``rally verify`` tool and plugin for
 testing Sahara. After this you are free to run Sahara Tempest tests. Here are

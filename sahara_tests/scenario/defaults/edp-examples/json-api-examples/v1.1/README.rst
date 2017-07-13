@@ -65,7 +65,7 @@ when creating data sources, storing binaries, and executing jobs. Use of a
 `swift proxy`_ can improve security by reducing the need to distribute and
 store credentials.
 
-.. _swift proxy: http://docs.openstack.org/developer/sahara/userdoc/advanced.configuration.guide.html
+.. _swift proxy: https://docs.openstack.org/sahara/latest/userdoc/advanced.configuration.guide.html
 
 Swift containers
 ----------------
@@ -76,7 +76,7 @@ though the data must be uploaded to the non-suffixed container. This suffix
 informs Hadoop that ``sahara`` is the provider for this data source. See the
 `hadoop swift`_ documentation for more information.
 
-.. _hadoop swift: http://docs.openstack.org/developer/sahara/userdoc/hadoop-swift.html
+.. _hadoop swift: https://docs.openstack.org/sahara/latest/userdoc/hadoop-swift.html
 
 REST API usage
 --------------
@@ -89,7 +89,7 @@ by Keystone for your tenant and user in header 'X-Auth-Token'.
 For new sahara REST users, reference to the `Sahara EDP API Documentation`_
 will be useful throughout these exercises.
 
-.. _Sahara EDP API Documentation: http://developer.openstack.org/api-ref-data-processing-v1.1.html
+.. _Sahara EDP API Documentation: https://developer.openstack.org/api-ref/data-processing/index.html
 
 
 Example 1: Pig, using swift
