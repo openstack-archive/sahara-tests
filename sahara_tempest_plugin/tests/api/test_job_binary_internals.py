@@ -21,8 +21,8 @@ from sahara_tempest_plugin.tests.api import base as dp_base
 
 
 class JobBinaryInternalTest(dp_base.BaseDataProcessingTest):
-    # Link to the API documentation is http://docs.openstack.org/developer/
-    # sahara/restapi/rest_api_v1.1_EDP.html#job-binary-internals
+    # Link to the API documentation is https://developer.openstack.org/
+    # api-ref/data-processing/#job-binary-internals
 
     @classmethod
     def resource_setup(cls):

@@ -45,7 +45,7 @@ than one cloud can be defined in the same file.
 
 Here you can find more information about
 `clouds
-<http://docs.openstack.org/developer/os-client-config/#config-files>`_
+<https://docs.openstack.org/os-client-config/latest/user/configuration.html#config-files>`_
 
 Template variables
 ------------------
