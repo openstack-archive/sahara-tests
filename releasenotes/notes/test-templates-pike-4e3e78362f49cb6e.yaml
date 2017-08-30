@@ -1,0 +1,12 @@
+---
+prelude: >
+    Pike test templates are now available, while Mitaka
+    test templates have been removed.
+features:
+  - A folder with scenario templates for Pike was added.
+    It is a subset of the templates in the main directory.
+  - Some requirements have been raised (especially Tempest).
+deprecations:
+  - The Mitaka-specific job templates have been removed.
+    This means that starting from this release Mitaka is
+    not supported (it has been EOL for a while).

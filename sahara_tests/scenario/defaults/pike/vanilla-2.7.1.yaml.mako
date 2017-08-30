@@ -25,13 +25,14 @@ clusters:
         volumes_per_node: 2
         volumes_size: 2
         auto_security_group: ${use_auto_security_group}
-      - name: master-rm-nn-hvs
+      - name: master-rm-nn-hvs-sp
         flavor: ${ci_flavor_id}
         node_processes:
           - namenode
           - resourcemanager
           - hiveserver
           - nodemanager
+          - spark history server
         auto_security_group: ${use_auto_security_group}
       - name: master-oo-hs-sn
         flavor: ${ci_flavor_id}
@@ -45,7 +46,7 @@ clusters:
     cluster_template:
       name: vanilla271
       node_group_templates:
-        master-rm-nn-hvs: 1
+        master-rm-nn-hvs-sp: 1
         master-oo-hs-sn: 1
         worker-dn-nm: 2
         worker-dn: 1
@@ -77,3 +78,4 @@ clusters:
       - mapreduce_streaming_job
       - java_job
       - hive_job
+      - spark_wordcount
