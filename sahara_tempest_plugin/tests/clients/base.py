@@ -42,7 +42,6 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
 
     @classmethod
     def resource_setup(cls):
-        cls.set_network_resources()
         super(BaseDataProcessingTest, cls).resource_setup()
 
         endpoint_type = TEMPEST_CONF.data_processing.endpoint_type
