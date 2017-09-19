@@ -37,7 +37,7 @@ After creating the file, you can set ``OS_CLOUD`` variable or ``--os-cloud``
 flag to the name of the cloud you have created and those values will be used.
 
 We have an example of a ``clouds.yaml`` file, and you can find it in
-``sahara-tests/unit/scenario/clouds.yaml``.
+``sahara_tests/unit/scenario/clouds.yaml``.
 
 Using this example, you can create your own file with clouds instead of
 setting the ``OS_CLOUD`` variable or the ``--os-cloud`` flag. Note that more
