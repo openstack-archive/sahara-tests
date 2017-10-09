@@ -39,7 +39,7 @@ export LOCALCONF_PATH=$DEVSTACK_DIR/local.conf
 function sahara_build_image {
     cd $SAHARA_IMAGE_ELEMENTS_DIR
 
-    sudo -E chown -R jenkins:stack $SAHARA_IMAGE_ELEMENTS_DIR
+    sudo -E chown -R $USER:stack $SAHARA_IMAGE_ELEMENTS_DIR
 
     ./tools/gate/build-images $PLUGIN
 }
