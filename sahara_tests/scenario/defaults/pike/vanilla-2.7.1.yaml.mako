@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small', availability_zone='nova', volumes_availability_zone='nova'"/>
 
 clusters:
   - plugin_name: vanilla
@@ -12,6 +12,8 @@ clusters:
           - nodemanager
         volumes_per_node: 2
         volumes_size: 2
+        availability_zone: ${availability_zone}
+        volumes_availability_zone: ${volumes_availability_zone}
         auto_security_group: ${use_auto_security_group}
       - name: worker-nm
         flavor: ${ci_flavor_id}
@@ -24,6 +26,8 @@ clusters:
           - datanode
         volumes_per_node: 2
         volumes_size: 2
+        availability_zone: ${availability_zone}
+        volumes_availability_zone: ${volumes_availability_zone}
         auto_security_group: ${use_auto_security_group}
       - name: master-rm-nn-hvs-sp
         flavor: ${ci_flavor_id}
