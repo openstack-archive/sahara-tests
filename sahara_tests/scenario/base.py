@@ -364,7 +364,7 @@ class BaseTestCase(base.BaseTestCase):
     def _read_source_file(self, source):
         if not source:
             return None
-        with open(self._get_file_with_defaults(source)) as source_fd:
+        with open(self._get_file_with_defaults(source), 'rb') as source_fd:
             data = source_fd.read()
         return data
 
@@ -381,7 +381,7 @@ class BaseTestCase(base.BaseTestCase):
 
         def to_hex_present(string):
             return "".join(map(lambda x: hex(ord(x)).replace("0x", "\\x"),
-                               string))
+                               string.decode('utf-8')))
         if destination:
             return destination
 
