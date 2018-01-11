@@ -18,6 +18,7 @@ from tempest import config
 from tempest.lib.cli import base
 from tempest.test import BaseTestCase
 from tempest.lib import exceptions as exc
+from tempest.lib.auth import IDENTITY_VERSION
 from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.common import plugin_utils
@@ -53,12 +54,27 @@ class ClientTestBase(base.ClientTestBase):
         auth_provider = self.client_manager_admin.auth_provider
         self.project_network = BaseTestCase.get_tenant_network('admin')
 
+        project_name = auth_provider.credentials.get('project_name')
+        if project_name is None:
+            project_name = auth_provider.credentials.get('tenant_name')
+
+        # complicated but probably the only way to get the exact type
+        # of Identity API version
+        if isinstance(auth_provider, IDENTITY_VERSION['v2'][1]):
+            identity_api_version = 2
+        else:
+            identity_api_version = 3
+
         return base.CLIClient(
             username=auth_provider.credentials.get('username'),
             password=auth_provider.credentials.get('password'),
-            tenant_name=auth_provider.credentials.get('tenant_name'),
+            tenant_name=project_name,
             uri=auth_provider.base_url({'service': 'identity'}),
-            cli_dir=cli_dir)
+            cli_dir=cli_dir,
+            user_domain=auth_provider.credentials.get('user_domain_name'),
+            project_domain=auth_provider.credentials.get(
+                'project_domain_name'),
+            identity_api_version=identity_api_version)
 
     def openstack(self, *args, **kwargs):
         return self.clients.openstack(*args, **kwargs)
