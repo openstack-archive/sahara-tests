@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from saharaclient.api import base as sab
 from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.tests.clients import base
@@ -53,9 +54,14 @@ class NodeGroupTemplateTest(base.BaseDataProcessingTest):
             'volumes_per_node': 2,
             'volumes_size': 2,
         }
-
-        resp_body = self.client.node_group_templates.update(template_id,
-                                                            **values)
+        try:
+            resp_body = self.client.node_group_templates.update(template_id,
+                                                                **values)
+        except sab.APIException:
+            del values['volumes_per_node']
+            del values['volumes_size']
+            resp_body = self.client.node_group_templates.update(template_id,
+                                                                **values)
         # check that template updated successfully
         self.assertDictContainsSubset(values,
                                       resp_body.__dict__)
