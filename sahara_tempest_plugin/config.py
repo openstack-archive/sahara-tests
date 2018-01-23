@@ -16,7 +16,7 @@
 from oslo_config import cfg
 
 service_option = cfg.BoolOpt("sahara",
-                             default=True,
+                             default=False,
                              help="Whether or not sahara is expected to be "
                                   "available")
 
