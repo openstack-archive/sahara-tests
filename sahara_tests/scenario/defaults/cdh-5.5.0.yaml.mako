@@ -1,4 +1,4 @@
-<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small', medium_flavor_id='m1.medium', large_flavor_id='m1.large'"/>
+<%page args="is_proxy_gateway='true', use_auto_security_group='true', ci_flavor_id='m1.small', medium_flavor_id='m1.medium', large_flavor_id='m1.large', availability_zone='nova', volumes_availability_zone='nova'"/>
 
 clusters:
   - plugin_name: cdh
@@ -11,6 +11,8 @@ clusters:
           - HDFS_DATANODE
         volumes_per_node: 2
         volumes_size: 2
+        availability_zone: ${availability_zone}
+        volumes_availability_zone: ${volumes_availability_zone}
         auto_security_group: ${use_auto_security_group}
         node_configs:
           &ng_configs
@@ -28,6 +30,8 @@ clusters:
           - HDFS_DATANODE
         volumes_per_node: 2
         volumes_size: 2
+        availability_zone: ${availability_zone}
+        volumes_availability_zone: ${volumes_availability_zone}
         auto_security_group: ${use_auto_security_group}
         node_configs:
           *ng_configs
