@@ -74,8 +74,7 @@ SCHEMA = {
                     "type": "boolean"
                 },
                 "public_network": {
-                    "type": "string",
-                    "minLength": 1
+                    "type": "string"
                 },
                 "private_network": {
                     "type": "string",

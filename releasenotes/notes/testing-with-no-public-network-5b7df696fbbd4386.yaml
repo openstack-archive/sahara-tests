@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    The public network field can be omitted from the configuration file of
+    the scenario, enabling the testing when only the project network is used.
