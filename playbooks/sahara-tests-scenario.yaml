@@ -1,0 +1,16 @@
+- hosts: all
+  roles:
+    - run-devstack
+
+- hosts: controller
+  tasks:
+    - name: build the required image
+      include_role:
+        name: build-sahara-images-dib
+      when: sahara_plugin is defined and sahara_plugin != 'fake'
+    - name: setup the sahara Scenario test environment
+      include_role:
+        name: setup-sahara-scenario-env
+    - name: run the Sahara scenario tests
+      include_role:
+        name: run-sahara-scenario

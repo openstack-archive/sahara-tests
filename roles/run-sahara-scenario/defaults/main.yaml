@@ -1,0 +1,5 @@
+---
+sahara_tests_src_dir: "{{ zuul.projects['git.openstack.org/openstack/sahara-tests'].src_dir }}"
+sahara_cloud_demo: 'devstack'
+sahara_scenario_conf: '{{ ansible_user_dir }}/template_vars.ini'
+sahara_scenario_test_template: 'fake.yaml.mako'

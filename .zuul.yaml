@@ -1,0 +1,138 @@
+- project:
+    check:
+      jobs:
+        - openstack-tox-pylint:
+            voting: false
+        - sahara-tests-scenario
+        - sahara-tests-scenario-modwsgi:
+            voting: false
+        - sahara-tests-tempest
+    gate:
+      jobs:
+        - sahara-tests-scenario
+        - sahara-tests-tempest
+    experimental:
+      jobs:
+        - sahara-tests-scenario-multinode-spark:
+            voting: false
+        - sahara-tests-scenario-py3:
+            voting: false
+
+- job:
+    name: sahara-tests-tempest
+    description: |
+      Run Tempest tests from the Sahara plugin.
+    parent: devstack-tempest
+    required-projects:
+      - openstack/sahara-tests
+      - openstack/sahara
+      - openstack/heat
+      - openstack/ceilometer
+    vars:
+      tempest_test_regex: '^(sahara_tempest_plugin.tests.)'
+      tox_envlist: 'all'
+      devstack_localrc:
+        IMAGE_URLS: 'https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img'
+        TEMPEST_PLUGINS: '/opt/stack/sahara-tests'
+      devstack_local_conf:
+        test-config:
+          "$TEMPEST_CONFIG":
+            data_processing:
+              test_image_name: 'xenial-server-cloudimg-amd64-disk1'
+              test_ssh_user: 'ubuntu'
+      devstack_plugins:
+        sahara: 'git://git.openstack.org/openstack/sahara'
+        heat: 'git://git.openstack.org/openstack/heat'
+        ceilometer: 'git://git.openstack.org/openstack/ceilometer'
+      devstack_services:
+        tls-proxy: false
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^sahara_tests/.*$
+
+- job:
+    name: sahara-tests-scenario
+    description: |
+      Run scenario tests for Sahara.
+    parent: devstack
+    roles:
+      - zuul: openstack-dev/devstack
+      - zuul: openstack/sahara-image-elements
+    required-projects:
+      - openstack/sahara-tests
+      - openstack/sahara
+      - openstack/heat
+      - openstack/ceilometer
+      - openstack/sahara-image-elements
+      - openstack-infra/shade
+    run: playbooks/sahara-tests-scenario.yaml
+    vars:
+      devstack_localrc:
+        SWIFT_HASH: 'abcdef0123456789abcdef0123456789'
+      devstack_local_conf:
+        post-config:
+          "$SAHARA_CONF":
+            DEFAULT:
+              min_transient_cluster_active_time: 90
+      devstack_plugins:
+        sahara: 'git://git.openstack.org/openstack/sahara'
+        heat: 'git://git.openstack.org/openstack/heat'
+        ceilometer: 'git://git.openstack.org/openstack/ceilometer'
+        shade: 'git://git.openstack.org/openstack-infra/shade'
+      devstack_services:
+        s-proxy: true
+        s-object: true
+        s-container: true
+        s-account: true
+        tls-proxy: false
+      sahara_image_name: 'xenial-server'
+      sahara_image_url: 'https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img'
+      sahara_plugin: 'fake'
+      sahara_plugin_version: '0.1'
+      sahara_scenario_test_template: 'fake.yaml.mako'
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^releasenotes/.*$
+      - ^sahara_tempest_plugin/.*$
+
+- job:
+    name: sahara-tests-scenario-modwsgi
+    description: |
+      Run scenario tests on a Sahara deployment based on mod_wsgi.
+    parent: sahara-tests-scenario
+    vars:
+      devstack_localrc:
+        SAHARA_USE_MOD_WSGI: 'True'
+
+- job:
+    name: sahara-tests-scenario-multinode-spark
+    description: |
+      Run scenario tests based on Spark on a multinode Sahara deployment.
+    parent: sahara-tests-scenario
+    nodeset: openstack-two-node
+    vars:
+      sahara_image_name: 'xenial-spark'
+      sahara_image_url: '{{ ansible_user_dir }}/{{ zuul.projects["git.openstack.org/openstack/sahara-image-elements"].src_dir }}/ubuntu_sahara_spark_latest.qcow2'
+      sahara_plugin: 'spark'
+      sahara_plugin_version: '1.6.0'
+      sahara_scenario_test_template: 'spark-1.6.0.yaml.mako'
+      sahara_flavors:
+        - name: sahara-flavor
+          id: 20
+          ram: 1536
+          disk: 20
+          vcpus: 1
+          ephemeral: 0
+
+- job:
+    name: sahara-tests-scenario-py3
+    description: |
+      Run scenario tests on a Sahara deployment based on Python 3.
+    parent: sahara-tests-scenario
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: 'True'

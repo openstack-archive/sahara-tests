@@ -1,0 +1,14 @@
+---
+- name: run sahara-scenario
+  shell: |
+    tox -e venv --sitepackages -- sahara-scenario --verbose -V {{ sahara_scenario_conf }} \
+        etc/scenario/gate/credentials.yaml.mako \
+        etc/scenario/gate/edp.yaml.mako \
+        etc/scenario/gate/{{ sahara_scenario_test_template }} \
+        --os-cloud {{ sahara_cloud_demo }} \
+        | tee scenario.log
+    if grep -qE '(FAILED|ERROR:)' scenario.log; then
+        exit 1
+    fi
+  args:
+    chdir: "{{ sahara_tests_src_dir }}"

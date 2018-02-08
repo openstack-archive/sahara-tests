@@ -1,0 +1,45 @@
+- block:
+    - name: set sahara_image_path based on the remote file
+      set_fact:
+        sahara_image_path: "{{ ansible_user_dir }}/{{ sahara_image_name }}.{{ sahara_image_format }}"
+    - name: download the remote image
+      get_url:
+        url: "{{ sahara_image_url }}"
+        dest: "{{ sahara_image_path }}"
+  when: sahara_image_url is defined and sahara_image_url!='' and sahara_image_url|search('^http')
+
+- name: set sahara_image_path from the local file
+  set_fact:
+    sahara_image_path: "{{ sahara_image_url }}"
+  when: sahara_image_url is defined and sahara_image_url!='' and not sahara_image_url|search('^http')
+
+- name: register the required image in Glance
+  os_image:
+    cloud: "{{ sahara_cloud_demo }}"
+    state: present
+    disk_format: "{{ sahara_image_format }}"
+    filename: "{{ sahara_image_path }}"
+    name: "{{ sahara_image_name }}"
+
+- name: register the required image in Sahara
+  shell: |
+    openstack --os-cloud {{ sahara_cloud_demo }} dataprocessing image register \
+        --username {{ sahara_image_user }} {{ sahara_image_name }}
+    openstack --os-cloud {{ sahara_cloud_demo }}  dataprocessing image tags add {{ sahara_image_name }} --tags \
+        {{ sahara_plugin_version }} {{ sahara_plugin }}
+
+- name: create the required flavor(s)
+  os_nova_flavor:
+    cloud: "{{ sahara_cloud_admin }}"
+    state: present
+    name: "{{ item.name }}"
+    ram: "{{ item.ram }}"
+    vcpus: "{{ item.vcpus|default('1') }}"
+    disk: "{{ item.disk|default('10') }}"
+    ephemeral: "{{ item.disk|default(omit) }}"
+  with_items: "{{ sahara_flavors }}"
+
+- name: generate the configuration file for the scenario test
+  template:
+    src: sahara_scenario_conf.ini.j2
+    dest: "{{ sahara_scenario_conf }}"

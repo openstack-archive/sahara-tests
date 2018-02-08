@@ -1,0 +1,9 @@
+[DEFAULT]
+network_type: {{ sahara_network_type }}
+network_private_name: {{ private_network_name }}
+network_public_name: {{ public_network_name }}
+plugin_image: {{ sahara_image_name }}
+ci_flavor_id: {{ sahara_flavor_small }}
+cluster_name: testc
+is_transient: {{ sahara_cluster_transient }}
+auto_security_group: {{ sahara_auto_security_group }}
