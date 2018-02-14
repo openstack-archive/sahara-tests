@@ -63,7 +63,7 @@ class RunnerUnitTest(testtools.TestCase):
             "network": {
                 "type": "neutron",
                 "private_network": "private",
-                "public_network": "public",
+                "public_network": "",
                 "auto_assignment_floating_ip": False
             }
         }

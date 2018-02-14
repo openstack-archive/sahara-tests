@@ -51,7 +51,7 @@ def set_defaults(config):
     net['private_network'] = net.get('private_network', 'private')
     net['auto_assignment_floating_ip'] = net.get('auto_assignment_floating_ip',
                                                  False)
-    net['public_network'] = net.get('public_network', 'public')
+    net['public_network'] = net.get('public_network', '')
 
     default_scenario = ['run_jobs', 'scale', 'run_jobs']
 

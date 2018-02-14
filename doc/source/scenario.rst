@@ -349,7 +349,7 @@ This section is dictionary-type.
 | private_network             | string  |  True    | private | name or id of  |
 |                             |         |          |         | private network|
 +-----------------------------+---------+----------+---------+----------------+
-| public_network              | string  |  True    | public  | name or id of  |
+| public_network              | string  |          | public  | name or id of  |
 |                             |         |          |         | private network|
 +-----------------------------+---------+----------+---------+----------------+
 | type                        | string  |          | neutron | "neutron" or   |

@@ -522,11 +522,12 @@ class BaseTestCase(base.BaseTestCase):
         security_group = None
         proxy_exist = False
 
-        if self.network['type'] == 'neutron':
-            floating_ip_pool = self.neutron.get_network_id(
-                self.network['public_network'])
-        elif not self.network['auto_assignment_floating_ip']:
-            floating_ip_pool = self.network['public_network']
+        if self.network['public_network']:
+            if self.network['type'] == 'neutron':
+                floating_ip_pool = self.neutron.get_network_id(
+                    self.network['public_network'])
+            elif not self.network['auto_assignment_floating_ip']:
+                floating_ip_pool = self.network['public_network']
 
         node_groups = []
         for ng in self.testcase['node_group_templates']:
