@@ -2,8 +2,8 @@
 
 clusters:
   - plugin_name: spark
-    plugin_version: 1.6.0
-    image: ${spark_160_image}
+    plugin_version: 2.1.0
+    image: ${spark_210_image}
     node_group_templates:
       - name: master
         flavor: ${ci_flavor_id}
@@ -19,7 +19,7 @@ clusters:
           - slave
         auto_security_group: ${use_auto_security_group}
     cluster_template:
-      name: spark160
+      name: spark210
       node_group_templates:
         master: 1
         worker: 1

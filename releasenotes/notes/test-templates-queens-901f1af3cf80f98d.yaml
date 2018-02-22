@@ -1,0 +1,13 @@
+---
+prelude: >
+    Queens test templates are now available, while Newton
+    test templates have been removed.
+features:
+  - A folder with scenario templates for Queens was added.
+    It is a subset of the templates in the main directory.
+  - The available templates now supports Spark 2.2
+    and Vanilla 2.8.2.
+deprecations:
+  - The Newton-specific job templates have been removed.
+    This means that starting from this release Newton is
+    not supported (it has been EOL for a while).

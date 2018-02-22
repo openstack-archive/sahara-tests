@@ -2,8 +2,8 @@
 
 clusters:
   - plugin_name: storm
-    plugin_version: 1.0.1
-    image: ${storm_101_image}
+    plugin_version: 1.1.0
+    image: ${storm_110_image}
     node_group_templates:
       - name: master
         flavor: ${ci_flavor_id}
@@ -22,7 +22,7 @@ clusters:
           - zookeeper
         auto_security_group: ${use_auto_security_group}
     cluster_template:
-      name: storm101
+      name: storm110
       node_group_templates:
         master: 1
         worker: 1

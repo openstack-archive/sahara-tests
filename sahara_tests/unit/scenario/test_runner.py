@@ -380,7 +380,7 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.6.0', '-r', 'newton',
+                    '-p', 'spark', '-v', '2.2', '-r', 'queens',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'http://127.0.0.1:5000/v2']
@@ -388,7 +388,7 @@ class RunnerUnitTest(testtools.TestCase):
         self.assertEqual('spark',
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_name'])
-        self.assertEqual('1.6.0',
+        self.assertEqual('2.2',
                          mock_validate.call_args[0][0]['clusters'][0][
                              'plugin_version'])
 
@@ -399,7 +399,7 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    '-p', 'spark', '-v', '1.6.0', '--release', 'newton',
+                    '-p', 'spark', '-v', '2.2', '--release', 'queens',
                     '--count', '4',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
@@ -413,15 +413,17 @@ class RunnerUnitTest(testtools.TestCase):
         sys.argv = ['sahara_tests/scenario/runner.py',
                     '-V',
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
-                    'sahara_tests/scenario/defaults/newton',
+                    'sahara_tests/scenario/defaults/queens',
                     'sahara_tests/scenario/defaults/edp.yaml.mako',
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'http://127.0.0.1:5000/v2', '--args',
-                    'ambari_22_image:ambari', 'fake_plugin_image:fake',
-                    'mapr_510mrv2_image:mapr', 'mapr_520mrv2_image:mapr',
-                    'cdh_570_image:cdh', 'spark_160_image:spark',
-                    'storm_101_image:storm']
+                    'ambari_24_image:ambari', 'fake_plugin_image:fake',
+                    'mapr_520mrv2_image:mapr', 'cdh_570_image:cdh',
+                    'cdh_590_image:cdh', 'cdh_5110_image:cdh',
+                    'spark_210_image:spark', 'spark_22_image:spark',
+                    'storm_101_image:storm', 'storm_110_image:storm',
+                    'vanilla_282_image:vanilla']
         runner.main()
 
     @mock.patch('sahara_tests.scenario.validation.validate')

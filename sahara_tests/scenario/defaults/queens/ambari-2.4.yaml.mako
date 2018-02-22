@@ -3,7 +3,7 @@
 clusters:
   - plugin_name: ambari
     plugin_version: '2.4'
-    image: ${ambari_22_image}
+    image: ${ambari_24_image}
     node_group_templates:
       - name: master
         flavor: ${medium_flavor_id}
