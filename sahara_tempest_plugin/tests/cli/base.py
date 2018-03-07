@@ -16,7 +16,7 @@ import time
 
 from tempest import config
 from tempest.lib.cli import base
-from tempest.test import BaseTestCase
+from tempest import test
 from tempest.lib import exceptions as exc
 from tempest.lib.auth import IDENTITY_VERSION
 from tempest.lib.common.utils import data_utils
@@ -50,9 +50,10 @@ class ClientTestBase(base.ClientTestBase):
                     cli_dir = path
                     break
 
-        self.client_manager_admin = BaseTestCase.get_client_manager('admin')
+        self.client_manager_admin = \
+            test.BaseTestCase.get_client_manager('admin')
         auth_provider = self.client_manager_admin.auth_provider
-        self.project_network = BaseTestCase.get_tenant_network('admin')
+        self.project_network = test.BaseTestCase.get_tenant_network('admin')
 
         project_name = auth_provider.credentials.get('project_name')
         if project_name is None:
@@ -203,4 +204,4 @@ class ClientTestBase(base.ClientTestBase):
         # this'll be needed as long as BaseTestCase functions
         # are used in this class, otherwise projects, users,
         # networks and routers created won't be deleted
-        BaseTestCase.clear_credentials()
+        test.BaseTestCase.clear_credentials()
