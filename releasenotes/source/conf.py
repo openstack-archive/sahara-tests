@@ -21,7 +21,7 @@ extensions = [
 
 # openstackdocstheme options
 repository_name = 'openstack/sahara-tests'
-bug_project = 'sahara-tests'
+bug_project = '940'
 bug_tag = 'releasenotes'
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
