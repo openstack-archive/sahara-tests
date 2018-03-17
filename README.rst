@@ -25,16 +25,14 @@ In sahara_tests folder we have next tools:
 * License: Apache License, Version 2.0
 * `Sahara-scenario documentation`_
 * `PyPi`_ - package installation
-* `Launchpad project`_ - release management
-* `Blueprints`_ - feature specifications
+* `Storyboard project`_ - release management
 * `Source`_
 * `Specs`_
 * `Release notes`_
 
 .. _Sahara-scenario documentation: https://docs.openstack.org/sahara-tests/latest/scenario.html
 .. _PyPi: https://pypi.python.org/pypi/sahara-tests
-.. _Launchpad project: https://launchpad.net/sahara-tests
-.. _Blueprints: https://blueprints.launchpad.net/sahara-tests
+.. _Storyboard project: https://storyboard.openstack.org/#!/project/940
 .. _Source: https://git.openstack.org/cgit/openstack/sahara-tests
 .. _Specs: http://specs.openstack.org/openstack/sahara-specs/
 .. _Release notes: http://docs.openstack.org/releasenotes/sahara-tests/unreleased.html

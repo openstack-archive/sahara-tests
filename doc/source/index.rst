@@ -28,15 +28,13 @@ Source
 
 * License: Apache License, Version 2.0
 * `PyPi`_ - package installation
-* `Launchpad project`_ - release management
-* `Blueprints`_ - feature specifications
+* `Storyboard project`_ - release management
 * `Source`_
 * `Specs`_
 * :doc:`releasenotes`
 
 .. _PyPi: https://pypi.python.org/pypi/sahara-tests
-.. _Launchpad project: https://launchpad.net/sahara-tests
-.. _Blueprints: https://blueprints.launchpad.net/sahara-tests
+.. _Storyboard project: https://storyboard.openstack.org/#!/project/940
 .. _Source: https://git.openstack.org/cgit/openstack/sahara-tests
 .. _Specs: http://specs.openstack.org/openstack/sahara-specs/
 
