@@ -2,8 +2,8 @@
 Team and repository tags
 ========================
 
-.. image:: http://governance.openstack.org/badges/sahara-tests.svg
-    :target: http://governance.openstack.org/reference/tags/index.html
+.. image:: https://governance.openstack.org/tc/badges/sahara-tests.svg
+    :target: https://governance.openstack.org/tc/reference/tags/index.html
 
 .. Change things from this point on
 
@@ -34,5 +34,5 @@ In sahara_tests folder we have next tools:
 .. _PyPi: https://pypi.python.org/pypi/sahara-tests
 .. _Storyboard project: https://storyboard.openstack.org/#!/project/940
 .. _Source: https://git.openstack.org/cgit/openstack/sahara-tests
-.. _Specs: http://specs.openstack.org/openstack/sahara-specs/
-.. _Release notes: http://docs.openstack.org/releasenotes/sahara-tests/unreleased.html
+.. _Specs: https://specs.openstack.org/openstack/sahara-specs/
+.. _Release notes: https://docs.openstack.org/releasenotes/sahara-tests/unreleased.html
