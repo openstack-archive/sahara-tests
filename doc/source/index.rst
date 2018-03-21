@@ -36,7 +36,7 @@ Source
 .. _PyPi: https://pypi.python.org/pypi/sahara-tests
 .. _Storyboard project: https://storyboard.openstack.org/#!/project/940
 .. _Source: https://git.openstack.org/cgit/openstack/sahara-tests
-.. _Specs: http://specs.openstack.org/openstack/sahara-specs/
+.. _Specs: https://specs.openstack.org/openstack/sahara-specs/
 
 Indices and tables
 ------------------
