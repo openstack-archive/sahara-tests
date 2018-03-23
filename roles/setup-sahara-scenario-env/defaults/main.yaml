@@ -1,6 +1,6 @@
 ---
 sahara_cloud_admin: 'devstack-admin'
-sahara_cloud_demo: 'devstack'
+sahara_cloud_demo: 'devstack-admin'
 sahara_plugin: 'fake'
 sahara_plugin_version: '0.1'
 sahara_image_name: 'xenial-server'
@@ -10,11 +10,11 @@ sahara_scenario_conf: '{{ ansible_user_dir }}/template_vars.ini'
 sahara_network_type: 'neutron'
 private_network_name: 'private'
 public_network_name: 'public'
-sahara_flavor_small: 'm1.small'
+sahara_flavor_small: 'sah1.small'
 sahara_cluster_transient: 'False'
 sahara_auto_security_group: 'True'
 sahara_flavors:
-  - name: sahara-flavor
+  'sah1.small':
     id: 20
     ram: 512
     disk: 10

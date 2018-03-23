@@ -32,12 +32,12 @@
   os_nova_flavor:
     cloud: "{{ sahara_cloud_admin }}"
     state: present
-    name: "{{ item.name }}"
-    ram: "{{ item.ram }}"
-    vcpus: "{{ item.vcpus|default('1') }}"
-    disk: "{{ item.disk|default('10') }}"
-    ephemeral: "{{ item.disk|default(omit) }}"
-  with_items: "{{ sahara_flavors }}"
+    name: "{{ item.key }}"
+    ram: "{{ item.value.ram }}"
+    vcpus: "{{ item.value.vcpus|default('1') }}"
+    disk: "{{ item.value.disk|default('10') }}"
+    ephemeral: "{{ item.value.disk|default(omit) }}"
+  with_dict: "{{ sahara_flavors }}"
 
 - name: generate the configuration file for the scenario test
   template:
