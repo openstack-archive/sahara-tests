@@ -33,7 +33,7 @@ Source
 * `Specs`_
 * :doc:`releasenotes`
 
-.. _PyPi: https://pypi.python.org/pypi/sahara-tests
+.. _PyPi: https://pypi.org/project/sahara-tests
 .. _Storyboard project: https://storyboard.openstack.org/#!/project/940
 .. _Source: https://git.openstack.org/cgit/openstack/sahara-tests
 .. _Specs: https://specs.openstack.org/openstack/sahara-specs/
