@@ -4,9 +4,9 @@
         - openstack-tox-pylint:
             voting: false
         - sahara-tests-scenario
-        - sahara-tests-scenario-modwsgi:
-            voting: false
         - sahara-tests-tempest
+        - sahara-tests-scenario-queens
+        - sahara-tests-scenario-pike
     gate:
       jobs:
         - sahara-tests-scenario
@@ -101,6 +101,16 @@
       - ^doc/.*$
       - ^releasenotes/.*$
       - ^sahara_tempest_plugin/.*$
+
+- job:
+    name: sahara-tests-scenario-queens
+    parent: sahara-tests-scenario
+    override-checkout: stable/queens
+
+- job:
+    name: sahara-tests-scenario-pike
+    parent: sahara-tests-scenario
+    override-checkout: stable/pike
 
 - job:
     name: sahara-tests-scenario-modwsgi
