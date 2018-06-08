@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    The node group template creation test for the CLI client does not fail
+    anymore when the Sahara plugin selected for testing provides more than
+    one version.
