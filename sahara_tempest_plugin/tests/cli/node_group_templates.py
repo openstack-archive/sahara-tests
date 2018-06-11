@@ -30,13 +30,13 @@ class SaharaNodeGroupCLITest(base.ClientTestBase):
         plugin = self.get_default_plugin()
         id_net_pool = self.find_id_of_pool()
         node_group_name = data_utils.rand_name(ng_type)
+        plugin_version = plugin['Versions'].split(',')[0].strip()
         flags = ("%(ngt_name)s %(plugin)s %(plugin-version)s "
                  "%(processes)s %(flavor)s %(floating-pool)s"
                  % {'floating-pool': ' --floating-ip-pool %s' % id_net_pool,
                     'flavor': ' --flavor %s' % flavor_id,
                     'processes': ' --processes datanode',
-                    'plugin-version': ' --plugin-version %s'
-                                      % plugin['Versions'],
+                    'plugin-version': ' --plugin-version %s' % plugin_version,
                     'plugin': ' --plugin %s' % plugin['Name'],
                     'ngt_name': '--name %s' % node_group_name})
         self.assertTableStruct(
