@@ -24,39 +24,24 @@ same environment where Tempest is installed.
 
 ..
 
-After that you can run Tempest tests. There you can specify the name of
-test (and even run a single test from directory). One way to run Tempest
-tests by using ``ostestr`` command, for instance:
+After that you can run Tempest tests. You can specify the name of
+test or a more complex regular expression. While any ``testr``-based
+test runner can be used, the official command for executing Tempest
+tests is ``tempest run``.
+
+For example, the following command will run a specific subset of tests:
 
 .. sourcecode:: console
 
-    $ ostestr sahara_tempest_plugin.tests.cli.test_scenario.Scenario.test_plugin_cli
+    $ tempest run --regex '^sahara_tempest_plugin.tests.cli.test_scenario.Scenario.'
 
 ..
 
-The command ``tempest run`` is another way to run tests. See the additional
-information about using this `command <https://docs.openstack.org/tempest/latest/run.html>`_.
+The full syntax of ``tempest run`` is described on `the relavant section of
+the Tempest documentation <https://docs.openstack.org/tempest/latest/run.html>`_.
 
-For example, the following command will run all the Tempest tests.
+Other useful links:
 
-.. sourcecode:: console
-
-    $ tempest run
-
-..
-
-Finally, you can use ``testr`` directly to run the tests. For example,
-the following command will run all the cli-tests:
-
-.. sourcecode:: console
-
-    $ testr run sahara_tempest_plugin.tests.cli
-
-..
-
-Useful links:
-
-* `Running Tempest tests with testr <https://docs.openstack.org/tempest/latest/overview.html#legacy-run-method>`_.
 * `Using Tempest plugins <https://docs.openstack.org/tempest/latest/plugin.html#using-plugins>`_.
 * `Tempest Quickstart <https://docs.openstack.org/tempest/latest/overview.html#quickstart>`_.
 

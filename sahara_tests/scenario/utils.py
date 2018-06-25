@@ -44,7 +44,7 @@ DEFAULT_TEMPLATE_VARS = [os.path.join(TEST_TEMPLATE_DIR,
                                       'edp.yaml.mako')]
 TEST_TEMPLATE_PATH = os.path.join(SCENARIO_RESOURCES_DIR,
                                   'testcase.py.mako')
-DEFAULT_TESTR_CONF = os.path.join(SCENARIO_RESOURCES_DIR, 'testr.conf')
+DEFAULT_STESTR_CONF = os.path.join(SCENARIO_RESOURCES_DIR, 'stestr.conf')
 
 
 def rand_name(name=''):
@@ -56,11 +56,10 @@ def rand_name(name=''):
 
 
 def run_tests(concurrency, test_dir_path):
-    command = ['ostestr']
+    command = ['stestr', 'run']
     if concurrency:
-        command.extend(['--concurrency', '%d' % concurrency])
+        command.extend(['--concurrency=%d' % concurrency])
     new_env = os.environ.copy()
-    new_env['DISCOVER_DIRECTORY'] = '.'
     tester_runner = subprocess.Popen(command, env=new_env, cwd=test_dir_path)
     tester_runner.communicate()
     return tester_runner.returncode
@@ -83,8 +82,9 @@ def create_testcase_file(testcases, credentials, network, report):
     print("The generated test file located at: %s" % test_dir_path)
     fileutils.write_to_tempfile(testcase_data.encode("ASCII"), prefix='test_',
                                 suffix='.py', path=test_dir_path)
-    shutil.copyfile(DEFAULT_TESTR_CONF, os.path.join(test_dir_path,
-                                                     '.testr.conf'))
+    # Copy both files as long as the old runner is supported
+    shutil.copyfile(DEFAULT_STESTR_CONF, os.path.join(test_dir_path,
+                                                      '.stestr.conf'))
 
     return test_dir_path
 
