@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    sahara-scenario now requires stestr.

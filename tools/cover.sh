@@ -23,13 +23,20 @@ show_diff () {
 }
 
 package_name=${PACKAGE_NAME:-sahara_tests}
+export PYTHON="coverage run --source ${package_name} --parallel-mode"
+
+run_coverage () {
+    find . -type f -name "*.pyc" -delete && coverage erase && \
+        stestr run "$*" && coverage combine
+}
+
 # Stash uncommitted changes, checkout master and save coverage report
 uncommitted=$(git status --porcelain | grep -v "^??")
 [[ -n $uncommitted ]] && git stash > /dev/null
 git checkout HEAD^
 
 baseline_report=$(mktemp -t sahara-scenario_coverageXXXXXXX)
-find . -type f -name "*.pyc" -delete && python setup.py test --coverage --coverage-package-name=${package_name} --testr-args="$*"
+run_coverage "$*"
 coverage report > $baseline_report
 baseline_missing=$(awk '/^TOTAL/ { print $3 }' $baseline_report)
 
@@ -39,9 +46,12 @@ git checkout -
 
 # Generate and save coverage report
 current_report=$(mktemp -t sahara-scenario_coverageXXXXXXX)
-find . -type f -name "*.pyc" -delete && python setup.py test --coverage --coverage-package-name=${package_name} --testr-args="$*"
+run_coverage "$*"
 coverage report > $current_report
 current_missing=$(awk '/^TOTAL/ { print $3 }' $current_report)
+
+coverage html -d cover
+coverage xml -o cover/coverage.xml
 
 # Show coverage details
 allowed_missing=$((baseline_missing+ALLOWED_EXTRA_MISSING))
@@ -70,4 +80,5 @@ else
 fi
 
 rm $baseline_report $current_report
+
 exit $exit_code
