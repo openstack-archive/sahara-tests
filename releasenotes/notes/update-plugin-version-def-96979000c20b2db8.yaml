@@ -1,0 +1,6 @@
+---
+other:
+  - |
+    Updated the list of supported plugin/versions used by some Tempest
+    and Tempest-based tests to cover all the combinations available in the
+    Sahara releases supported by sahara-tests.

@@ -186,53 +186,38 @@ DEFAULT_TEMPLATES = {
     ]),
     'vanilla': OrderedDict([
         ('2.7.1', copy.deepcopy(BASE_VANILLA_DESC)),
-    ]),
-    'hdp': OrderedDict([
-        ('2.0.6', {
-            'NODES': {
-                'master1': {
-                    'count': 1,
-                    'node_processes': ['NAMENODE', 'SECONDARY_NAMENODE',
-                                       'ZOOKEEPER_SERVER', 'AMBARI_SERVER',
-                                       'HISTORYSERVER', 'RESOURCEMANAGER',
-                                       'GANGLIA_SERVER', 'NAGIOS_SERVER',
-                                       'OOZIE_SERVER']
-                },
-                'worker1': {
-                    'count': 1,
-                    'node_processes': ['HDFS_CLIENT', 'DATANODE',
-                                       'YARN_CLIENT', 'ZOOKEEPER_CLIENT',
-                                       'MAPREDUCE2_CLIENT', 'NODEMANAGER',
-                                       'PIG', 'OOZIE_CLIENT']
-                }
-            },
-            'cluster_configs': {
-                'HDFS': {
-                    'dfs.replication': 1
-                }
-            }
-        })
+        ('2.7.5', copy.deepcopy(BASE_VANILLA_DESC)),
+        ('2.8.2', copy.deepcopy(BASE_VANILLA_DESC))
     ]),
     'ambari': OrderedDict([
         ('2.3', copy.deepcopy(BASE_AMBARI_HDP_DESC)),
-        ('2.4', copy.deepcopy(BASE_AMBARI_HDP_DESC))
+        ('2.4', copy.deepcopy(BASE_AMBARI_HDP_DESC)),
+        ('2.5', copy.deepcopy(BASE_AMBARI_HDP_DESC)),
+        ('2.6', copy.deepcopy(BASE_AMBARI_HDP_DESC))
     ]),
     'spark': OrderedDict([
         ('1.3.1', copy.deepcopy(BASE_SPARK_DESC)),
-        ('1.6.0', copy.deepcopy(BASE_SPARK_DESC))
+        ('1.6.0', copy.deepcopy(BASE_SPARK_DESC)),
+        ('2.1.0', copy.deepcopy(BASE_SPARK_DESC)),
+        ('2.2', copy.deepcopy(BASE_SPARK_DESC)),
+        ('2.3', copy.deepcopy(BASE_SPARK_DESC))
     ]),
     'cdh': OrderedDict([
         ('5.4.0', copy.deepcopy(BASE_CDH_DESC)),
         ('5.5.0', copy.deepcopy(BASE_CDH_DESC)),
         ('5.7.0', copy.deepcopy(BASE_CDH_DESC)),
-        ('5.9.0', copy.deepcopy(BASE_CDH_DESC))
+        ('5.9.0', copy.deepcopy(BASE_CDH_DESC)),
+        ('5.11.0', copy.deepcopy(BASE_CDH_DESC)),
+        ('5.13.0', copy.deepcopy(BASE_CDH_DESC))
     ]),
     'mapr': OrderedDict([
         ('5.1.0.mrv2', copy.deepcopy(BASE_MAPR_DESC)),
         ('5.2.0.mrv2', copy.deepcopy(BASE_MAPR_DESC))
     ]),
     'storm': OrderedDict([
-        ('1.0.1', copy.deepcopy(BASE_STORM_DESC))
+        ('1.0.1', copy.deepcopy(BASE_STORM_DESC)),
+        ('1.1.0', copy.deepcopy(BASE_STORM_DESC)),
+        ('1.2', copy.deepcopy(BASE_STORM_DESC))
     ])
 }
 
