@@ -61,7 +61,6 @@ class RunnerUnitTest(testtools.TestCase):
 
         expected_default_network = {
             "network": {
-                "type": "neutron",
                 "private_network": "private",
                 "public_network": "",
                 "auto_assignment_floating_ip": False
@@ -101,7 +100,6 @@ class RunnerUnitTest(testtools.TestCase):
                 "ssl_cert": "sahara_tests/unit/scenario/dummy.crt"
             },
             "network": {
-                "type": "neutron",
                 "private_network": "changed_private",
                 "public_network": "changed_public",
                 "auto_assignment_floating_ip": True,
@@ -185,7 +183,6 @@ class RunnerUnitTest(testtools.TestCase):
 
         expected_network = {
             "network": {
-                "type": "neutron",
                 "private_network": "changed_private",
                 "public_network": "changed_public",
                 "auto_assignment_floating_ip": True,
@@ -313,7 +310,7 @@ class RunnerUnitTest(testtools.TestCase):
                     '--os-username', 'demo', '--os-password', 'demopwd',
                     '--os-project-name', 'demo',
                     '--os-auth-url', 'localhost/v2.0',
-                    '--args', 'network_type:neutron',
+                    '--args',
                     'network_private_name:private',
                     'network_public_name:public',
                     'vanilla_26_image:hadoop_2_6_latest',
@@ -337,7 +334,7 @@ class RunnerUnitTest(testtools.TestCase):
                     'sahara_tests/unit/scenario/templatevars_complete.ini',
                     'sahara_tests/unit/scenario/vanilla2_7_1.yaml.mako',
                     '--args',
-                    'network_type:test']
+                    'network_private_name:']
         with testtools.ExpectedException(exceptions.ValidationError):
             runner.main()
 

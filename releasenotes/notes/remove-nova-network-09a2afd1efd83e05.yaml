@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Removed nova-network configuration. Nova network has been fully
+    removed from the OpenStack codebase, in all releases supported
+    by sahara-tests.

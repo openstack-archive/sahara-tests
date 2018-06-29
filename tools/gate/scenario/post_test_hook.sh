@@ -38,7 +38,6 @@ cd $SAHARA_TESTS_DIR
 echo "Generating scenario tests config file"
 sudo -E -u $USER tee template_vars.ini <<EOF
 [DEFAULT]
-network_type: ${NETWORK}
 network_private_name: ${PRIVATE_NETWORK_NAME}
 network_public_name: ${PUBLIC_NETWORK_NAME}
 plugin_image: ${SAHARA_IMAGE_NAME}

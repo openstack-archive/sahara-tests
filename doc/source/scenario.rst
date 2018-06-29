@@ -63,8 +63,6 @@ The following variables are currently used by defaults templates:
 +-----------------------------+--------+-------------------------+
 |   Variable                  |  Type  |          Value          |
 +=============================+========+=========================+
-| network_type                | string | neutron or nova-network |
-+-----------------------------+--------+-------------------------+
 | network_private_name        | string | private network name    |
 |                             |        | for OS_PROJECT_NAME     |
 +-----------------------------+--------+-------------------------+
@@ -380,9 +378,6 @@ This section is dictionary-type.
 +-----------------------------+---------+----------+---------+----------------+
 | public_network              | string  |          | public  | name or id of  |
 |                             |         |          |         | private network|
-+-----------------------------+---------+----------+---------+----------------+
-| type                        | string  |          | neutron | "neutron" or   |
-|                             |         |          |         | "nova-network" |
 +-----------------------------+---------+----------+---------+----------------+
 | auto_assignment_floating_ip | boolean |          | False   |                |
 +-----------------------------+---------+----------+---------+----------------+

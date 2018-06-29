@@ -81,10 +81,6 @@ SCHEMA = {
         "network": {
             "type": "object",
             "properties": {
-                "type": {
-                    "type": "string",
-                    "enum": ["neutron", "nova-network"]
-                },
                 "auto_assignment_floating_ip": {
                     "type": "boolean"
                 },

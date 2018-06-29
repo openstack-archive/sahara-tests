@@ -10,9 +10,3 @@ if [ $SAHARA_SCENARIO_GATE_PROJECT == "python-saharaclient" ] ; then
     export PROJECTS="openstack/python-saharaclient $PROJECTS"
     export DEVSTACK_PROJECT_FROM_GIT=python-saharaclient
 fi
-
-if [ $SAHARA_SCENARIO_GATE_NETWORK == "nova" ] ; then
-    export DEVSTACK_GATE_NEUTRON=0
-else
-    export DEVSTACK_GATE_NEUTRON=1
-fi

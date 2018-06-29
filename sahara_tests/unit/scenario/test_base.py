@@ -100,8 +100,7 @@ class TestBase(testtools.TestCase):
                                           'ssl_verify': True}
         self.base_scenario.plugin_opts = {'plugin_name': 'vanilla',
                                           'hadoop_version': '2.7.1'}
-        self.base_scenario.network = {'type': 'neutron',
-                                      'private_network': 'changed_private',
+        self.base_scenario.network = {'private_network': 'changed_private',
                                       'public_network': 'changed_public',
                                       'auto_assignment_floating_ip': False}
         self.base_scenario.testcase = {

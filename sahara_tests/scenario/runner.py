@@ -47,7 +47,6 @@ def set_defaults(config):
     # set up network
     config['network'] = config.get('network', {})
     net = config['network']
-    net['type'] = net.get('type', 'neutron')
     net['private_network'] = net.get('private_network', 'private')
     net['auto_assignment_floating_ip'] = net.get('auto_assignment_floating_ip',
                                                  False)
