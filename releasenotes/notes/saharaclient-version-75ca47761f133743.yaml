@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    The ``api_version_saharaclient`` variable now controls the Sahara API
+    version used not only by the Tempest.lib-based clients tests,
+    but also by the Tempest CLI tests.
+deprecations:
+  - |
+    The ``saharaclient_version`` option in the ``data-processing`` group
+    has been renamed to ``api_version_saharaclient``.

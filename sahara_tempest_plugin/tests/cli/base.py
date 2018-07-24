@@ -77,8 +77,13 @@ class ClientTestBase(base.ClientTestBase):
                 'project_domain_name'),
             identity_api_version=identity_api_version)
 
-    def openstack(self, *args, **kwargs):
-        return self.clients.openstack(*args, **kwargs)
+    def openstack(self, action, flags='', params='', fail_ok=False,
+                  merge_stderr=False):
+        if '--os-data-processing-api-version' not in flags:
+            flags = flags + '--os-data-processing-api-version %s' % \
+                (TEMPEST_CONF.data_processing.api_version_saharaclient)
+        return self.clients.openstack(action, flags=flags, params=params,
+                                      fail_ok=fail_ok, merge_stderr=False)
 
     def listing_result(self, command):
         command_for_item = self.openstack('dataprocessing', params=command)

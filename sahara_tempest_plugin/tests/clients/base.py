@@ -60,7 +60,7 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         ses = session.Session(auth=auth)
 
         cls.client = sahara_client.Client(
-            TEMPEST_CONF.data_processing.saharaclient_version,
+            TEMPEST_CONF.data_processing.api_version_saharaclient,
             session=ses,
             service_type=catalog_type,
             endpoint_type=endpoint_type)

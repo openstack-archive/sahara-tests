@@ -51,9 +51,10 @@ DataProcessingAdditionalGroup = [
     cfg.StrOpt('test_ssh_user',
                default='ubuntu',
                help='username used to access the test image.'),
-    cfg.StrOpt('saharaclient_version',
+    cfg.StrOpt('api_version_saharaclient',
                default='1.1',
-               help='Version of python-saharaclient'),
+               help='Version of Sahara API used by saharaclient',
+               deprecated_name='saharaclient_version'),
     cfg.StrOpt('sahara_url',
                help='Sahara url as http://ip:port/api_version/tenant_id'),
     # TODO(shuyingya): Delete this option once the Mitaka release is EOL.
