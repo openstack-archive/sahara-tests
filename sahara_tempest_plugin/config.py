@@ -71,5 +71,11 @@ data_processing_feature_group = cfg.OptGroup(
 DataProcessingFeaturesGroup = [
     cfg.ListOpt('plugins',
                 default=["vanilla", "cdh"],
-                help="List of enabled data processing plugins")
+                help="List of enabled data processing plugins"),
+    # delete this and always execute the tests when Tempest and
+    # this Tempest plugin stop supporting Queens, the last version
+    # without or incomplete S3 support.
+    cfg.BoolOpt('s3',
+                default=False,
+                help='Does Sahara support S3?'),
 ]

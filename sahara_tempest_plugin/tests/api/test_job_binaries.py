@@ -12,12 +12,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import testtools
 from testtools import testcase as tc
 
+from tempest import config
 from tempest.lib import decorators
 from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.tests.api import base as dp_base
+
+
+CONF = config.CONF
 
 
 class JobBinaryTest(dp_base.BaseDataProcessingTest):
@@ -35,10 +40,22 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
                 'password': cls.os_primary.credentials.password
             }
         }
-        # Create extra cls.swift_job_binary variable to use for comparison to
-        # job binary response body because response body has no 'extra' field.
+        cls.s3_job_binary_with_extra = {
+            'url': 's3://sahara-bucket/example.jar',
+            'description': 'Test job binary',
+            'extra': {
+                'accesskey': cls.os_primary.credentials.username,
+                'secretkey': cls.os_primary.credentials.password,
+                'endpoint': 'localhost'
+            }
+        }
+        # Create extra cls.swift_job_binary and cls.s3_job_binary variables
+        # to use for comparison to job binary response body
+        # because response body has no 'extra' field.
         cls.swift_job_binary = cls.swift_job_binary_with_extra.copy()
         del cls.swift_job_binary['extra']
+        cls.s3_job_binary = cls.s3_job_binary_with_extra.copy()
+        del cls.s3_job_binary['extra']
 
         name = data_utils.rand_name('sahara-internal-job-binary')
         cls.job_binary_data = 'Some script may be data'
@@ -54,7 +71,7 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
         It creates a link to data (jar, pig files, etc.), ensures job binary
         name and response body. Returns id and name of created job binary.
-        Data may not exist when using Swift as data storage.
+        Data may not exist when using Swift or S3 as data storage.
         In other cases data must exist in storage.
         """
         if not binary_name:
@@ -66,8 +83,10 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
         # ensure that binary created successfully
         self.assertEqual(binary_name, resp_body['name'])
-        if 'swift' in binary_body['url']:
+        if binary_body['url'].startswith('swift:'):
             binary_body = self.swift_job_binary
+        elif binary_body['url'].startswith('s3:'):
+            binary_body = self.s3_job_binary
         self.assertDictContainsSubset(binary_body, resp_body)
 
         return resp_body['id'], binary_name
@@ -103,6 +122,45 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
     def test_swift_job_binary_delete(self):
         binary_id, _ = (
             self._create_job_binary(self.swift_job_binary_with_extra))
+
+        # delete the job binary by id
+        self.client.delete_job_binary(binary_id)
+
+    @decorators.idempotent_id('1cda1990-bfa1-46b1-892d-fc3ceafde537')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_job_binary_create(self):
+        self._create_job_binary(self.s3_job_binary_with_extra)
+
+    @decorators.idempotent_id('69de4774-44fb-401d-9d81-8c4df83d6cdb')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_job_binary_list(self):
+        binary_info = self._create_job_binary(self.s3_job_binary_with_extra)
+
+        # check for job binary in list
+        binaries = self.client.list_job_binaries()['binaries']
+        binaries_info = [(binary['id'], binary['name']) for binary in binaries]
+        self.assertIn(binary_info, binaries_info)
+
+    @decorators.idempotent_id('479ba3ef-67b7-45c9-81e2-ea34366099ce')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_job_binary_get(self):
+        binary_id, binary_name = (
+            self._create_job_binary(self.s3_job_binary_with_extra))
+
+        # check job binary fetch by id
+        binary = self.client.get_job_binary(binary_id)['job_binary']
+        self.assertEqual(binary_name, binary['name'])
+        self.assertDictContainsSubset(self.s3_job_binary, binary)
+
+    @decorators.idempotent_id('d949472b-6a57-4250-905d-087dfb614633')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_job_binary_delete(self):
+        binary_id, _ = (
+            self._create_job_binary(self.s3_job_binary_with_extra))
 
         # delete the job binary by id
         self.client.delete_job_binary(binary_id)

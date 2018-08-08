@@ -12,12 +12,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import testtools
 from testtools import testcase as tc
 
+from tempest import config
 from tempest.lib import decorators
 from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.tests.api import base as dp_base
+
+
+CONF = config.CONF
 
 
 class DataSourceTest(dp_base.BaseDataProcessingTest):
@@ -35,6 +40,21 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
         }
         cls.swift_data_source = cls.swift_data_source_with_creds.copy()
         del cls.swift_data_source['credentials']
+
+        cls.s3_data_source_with_creds = {
+            'url': 's3://sahara-bucket/input-source',
+            'description': 'Test data source',
+            'credentials': {
+                'accesskey': 'username',
+                'secretkey': 'key',
+                'endpoint': 'localhost',
+                'bucket_in_path': False,
+                'ssl': False
+            },
+            'type': 's3'
+        }
+        cls.s3_data_source = cls.s3_data_source_with_creds.copy()
+        del cls.s3_data_source['credentials']
 
         cls.local_hdfs_data_source = {
             'url': 'input-source',
@@ -65,6 +85,8 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
         self.assertEqual(source_name, resp_body['name'])
         if source_body['type'] == 'swift':
             source_body = self.swift_data_source
+        elif source_body['type'] == 's3':
+            source_body = self.s3_data_source
         self.assertDictContainsSubset(source_body, resp_body)
 
         return resp_body['id'], source_name
@@ -129,6 +151,44 @@ class DataSourceTest(dp_base.BaseDataProcessingTest):
     def test_swift_data_source_update(self):
         source_id, _ = (
             self._create_data_source(self.swift_data_source_with_creds))
+        self._update_data_source(source_id)
+
+    @decorators.idempotent_id('54b68270-74d2-4c93-a324-09c2dccb1208')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_data_source_create(self):
+        self._create_data_source(self.s3_data_source_with_creds)
+
+    @decorators.idempotent_id('5f67a8d1-e362-4204-88ec-674630a71019')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_data_source_list(self):
+        source_info = (
+            self._create_data_source(self.s3_data_source_with_creds))
+        self._list_data_sources(source_info)
+
+    @decorators.idempotent_id('84017749-b9d6-4542-9d12-1c73239e03b2')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_data_source_get(self):
+        source_id, source_name = (
+            self._create_data_source(self.s3_data_source_with_creds))
+        self._get_data_source(source_id, source_name, self.s3_data_source)
+
+    @decorators.idempotent_id('fb8f9f44-17ea-4be9-8cec-e02f31a49bae')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_data_source_delete(self):
+        source_id, _ = (
+            self._create_data_source(self.s3_data_source_with_creds))
+        self._delete_data_source(source_id)
+
+    @decorators.idempotent_id('d069714a-86fb-45ce-8498-43901b065243')
+    @testtools.skipUnless(CONF.data_processing_feature_enabled.s3,
+                          'S3 not available')
+    def test_s3_data_source_update(self):
+        source_id, _ = (
+            self._create_data_source(self.s3_data_source_with_creds))
         self._update_data_source(source_id)
 
     @tc.attr('smoke')

@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Added basic S3 API tests (job binaries and data sources) to the Tempest
+    plugin. The tests are disabled by default and can be enabled using
+    a new tempest.conf key (data-processing-feature-enabled.s3).

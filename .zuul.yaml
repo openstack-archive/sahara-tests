@@ -51,6 +51,8 @@
             data_processing:
               test_image_name: xenial-server-cloudimg-amd64-disk1
               test_ssh_user: ubuntu
+            data-processing-feature-enabled:
+              s3: 'True'
       devstack_plugins:
         sahara: git://git.openstack.org/openstack/sahara
         heat: git://git.openstack.org/openstack/heat
@@ -63,6 +65,20 @@
       - ^etc/.*$
       - ^releasenotes/.*$
       - ^sahara_tests/.*$
+
+# variant for pre-Rocky branches (no S3)
+- job:
+    name: sahara-tests-tempest
+    branches:
+      - stable/ocata
+      - stable/pike
+      - stable/queens
+    vars:
+      devstack_local_conf:
+        test-config:
+          $TEMPEST_CONFIG:
+            data-processing-feature-enabled:
+              s3: 'False'
 
 - job:
     name: sahara-tests-scenario
