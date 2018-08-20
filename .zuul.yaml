@@ -1,4 +1,9 @@
 - project:
+    templates:
+      - openstack-python-jobs
+      - publish-openstack-sphinx-docs
+      - openstack-python35-jobs
+      - release-notes-jobs
     check:
       jobs:
         - openstack-tox-pylint:
@@ -7,7 +12,10 @@
         - sahara-tests-tempest
         - sahara-tests-scenario-queens
         - sahara-tests-scenario-pike
+        - openstack-tox-cover:
+            voting: false
     gate:
+      queue: sahara
       jobs:
         - sahara-tests-scenario
         - sahara-tests-tempest
@@ -16,6 +24,9 @@
         - sahara-tests-scenario-multinode-spark
         - sahara-tests-scenario-py3:
             voting: false
+    post:
+      jobs:
+        - openstack-tox-cover
 
 - job:
     name: sahara-tests-tempest
@@ -28,21 +39,21 @@
       - openstack/heat
       - openstack/ceilometer
     vars:
-      tempest_test_regex: '^(sahara_tempest_plugin.tests.)'
-      tox_envlist: 'all'
+      tempest_test_regex: ^(sahara_tempest_plugin.tests.)
+      tox_envlist: all
       devstack_localrc:
-        IMAGE_URLS: 'https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img'
-        TEMPEST_PLUGINS: '/opt/stack/sahara-tests'
+        IMAGE_URLS: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+        TEMPEST_PLUGINS: /opt/stack/sahara-tests
       devstack_local_conf:
         test-config:
-          "$TEMPEST_CONFIG":
+          $TEMPEST_CONFIG:
             data_processing:
-              test_image_name: 'xenial-server-cloudimg-amd64-disk1'
-              test_ssh_user: 'ubuntu'
+              test_image_name: xenial-server-cloudimg-amd64-disk1
+              test_ssh_user: ubuntu
       devstack_plugins:
-        sahara: 'git://git.openstack.org/openstack/sahara'
-        heat: 'git://git.openstack.org/openstack/heat'
-        ceilometer: 'git://git.openstack.org/openstack/ceilometer'
+        sahara: git://git.openstack.org/openstack/sahara
+        heat: git://git.openstack.org/openstack/heat
+        ceilometer: git://git.openstack.org/openstack/ceilometer
       devstack_services:
         tls-proxy: false
     irrelevant-files:
@@ -71,10 +82,10 @@
     host-vars:
       controller:
         devstack_plugins:
-          sahara: 'git://git.openstack.org/openstack/sahara'
-          heat: 'git://git.openstack.org/openstack/heat'
-          ceilometer: 'git://git.openstack.org/openstack/ceilometer'
-          shade: 'git://git.openstack.org/openstack-infra/shade'
+          sahara: git://git.openstack.org/openstack/sahara
+          heat: git://git.openstack.org/openstack/heat
+          ceilometer: git://git.openstack.org/openstack/ceilometer
+          shade: git://git.openstack.org/openstack-infra/shade
     group-vars:
       subnode:
         devstack_services:
@@ -84,18 +95,18 @@
         tls-proxy: false
       devstack_localrc:
         # required to contain (almost any) custom-built image
-        SWIFT_LOOPBACK_DISK_SIZE: '8G'
+        SWIFT_LOOPBACK_DISK_SIZE: 8G
         SWIFT_MAX_FILE_SIZE: 8589934592
       devstack_local_conf:
         post-config:
-          "$SAHARA_CONF_FILE":
+          $SAHARA_CONF_FILE:
             DEFAULT:
               min_transient_cluster_active_time: 90
-      sahara_image_name: 'xenial-server'
-      sahara_image_url: 'https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img'
-      sahara_plugin: 'fake'
+      sahara_image_name: xenial-server
+      sahara_image_url: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+      sahara_plugin: fake
       sahara_plugin_version: '0.1'
-      sahara_scenario_test_template: 'fake.yaml.mako'
+      sahara_scenario_test_template: fake.yaml.mako
     irrelevant-files:
       - ^.*\.rst$
       - ^doc/.*$
@@ -128,13 +139,13 @@
     parent: sahara-tests-scenario
     nodeset: openstack-two-node
     vars:
-      sahara_image_name: 'xenial-spark'
+      sahara_image_name: xenial-spark
       sahara_image_url: '{{ ansible_user_dir }}/{{ zuul.projects["git.openstack.org/openstack/sahara-image-elements"].src_dir }}/ubuntu_sahara_spark_latest.qcow2'
-      sahara_plugin: 'spark'
-      sahara_plugin_version: '1.6.0'
-      sahara_scenario_test_template: 'spark-1.6.0.yaml.mako'
+      sahara_plugin: spark
+      sahara_plugin_version: 1.6.0
+      sahara_scenario_test_template: spark-1.6.0.yaml.mako
       sahara_flavors:
-        'sah1.small':
+        sah1.small:
           id: 20
           ram: 1536
           disk: 20
