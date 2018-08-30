@@ -1,0 +1,16 @@
+---
+prelude: >
+    Rocky test templates are now available.
+features:
+  - A folder with scenario templates for Rocky was added.
+    It is a subset of the templates in the main directory,
+    and includes all non-deprecated plugin/versions.
+  - The available default test templates now supports also
+    Spark 2.3, Storm 1.2, Vanilla 2.7.5, and the Ambari-based
+    HDP 2.6 and 2.5.
+fixes:
+  - The CDH 5.11 test template, previously only available for queens,
+    was added to main (unversioned) templates directory.
+upgrades:
+  - All the templates for deprecated version/plugins were removed
+    from the main (unversioned) templates directory.

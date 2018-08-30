@@ -2,8 +2,8 @@
 
 clusters:
   - plugin_name: cdh
-    plugin_version: 5.7.0
-    image: ${cdh_570_image}
+    plugin_version: 5.11.0
+    image: ${cdh_5110_image}
     node_group_templates:
       - name: worker-dn
         flavor: ${ci_flavor_id}
@@ -62,7 +62,7 @@ clusters:
           - HIVE_SERVER2
           - SPARK_YARN_HISTORY_SERVER
         auto_security_group: ${use_auto_security_group}
-        # In 5.7 the defaults of following configs are too large,
+        # In 5.11 the defaults of following configs are too large,
         # restrict them to save memory for scenario testing.
         node_configs:
             HIVEMETASTORE:
@@ -70,7 +70,7 @@ clusters:
             HIVESERVER:
                 hiveserver2_java_heapsize: 2147483648
     cluster_template:
-      name: cdh570
+      name: cdh5110
       node_group_templates:
         manager: 1
         master-core: 1
