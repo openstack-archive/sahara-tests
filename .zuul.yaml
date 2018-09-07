@@ -7,14 +7,14 @@
       - release-notes-jobs-python3
     check:
       jobs:
+        - openstack-tox-cover:
+            voting: false
         - openstack-tox-pylint:
             voting: false
         - sahara-tests-scenario
         - sahara-tests-tempest
         - sahara-tests-scenario-queens
         - sahara-tests-scenario-pike
-        - openstack-tox-cover:
-            voting: false
     gate:
       queue: sahara
       jobs:
@@ -25,9 +25,6 @@
         - sahara-tests-scenario-multinode-spark
         - sahara-tests-scenario-py3:
             voting: false
-    post:
-      jobs:
-        - openstack-tox-cover
 
 - job:
     name: sahara-tests-tempest
