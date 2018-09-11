@@ -13,6 +13,7 @@
             voting: false
         - sahara-tests-scenario
         - sahara-tests-tempest
+        - sahara-tests-scenario-rocky
         - sahara-tests-scenario-queens
         - sahara-tests-scenario-pike
     gate:
@@ -126,6 +127,11 @@
       - ^doc/.*$
       - ^releasenotes/.*$
       - ^sahara_tempest_plugin/.*$
+
+- job:
+    name: sahara-tests-scenario-rocky
+    parent: sahara-tests-scenario
+    override-checkout: stable/rocky
 
 - job:
     name: sahara-tests-scenario-queens
