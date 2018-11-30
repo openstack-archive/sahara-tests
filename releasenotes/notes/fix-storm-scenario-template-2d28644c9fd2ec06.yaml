@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fix the test template for storm 1.2.

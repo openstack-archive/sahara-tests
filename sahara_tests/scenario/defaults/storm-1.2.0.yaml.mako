@@ -2,7 +2,7 @@
 
 clusters:
   - plugin_name: storm
-    plugin_version: 1.2.0
+    plugin_version: '1.2'
     image: ${storm_120_image}
     node_group_templates:
       - name: master
