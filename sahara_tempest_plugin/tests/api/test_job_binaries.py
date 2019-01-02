@@ -211,4 +211,4 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
         # get data of job binary by id
         _, data = self.client.get_job_binary_data(binary_id)
-        self.assertEqual(data, self.job_binary_data)
+        self.assertEqual(data.decode("utf-8"), self.job_binary_data)
