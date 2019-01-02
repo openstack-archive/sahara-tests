@@ -19,6 +19,8 @@ from tempest.lib.common import rest_client
 
 class DataProcessingClient(rest_client.RestClient):
 
+    api_version = "v1.1"
+
     def _request_and_check_resp(self, request_func, uri, resp_status):
         """Make a request and check response status code.
 
