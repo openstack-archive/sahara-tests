@@ -125,6 +125,12 @@ def generate_config(files, template_variables, auth_values, verbose_run):
                 else:
                     raise ValueError('Job flow exist')
     config['credentials'].update(auth_values['credentials'])
+    if verbose_run:
+        six.print_("Generated configuration:\n%s" % (
+            yaml.safe_dump(config,
+                           allow_unicode=True,
+                           default_flow_style=False)),
+                   flush=True)
     return config
 
 

@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    The fully generated YAML file is printed when the verbose mode is enabled.
