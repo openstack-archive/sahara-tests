@@ -128,6 +128,8 @@ def get_base_parser():
                         nargs='?', help='Set of features to enable')
     parser.add_argument('--count', default=1, nargs='?', type=valid_count,
                         help='Specify count of runs current cases.')
+    parser.add_argument('--v2', '-2', default=False, action='store_true',
+                        help='Use APIv2')
     return parser
 
 
@@ -159,6 +161,7 @@ def main():
     report = args.report
     features = args.feature
     count = args.count
+    use_api_v2 = args.v2
 
     auth_values = utils.get_auth_values(cloud_config, args)
 
@@ -191,7 +194,7 @@ def main():
         testcases.extend(config['clusters'])
 
     test_dir_path = utils.create_testcase_file(testcases, credentials, network,
-                                               report)
+                                               report, use_api_v2=use_api_v2)
 
     # run tests
     concurrency = config.get('concurrency')

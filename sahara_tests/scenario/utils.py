@@ -65,7 +65,8 @@ def run_tests(concurrency, test_dir_path):
     return tester_runner.returncode
 
 
-def create_testcase_file(testcases, credentials, network, report):
+def create_testcase_file(testcases, credentials, network, report,
+                         use_api_v2=False):
     # current directory, where to write reports, key files, etc, if required
     results_dir = os.getcwd()
     default_templ_dir = os.path.abspath(TEST_TEMPLATE_DIR)
@@ -76,7 +77,8 @@ def create_testcase_file(testcases, credentials, network, report):
                                          credentials=credentials,
                                          network=network, report=report,
                                          results_dir=results_dir,
-                                         default_templ_dir=default_templ_dir)
+                                         default_templ_dir=default_templ_dir,
+                                         use_api_v2=use_api_v2)
 
     test_dir_path = tempfile.mkdtemp()
     print("The generated test file located at: %s" % test_dir_path)

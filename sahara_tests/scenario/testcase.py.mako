@@ -15,6 +15,7 @@ class ${testcase['class_name']}TestCase(base.BaseTestCase):
         cls.report = ${report}
         cls.results_dir = '${results_dir}'
         cls.default_templ_dir = '${default_templ_dir}'
+        cls.use_api_v2 = ${use_api_v2}
 
     def test_plugin(self):
         self.create_cluster()

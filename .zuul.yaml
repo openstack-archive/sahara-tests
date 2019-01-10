@@ -12,6 +12,7 @@
         - openstack-tox-pylint:
             voting: false
         - sahara-tests-scenario-runner-py3
+        - sahara-tests-scenario-v2
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
         - sahara-tests-scenario-rocky
@@ -167,6 +168,13 @@
       to run sahara-scenario (but not the OpenStack deployment)
     vars:
       sahara_scenario_tox_env: venv-py3
+
+- job:
+    name: sahara-tests-scenario-v2
+    parent: sahara-tests-scenario
+    vars:
+      sahara_scenario_tox_env: venv-py3
+      sahara_scenario_use_api_v2: True
 
 - job:
     name: sahara-tests-scenario-rocky

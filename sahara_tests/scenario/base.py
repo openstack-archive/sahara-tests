@@ -87,6 +87,7 @@ class BaseTestCase(base.BaseTestCase):
         cls.report = False
         cls.results_dir = '.'
         cls.default_templ_dir = '.'
+        cls.use_api_v2 = False
 
     def setUp(self):
         super(BaseTestCase, self).setUp()
@@ -107,9 +108,12 @@ class BaseTestCase(base.BaseTestCase):
             with open(private_key_file_name, 'w+') as private_key_file:
                 private_key_file.write(self.private_key)
             os.chmod(private_key_file_name, 0o600)
+        self.plugin_version_option = 'plugin_version'
+        if not self.use_api_v2:
+            self.plugin_version_option = 'hadoop_version'
         self.plugin_opts = {
             'plugin_name': self.testcase['plugin_name'],
-            'hadoop_version': self.testcase['plugin_version']
+            self.plugin_version_option: self.testcase['plugin_version']
         }
         self.cinder = True
         self.proxy = False
@@ -129,9 +133,11 @@ class BaseTestCase(base.BaseTestCase):
                                       self._get_file_with_defaults(
                                           self.credentials.get('ssl_cert')))
 
+        api_version = '2' if self.use_api_v2 else '1.1'
         self.sahara = clients.SaharaClient(session=session,
                                            service_type=sahara_service_type,
-                                           sahara_url=sahara_url)
+                                           sahara_url=sahara_url,
+                                           api_version=api_version)
         self.nova = clients.NovaClient(session=session)
         self.neutron = clients.NeutronClient(session=session)
         # swiftclient doesn't support keystone sessions
@@ -762,9 +768,9 @@ class BaseTestCase(base.BaseTestCase):
         return id
 
     def __create_job(self, *args, **kwargs):
-        id = self.sahara.create_job(*args, **kwargs)
+        id = self.sahara.create_job_template(*args, **kwargs)
         if not self.testcase['retain_resources']:
-            self.addCleanup(self.sahara.delete_job, id)
+            self.addCleanup(self.sahara.delete_job_template, id)
         return id
 
     def __run_job(self, *args, **kwargs):
@@ -814,7 +820,7 @@ class BaseTestCase(base.BaseTestCase):
                 tbs.extend(check['traceback'])
                 tbs.append("")
         print("Results of testing plugin", self.plugin_opts['plugin_name'],
-              self.plugin_opts['hadoop_version'])
+              self.plugin_opts[self.plugin_version_option])
         print(table)
         print("\n".join(tbs), file=sys.stderr)
 
@@ -827,9 +833,14 @@ class BaseTestCase(base.BaseTestCase):
             filename = {"time": time.strftime('%Y%m%d%H%M%S',
                                               time.localtime())}
             filename.update(self.plugin_opts)
+            # let's normalize this variable so that we can use
+            # a stable name as formatter later.
+            if 'hadoop_version' in filename:
+                filename['plugin_version'] = filename['hadoop_version']
+                del filename['hadoop_version']
             report_file_name = os.path.join(
                 self.results_dir,
-                '{plugin_name}_{hadoop_version}-{time}'.format(**filename))
+                '{plugin_name}_{plugin_version}-{time}'.format(**filename))
             time.strftime('%Y%m%d%H%M%S', time.localtime())
             with open(report_file_name, 'w+') as report_file:
                 report_file.write(str(self._results))

@@ -1,0 +1,8 @@
+---
+prelude: >
+    Scenario tests now support APIv2.
+features:
+  - |
+    Scenario tests can be executed against APIv2.
+    The usage of APIv2 is enabled through a new command line argument
+    for sahara-scenario (--v2, -2).

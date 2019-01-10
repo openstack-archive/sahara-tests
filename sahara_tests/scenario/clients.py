@@ -62,7 +62,12 @@ class Client(object):
 
 class SaharaClient(Client):
     def __init__(self, *args, **kwargs):
-        self.sahara_client = sahara_client.Client('1.1', *args, **kwargs)
+        self.api_version = '1.1'
+        if 'api_version' in kwargs:
+            self.api_version = kwargs['api_version']
+            del kwargs['api_version']
+        self.sahara_client = sahara_client.Client(self.api_version, *args,
+                                                  **kwargs)
 
     def create_node_group_template(self, *args, **kwargs):
         data = self.sahara_client.node_group_templates.create(*args, **kwargs)
@@ -128,23 +133,33 @@ class SaharaClient(Client):
             self.sahara_client.job_binaries.delete,
             job_binary_id)
 
-    def create_job(self, *args, **kwargs):
-        data = self.sahara_client.jobs.create(*args, **kwargs)
+    def create_job_template(self, *args, **kwargs):
+        if self.api_version == '1.1':
+            data = self.sahara_client.jobs.create(*args, **kwargs)
+        else:
+            data = self.sahara_client.job_templates.create(*args, **kwargs)
         return data.id
 
-    def delete_job(self, job_id):
-        return self.delete_resource(
-            self.sahara_client.jobs.delete,
-            job_id)
+    def delete_job_template(self, job_id):
+        if self.api_version == '1.1':
+            delete_function = self.sahara_client.jobs.delete
+        else:
+            delete_function = self.sahara_client.job_templates.delete
+        return self.delete_resource(delete_function, job_id)
 
     def run_job(self, *args, **kwargs):
-        data = self.sahara_client.job_executions.create(*args, **kwargs)
+        if self.api_version == '1.1':
+            data = self.sahara_client.job_executions.create(*args, **kwargs)
+        else:
+            data = self.sahara_client.jobs.create(*args, **kwargs)
         return data.id
 
     def delete_job_execution(self, job_execution_id):
-        return self.delete_resource(
-            self.sahara_client.job_executions.delete,
-            job_execution_id)
+        if self.api_version == '1.1':
+            delete_function = self.sahara_client.job_executions.delete
+        else:
+            delete_function = self.sahara_client.jobs.delete
+        return self.delete_resource(delete_function, job_execution_id)
 
     def get_cluster(self, cluster_id, show_progress=False):
         return self.sahara_client.clusters.get(cluster_id, show_progress)
@@ -154,11 +169,17 @@ class SaharaClient(Client):
         return str(data.status)
 
     def get_job_status(self, exec_id):
-        data = self.sahara_client.job_executions.get(exec_id)
+        if self.api_version == '1.1':
+            data = self.sahara_client.job_executions.get(exec_id)
+        else:
+            data = self.sahara_client.jobs.get(exec_id)
         return str(data.info['status'])
 
     def get_job_info(self, exec_id):
-        job_execution = self.sahara_client.job_executions.get(exec_id)
+        if self.api_version == '1.1':
+            job_execution = self.sahara_client.job_executions.get(exec_id)
+        else:
+            job_execution = self.sahara_client.jobs.get(exec_id)
         return self.sahara_client.jobs.get(job_execution.job_id)
 
     def get_cluster_id(self, name):
