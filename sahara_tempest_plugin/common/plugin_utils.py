@@ -271,7 +271,8 @@ def get_default_version(plugin):
 
 def get_node_group_template(nodegroup='worker1',
                             default_version=None,
-                            floating_ip_pool=None):
+                            floating_ip_pool=None,
+                            api_version='1.1'):
     """Returns a node group template for the default plugin."""
     try:
         flavor = CONF.compute.flavor_ref
@@ -283,19 +284,23 @@ def get_node_group_template(nodegroup='worker1',
         node_group_template = {
             'description': 'Test node group template',
             'plugin_name': default_plugin_name,
-            'hadoop_version': default_version,
             'node_processes': nodegroup_data['node_processes'],
             'flavor_id': flavor,
             'floating_ip_pool': floating_ip_pool,
             'node_configs': nodegroup_data.get('node_configs', {})
         }
+        if api_version == '1.1':
+            node_group_template['hadoop_version'] = default_version
+        else:
+            node_group_template['plugin_version'] = default_version
         return node_group_template
     except (IndexError, KeyError):
         return None
 
 
 def get_cluster_template(node_group_template_ids=None,
-                         default_version=None):
+                         default_version=None,
+                         api_version='1.1'):
     """Returns a cluster template for the default plugin.
 
     node_group_template_ids contains the type and ID of pre-defined
@@ -334,10 +339,13 @@ def get_cluster_template(node_group_template_ids=None,
         cluster_template = {
             'description': 'Test cluster template',
             'plugin_name': default_plugin_name,
-            'hadoop_version': default_version,
             'cluster_configs': plugin_data.get('cluster_configs', {}),
             'node_groups': all_node_groups,
         }
+        if api_version == '1.1':
+            cluster_template['hadoop_version'] = default_version
+        else:
+            cluster_template['plugin_version'] = default_version
         return cluster_template
     except (IndexError, KeyError):
         return None

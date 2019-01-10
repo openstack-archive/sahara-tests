@@ -12,9 +12,15 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import testtools
+
+from tempest import config
 from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.tests.clients import base
+
+
+CONF = config.CONF
 
 
 class JobBinariesTest(base.BaseDataProcessingTest):
@@ -123,6 +129,9 @@ class JobBinariesTest(base.BaseDataProcessingTest):
         self._check_swift_job_binary_update(binary_id)
         self._check_job_binary_delete(binary_id)
 
+    @testtools.skipIf(CONF.data_processing.api_version_saharaclient != '1.1',
+                      'Job binaries stored on the internal db are available '
+                      'only with API v1.1')
     def test_internal_job_binaries(self):
         binary_id, binary_name = self._check_internal_db_job_binary_create()
         self._check_job_binary_list(binary_id, binary_name)

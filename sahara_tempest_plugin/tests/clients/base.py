@@ -65,6 +65,11 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
             service_type=catalog_type,
             endpoint_type=endpoint_type)
 
+        if TEMPEST_CONF.data_processing.api_version_saharaclient == '1.1':
+            sahara_api_version = '1.1'
+        else:
+            sahara_api_version = '2.0'
+
         if TEMPEST_CONF.service_available.glance:
             # Check if glance v1 is available to determine which client to use.
             if TEMPEST_CONF.image_feature_enabled.api_v1:
@@ -98,16 +103,19 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         cls.worker_template = (
             plugin_utils.get_node_group_template('worker1',
                                                  default_version,
-                                                 cls.floating_ip_pool))
+                                                 cls.floating_ip_pool,
+                                                 sahara_api_version))
 
         cls.master_template = (
             plugin_utils.get_node_group_template('master1',
                                                  default_version,
-                                                 cls.floating_ip_pool))
+                                                 cls.floating_ip_pool,
+                                                 sahara_api_version))
 
         cls.cluster_template = (
             plugin_utils.get_cluster_template(
-                default_version=default_version))
+                default_version=default_version,
+                api_version=sahara_api_version))
 
         cls.swift_data_source_with_creds = {
             'url': 'swift://sahara-container/input-source',
@@ -230,14 +238,17 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         return resp_body
 
     def create_job(self, name, job_type, mains, libs=None, description=None):
-
+        if TEMPEST_CONF.data_processing.api_version_saharaclient == '1.1':
+            base_client_class = self.client.jobs
+        else:
+            base_client_class = self.client.job_templates
         libs = libs or ()
         description = description or ''
 
-        resp_body = self.client.jobs.create(
+        resp_body = base_client_class.create(
             name, job_type, mains, libs, description)
 
-        self.addCleanup(self.delete_resource, self.client.jobs, resp_body.id)
+        self.addCleanup(self.delete_resource, base_client_class, resp_body.id)
 
         return resp_body
 
@@ -267,11 +278,14 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
             % (CLUSTER_STATUS_ACTIVE, timeout))
 
     def create_job_execution(self, **kwargs):
+        if TEMPEST_CONF.data_processing.api_version_saharaclient == '1.1':
+            base_client_class = self.client.job_executions
+        else:
+            base_client_class = self.client.jobs
 
-        resp_body = self.client.job_executions.create(**kwargs)
+        resp_body = base_client_class.create(**kwargs)
 
-        self.addCleanup(self.delete_resource, self.client.job_executions,
-                        resp_body.id)
+        self.addCleanup(self.delete_resource, base_client_class, resp_body.id)
 
         return resp_body
 

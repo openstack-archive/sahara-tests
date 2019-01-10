@@ -59,12 +59,13 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
         name = data_utils.rand_name('sahara-internal-job-binary')
         cls.job_binary_data = 'Some script may be data'
-        job_binary_internal = (
-            cls.create_job_binary_internal(name, cls.job_binary_data))
-        cls.internal_db_job_binary = {
-            'url': 'internal-db://%s' % job_binary_internal['id'],
-            'description': 'Test job binary',
-        }
+        if not CONF.data_processing.use_api_v2:
+            job_binary_internal = (
+                cls.create_job_binary_internal(name, cls.job_binary_data))
+            cls.internal_db_job_binary = {
+                'url': 'internal-db://%s' % job_binary_internal['id'],
+                'description': 'Test job binary',
+            }
 
     def _create_job_binary(self, binary_body, binary_name=None):
         """Creates Job Binary with optional name specified.
@@ -167,11 +168,17 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
     @tc.attr('smoke')
     @decorators.idempotent_id('63662f6d-8291-407e-a6fc-f654522ebab6')
+    @testtools.skipIf(CONF.data_processing.api_version_saharaclient != '1.1',
+                      'Job binaries stored on the internal db are available '
+                      'only with API v1.1')
     def test_internal_db_job_binary_create(self):
         self._create_job_binary(self.internal_db_job_binary)
 
     @tc.attr('smoke')
     @decorators.idempotent_id('38731e7b-6d9d-4ffa-8fd1-193c453e88b1')
+    @testtools.skipIf(CONF.data_processing.api_version_saharaclient != '1.1',
+                      'Job binaries stored on the internal db are available '
+                      'only with API v1.1')
     def test_internal_db_job_binary_list(self):
         binary_info = self._create_job_binary(self.internal_db_job_binary)
 
@@ -182,6 +189,9 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
     @tc.attr('smoke')
     @decorators.idempotent_id('1b32199b-c3f5-43e1-a37a-3797e57b7066')
+    @testtools.skipIf(CONF.data_processing.api_version_saharaclient != '1.1',
+                      'Job binaries stored on the internal db are available '
+                      'only with API v1.1')
     def test_internal_db_job_binary_get(self):
         binary_id, binary_name = (
             self._create_job_binary(self.internal_db_job_binary))
@@ -193,6 +203,9 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
     @tc.attr('smoke')
     @decorators.idempotent_id('3c42b0c3-3e03-46a5-adf0-df0650271a4e')
+    @testtools.skipIf(CONF.data_processing.api_version_saharaclient != '1.1',
+                      'Job binaries stored on the internal db are available '
+                      'only with API v1.1')
     def test_internal_db_job_binary_delete(self):
         binary_id, _ = self._create_job_binary(self.internal_db_job_binary)
 
@@ -206,6 +219,9 @@ class JobBinaryTest(dp_base.BaseDataProcessingTest):
 
     @tc.attr('smoke')
     @decorators.idempotent_id('d5d47659-7e2c-4ea7-b292-5b3e559e8587')
+    @testtools.skipIf(CONF.data_processing.api_version_saharaclient != '1.1',
+                      'Job binaries stored on the internal db are available '
+                      'only with API v1.1')
     def test_job_binary_get_data(self):
         binary_id, _ = self._create_job_binary(self.internal_db_job_binary)
 

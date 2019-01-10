@@ -1,4 +1,5 @@
 # Copyright (c) 2013 Mirantis Inc.
+# Copyright (c) 2018 Red Hat, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -19,7 +20,7 @@ from sahara_tempest_plugin.services.data_processing import base_client
 
 class DataProcessingClient(base_client.BaseDataProcessingClient):
 
-    api_version = "v1.1"
+    api_version = "v2"
 
     def list_node_group_templates(self):
         """List all node group templates for a user."""
@@ -33,7 +34,7 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
         uri = 'node-group-templates/%s' % tmpl_id
         return self._request_check_and_parse_resp(self.get, uri, 200)
 
-    def create_node_group_template(self, name, plugin_name, hadoop_version,
+    def create_node_group_template(self, name, plugin_name, plugin_version,
                                    node_processes, flavor_id,
                                    node_configs=None, **kwargs):
         """Creates node group template with specified params.
@@ -46,7 +47,7 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
         body.update({
             'name': name,
             'plugin_name': plugin_name,
-            'hadoop_version': hadoop_version,
+            'plugin_version': plugin_version,
             'node_processes': node_processes,
             'flavor_id': flavor_id,
             'node_configs': node_configs or dict(),
@@ -59,6 +60,12 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
 
         uri = 'node-group-templates/%s' % tmpl_id
         return self._request_and_check_resp(self.delete, uri, 204)
+
+    def update_node_group_template(self, tmpl_id, **kwargs):
+        """Updates the details of a single node group template."""
+        uri = 'node-group-templates/%s' % tmpl_id
+        return self._request_check_and_parse_resp(self.patch, uri, 202,
+                                                  body=json.dumps(kwargs))
 
     def list_plugins(self):
         """List all enabled plugins."""
@@ -86,7 +93,7 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
         uri = 'cluster-templates/%s' % tmpl_id
         return self._request_check_and_parse_resp(self.get, uri, 200)
 
-    def create_cluster_template(self, name, plugin_name, hadoop_version,
+    def create_cluster_template(self, name, plugin_name, plugin_version,
                                 node_groups, cluster_configs=None,
                                 **kwargs):
         """Creates cluster template with specified params.
@@ -99,7 +106,7 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
         body.update({
             'name': name,
             'plugin_name': plugin_name,
-            'hadoop_version': hadoop_version,
+            'plugin_version': plugin_version,
             'node_groups': node_groups,
             'cluster_configs': cluster_configs or dict(),
         })
@@ -115,7 +122,7 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
     def update_cluster_template(self, tmpl_id, **kwargs):
         """Updates the specificed cluster template."""
         uri = 'cluster-templates/%s' % tmpl_id
-        return self._request_check_and_parse_resp(self.put, uri, 202,
+        return self._request_check_and_parse_resp(self.patch, uri, 202,
                                                   body=json.dumps(kwargs))
 
     def list_data_sources(self):
@@ -146,12 +153,6 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
         return self._request_check_and_parse_resp(self.post, uri,
                                                   202, body=json.dumps(body))
 
-    def update_node_group_template(self, tmpl_id, **kwargs):
-        """Updates the details of a single node group template."""
-        uri = 'node-group-templates/%s' % tmpl_id
-        return self._request_check_and_parse_resp(self.put, uri, 202,
-                                                  body=json.dumps(kwargs))
-
     def delete_data_source(self, source_id):
         """Deletes the specified data source by id."""
 
@@ -161,38 +162,8 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
     def update_data_source(self, source_id, **kwargs):
         """Updates a data source"""
         uri = 'data-sources/%s' % source_id
-        return self._request_check_and_parse_resp(self.put, uri, 202,
+        return self._request_check_and_parse_resp(self.patch, uri, 202,
                                                   body=json.dumps(kwargs))
-
-    def list_job_binary_internals(self):
-        """List all job binary internals for a user."""
-
-        uri = 'job-binary-internals'
-        return self._request_check_and_parse_resp(self.get, uri, 200)
-
-    def get_job_binary_internal(self, job_binary_id):
-        """Returns the details of a single job binary internal."""
-
-        uri = 'job-binary-internals/%s' % job_binary_id
-        return self._request_check_and_parse_resp(self.get, uri, 200)
-
-    def create_job_binary_internal(self, name, data):
-        """Creates job binary internal with specified params."""
-
-        uri = 'job-binary-internals/%s' % name
-        return self._request_check_and_parse_resp(self.put, uri, 202, data)
-
-    def delete_job_binary_internal(self, job_binary_id):
-        """Deletes the specified job binary internal by id."""
-
-        uri = 'job-binary-internals/%s' % job_binary_id
-        return self._request_and_check_resp(self.delete, uri, 204)
-
-    def get_job_binary_internal_data(self, job_binary_id):
-        """Returns data of a single job binary internal."""
-
-        uri = 'job-binary-internals/%s/data' % job_binary_id
-        return self._request_and_check_resp_data(self.get, uri, 200)
 
     def list_job_binaries(self):
         """List all job binaries for a user."""
@@ -234,25 +205,25 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
         uri = 'job-binaries/%s/data' % job_binary_id
         return self._request_and_check_resp_data(self.get, uri, 200)
 
-    def list_jobs(self):
-        """List all jobs for a user."""
+    def list_job_templates(self):
+        """List all jobs templates for a user."""
 
-        uri = 'jobs'
+        uri = 'job-templates'
         return self._request_check_and_parse_resp(self.get, uri, 200)
 
-    def get_job(self, job_id):
-        """Returns the details of a single job."""
+    def get_job_template(self, job_id):
+        """Returns the details of a single job template."""
 
-        uri = 'jobs/%s' % job_id
+        uri = 'job-templates/%s' % job_id
         return self._request_check_and_parse_resp(self.get, uri, 200)
 
-    def create_job(self, name, job_type, mains, libs=None, **kwargs):
+    def create_job_template(self, name, job_type, mains, libs=None, **kwargs):
         """Creates job with specified params.
 
         It supports passing additional params using kwargs and returns created
         object.
         """
-        uri = 'jobs'
+        uri = 'job-templates'
         body = kwargs.copy()
         body.update({
             'name': name,
@@ -263,8 +234,8 @@ class DataProcessingClient(base_client.BaseDataProcessingClient):
         return self._request_check_and_parse_resp(self.post, uri,
                                                   202, body=json.dumps(body))
 
-    def delete_job(self, job_id):
+    def delete_job_template(self, job_id):
         """Deletes the specified job by id."""
 
-        uri = 'jobs/%s' % job_id
+        uri = 'job-templates/%s' % job_id
         return self._request_and_check_resp(self.delete, uri, 204)

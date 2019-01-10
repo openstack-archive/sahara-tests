@@ -14,15 +14,26 @@
 
 from testtools import testcase as tc
 
+from tempest import config
 from tempest.lib import decorators
 from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.tests.api import base as dp_base
 
 
+CONF = config.CONF
+
+
 class JobBinaryInternalTest(dp_base.BaseDataProcessingTest):
     # Link to the API documentation is https://developer.openstack.org/
     # api-ref/data-processing/#job-binary-internals
+
+    @classmethod
+    def skip_checks(cls):
+        super(JobBinaryInternalTest, cls).skip_checks()
+        if CONF.data_processing.use_api_v2:
+            raise cls.skipException('Job binaries stored on the internal db '
+                                    'are available only with API v1.1')
 
     @classmethod
     def resource_setup(cls):

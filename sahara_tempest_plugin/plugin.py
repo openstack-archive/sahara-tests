@@ -62,4 +62,12 @@ class SaharaTempestPlugin(plugins.TempestPlugin):
             'client_names': ['DataProcessingClient']
         }
         params.update(data_processing_config)
-        return [params]
+        params_v2 = {
+            'name': 'data_processing_v2',
+            'service_version': 'data_processing.v2',
+            'module_path':
+                'sahara_tempest_plugin.services.data_processing.v2',
+            'client_names': ['DataProcessingClient']
+        }
+        params_v2.update(data_processing_config)
+        return [params, params_v2]

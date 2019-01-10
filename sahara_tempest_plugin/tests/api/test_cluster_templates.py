@@ -42,6 +42,14 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
 
         node_group_template_w['name'] = data_utils.rand_name(
             'sahara-ng-template')
+
+        # hack the arguments: keep the compatibility with the signature
+        # of self.create_node_group_template
+        if 'plugin_version' in node_group_template_w:
+            plugin_version_value = node_group_template_w['plugin_version']
+            del node_group_template_w['plugin_version']
+            node_group_template_w['hadoop_version'] = plugin_version_value
+
         resp_body = cls.create_node_group_template(**node_group_template_w)
         node_group_template_id = resp_body['id']
         configured_node_group_templates = {'worker1': node_group_template_id}
@@ -79,9 +87,17 @@ class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
             # generate random name if it's not specified
             template_name = data_utils.rand_name('sahara-cluster-template')
 
+        # hack the arguments: keep the compatibility with the signature
+        # of self.create_cluster_template
+        full_cluster_template_w = self.full_cluster_template.copy()
+        if 'plugin_version' in full_cluster_template_w:
+            plugin_version_value = full_cluster_template_w['plugin_version']
+            del full_cluster_template_w['plugin_version']
+            full_cluster_template_w['hadoop_version'] = plugin_version_value
+
         # create cluster template
         resp_body = self.create_cluster_template(template_name,
-                                                 **self.full_cluster_template)
+                                                 **full_cluster_template_w)
 
         # ensure that template created successfully
         self.assertEqual(template_name, resp_body['name'])
