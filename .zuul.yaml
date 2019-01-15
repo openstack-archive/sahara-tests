@@ -24,8 +24,7 @@
     experimental:
       jobs:
         - sahara-tests-scenario-multinode-spark
-        - sahara-tests-scenario-py3:
-            voting: false
+        - sahara-tests-scenario-py3
 
 - job:
     name: sahara-tests-tempest
@@ -35,6 +34,12 @@
     required-projects:
       - openstack/sahara-tests
       - openstack/sahara
+      - openstack/sahara-plugin-ambari
+      - openstack/sahara-plugin-cdh
+      - openstack/sahara-plugin-mapr
+      - openstack/sahara-plugin-spark
+      - openstack/sahara-plugin-storm
+      - openstack/sahara-plugin-vanilla
       - openstack/heat
       - openstack/ceilometer
     vars:
@@ -59,6 +64,7 @@
         tls-proxy: false
     irrelevant-files:
       - ^.*\.rst$
+      - ^api-ref/.*$
       - ^doc/.*$
       - ^etc/.*$
       - ^releasenotes/.*$
@@ -89,6 +95,12 @@
     required-projects:
       - openstack/sahara-tests
       - openstack/sahara
+      - openstack/sahara-plugin-ambari
+      - openstack/sahara-plugin-cdh
+      - openstack/sahara-plugin-mapr
+      - openstack/sahara-plugin-spark
+      - openstack/sahara-plugin-storm
+      - openstack/sahara-plugin-vanilla
       - openstack/heat
       - openstack/ceilometer
       - openstack/sahara-image-elements
@@ -124,6 +136,7 @@
       sahara_scenario_test_template: fake.yaml.mako
     irrelevant-files:
       - ^.*\.rst$
+      - ^api-ref/.*$
       - ^doc/.*$
       - ^releasenotes/.*$
       - ^sahara_tempest_plugin/.*$
@@ -153,6 +166,36 @@
         SAHARA_USE_MOD_WSGI: 'True'
 
 - job:
+    name: sahara-tests-scenario-radosgw
+    description: |
+      Run scenario tests for Sahara, using RadosGW instead of Swift.
+    parent: sahara-tests-scenario
+    required-projects:
+      - openstack/devstack-plugin-ceph
+    host-vars:
+      controller:
+        devstack_plugins:
+            devstack-plugin-ceph: 'git://git.openstack.org/openstack/devstack-plugin-ceph'
+    vars:
+      devstack_localrc:
+        ENABLE_CEPH_CINDER: 'False'
+        ENABLE_CEPH_C_BAK: 'False'
+        ENABLE_CEPH_GLANCE: 'False'
+        ENABLE_CEPH_MANILA: 'False'
+        ENABLE_CEPH_NOVA: 'False'
+        ENABLE_CEPH_RGW: 'True'
+      devstack_local_conf:
+        test-config:
+          "$TEMPEST_CONFIG":
+            service_available:
+              swift: 'True'
+      devstack_services:
+        s-account: false
+        s-container: false
+        s-object: false
+        s-proxy: false
+
+- job:
     name: sahara-tests-scenario-multinode-spark
     description: |
       Run scenario tests based on Spark on a multinode Sahara deployment.
@@ -176,7 +219,7 @@
     name: sahara-tests-scenario-py3
     description: |
       Run scenario tests on a Sahara deployment based on Python 3.
-    parent: sahara-tests-scenario
+    parent: sahara-tests-scenario-radosgw
     vars:
       devstack_localrc:
         USE_PYTHON3: 'True'
