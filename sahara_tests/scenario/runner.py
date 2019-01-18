@@ -124,6 +124,8 @@ def get_base_parser():
                         nargs='?', help='Specify Sahara release')
     parser.add_argument('--report', default=False, action='store_true',
                         help='Write results of test to file')
+    parser.add_argument('--feature', '-f', default=[],
+                        nargs='?', help='Set of features to enable')
     parser.add_argument('--count', default=1, nargs='?', type=valid_count,
                         help='Specify count of runs current cases.')
     return parser
@@ -155,12 +157,14 @@ def main():
     version = args.plugin_version
     release = args.release
     report = args.report
+    features = args.feature
     count = args.count
 
     auth_values = utils.get_auth_values(cloud_config, args)
 
     scenario_arguments = utils.get_default_templates(plugin, version, release,
-                                                     scenario_arguments)
+                                                     scenario_arguments,
+                                                     features)
 
     files = get_scenario_files(scenario_arguments)
 
@@ -171,7 +175,7 @@ def main():
 
     params_for_login = {'credentials': auth_values}
     config = utils.generate_config(files, template_variables, params_for_login,
-                                   verbose_run)
+                                   verbose_run, features)
 
     # validate config
     validation.validate(config)

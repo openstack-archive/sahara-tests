@@ -46,7 +46,11 @@ clusters:
           - run_jobs
           - scale
           - run_jobs
-      edp_jobs_flow: test_flow
+      edp_jobs_flow:
+        - test_flow
+        - name: test_flow_hive
+          features:
+             - testhive
       edp_batching: 1
       retain_resources: true
 
@@ -94,6 +98,7 @@ edp_jobs_flow:
           output_datasource:
               type: hdfs
               destination: /user/hadoop/edp-output
+    test_flow_hive:
         - type: Hive
           input_datasource:
               type: swift

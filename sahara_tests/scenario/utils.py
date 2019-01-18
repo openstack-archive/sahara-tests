@@ -102,7 +102,8 @@ def get_templates_variables(files, variable_file, verbose_run, scenario_args,
     return template_variables
 
 
-def generate_config(files, template_variables, auth_values, verbose_run):
+def generate_config(files, template_variables, auth_values, verbose_run,
+                    features_list=None):
     config = {'credentials': {},
               'network': {},
               'clusters': [],
@@ -125,6 +126,50 @@ def generate_config(files, template_variables, auth_values, verbose_run):
                 else:
                     raise ValueError('Job flow exist')
     config['credentials'].update(auth_values['credentials'])
+
+    # filter out the jobs depending on the features, if any
+    unknown_jobs = []
+    if features_list is None:
+        features_list = []
+    for cluster in config['clusters']:
+        if cluster.get('edp_jobs_flow'):
+            filtered_jobs = []
+            # The jobs associated to a cluster may be a single value (string)
+            # or a list of values; handle both cases.
+            cluster_jobs_list = cluster['edp_jobs_flow']
+            if isinstance(cluster_jobs_list, six.string_types):
+                cluster_jobs_list = [cluster_jobs_list]
+            for job_item in cluster_jobs_list:
+                if isinstance(job_item, dict):
+                    job = job_item['name']
+                else:
+                    job = job_item
+
+                # get the list of features, if defined
+                job_features = set()
+                if isinstance(job_item, dict):
+                    job_features = set(job_item.get('features', []))
+                # If a job has no features associated, it is always used.
+                # Otherwise, it should be used only if any of its features
+                # matches any of the features requested,
+                if (not job_features or
+                    (features_list is not None and
+                     job_features.intersection(features_list))):
+                    # the job is relevant for the configuration,
+                    # so it must be defined; if it is not, it will break,
+                    # so take note of the name
+                    if job not in config['edp_jobs_flow']:
+                        unknown_jobs.append(job)
+                        continue
+                    # job defined, it can be used
+                    filtered_jobs.append(job)
+
+            cluster['edp_jobs_flow'] = filtered_jobs
+    if unknown_jobs:
+        # Some jobs which are listed in some clusters
+        # are not defined, stop here
+        raise ValueError('Unknown jobs: %s' % (unknown_jobs))
+
     if verbose_run:
         six.print_("Generated configuration:\n%s" % (
             yaml.safe_dump(config,
@@ -134,7 +179,10 @@ def generate_config(files, template_variables, auth_values, verbose_run):
     return config
 
 
-def get_default_templates(plugin, version, release, scenario_arguments):
+def get_default_templates(plugin, version, release, scenario_arguments,
+                          features=None):
+    all_templates = []
+
     templates_location = TEST_TEMPLATE_DIR
     if release is not None:
         templates_location = os.path.join(TEST_TEMPLATE_DIR, release)
@@ -146,10 +194,33 @@ def get_default_templates(plugin, version, release, scenario_arguments):
             template = "%s-%s.yaml.mako" % (plugin, version)
         else:
             raise ValueError("Please, specify version for plugin via '-v'")
-        DEFAULT_TEMPLATE_VARS.append(os.path.join(templates_location,
-                                                  template))
-        scenario_arguments = DEFAULT_TEMPLATE_VARS
-    return scenario_arguments
+
+        # find the templates for each features, if they exist
+        feature_templates_vars = []
+        if features:
+            default_templates_base = []
+            for default_template in DEFAULT_TEMPLATE_VARS:
+                if default_template.endswith('.yaml.mako'):
+                    default_templates_base.append(
+                        default_template[:-len('.yaml.mako')])
+            # for each default template, look for a corresponding
+            # <file>_<feature>.yaml.mako
+            for feature in features:
+                for default_template_base in default_templates_base:
+                    template_feature = '%s_%s.yaml.mako' % (
+                        default_template_base, feature)
+                    if os.path.exists(template_feature):
+                        feature_templates_vars.append(template_feature)
+
+        # return a combination of: default templates, version-specific
+        # templates, feature-based templates
+        all_templates = DEFAULT_TEMPLATE_VARS + [os.path.join(
+            templates_location, template)] + feature_templates_vars
+
+    # it makes sense that all the other templates passed as arguments
+    # are always added at the end
+    all_templates += scenario_arguments
+    return all_templates
 
 
 def get_auth_values(cloud_config, args):

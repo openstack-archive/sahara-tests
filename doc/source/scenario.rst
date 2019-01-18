@@ -93,6 +93,31 @@ version is not necessary):
     $ tox -e venv -- sahara-scenario -p vanilla -v 2.7.1
 ..
 
+Different OpenStack releases may require different configuration for the
+same set of plugin and versions. If you use the plugin and version flag,
+if you want to use the configuration file for a specific OpenStack release
+supported by sahara-scenario, you can specify also the ``-r RELEASE``
+argument, where ``RELEASE`` is the official name of the OpenStack release.
+
+By default only default configuration files for the specified plugin and
+version (and release, if any) are included. Also, if any job configuration
+is included, only jobs not tagged with any features will be executed.
+In order to enable feature-specific configuration settings, pass
+the list of requested features through the ``--feature`` (``-f``) parameter.
+
+The parameter makes sure that:
+
+* additional base configuration file which are feature-specific are included;
+* in addition to non-tagged jobs, jobs which are tagged with the specified
+  features are included too.
+
+Example:
+
+.. sourcecode:: console
+
+    $ tox -e venv -- sahara-scenario -p vanilla -v 2.7.1 -f s3 -f myfeature -r rocky
+..
+
 Create the YAML and/or the YAML mako template files for scenario tests
 ``etc/scenario/simple-testcase.yaml``.
 You can take a look at sample YAML files `How to write scenario files`_.
@@ -164,7 +189,11 @@ Optional arguments
 | --release,        | specify Sahara release     |
 | -r RELEASE        |                            |
 +-------------------+----------------------------+
-|  --report         | write results to file      |
+| --report          | write results to file      |
++-------------------+----------------------------+
+| --feature,        | list of features           |
+| -f FEAT1          | that should be enabled     |
+| [-f FEAT2 ...]    |                            |
 +-------------------+----------------------------+
 | --count COUNT     | specify count of runs      |
 +-------------------+----------------------------+
@@ -449,10 +478,12 @@ This sections is an array-type.
      - ['run_jobs', 'scale', 'run_jobs']
      - array of checks
    * - edp_jobs_flow
-     - string
+     - string, list
      -
      -
-     - name of edp job flow
+     - name of jobs defined under edp_jobs_flow be executed on the cluster;
+       if list, each item may be a dict with fields
+       ``name`` (string) and ``features`` (list), or a string
    * - hdfs_username
      - string
      -

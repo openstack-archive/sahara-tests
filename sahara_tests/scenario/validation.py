@@ -320,7 +320,23 @@ SCHEMA = {
                         }
                     },
                     "edp_jobs_flow": {
-                        "type": ["string", "array"]
+                        "type": ["string", "array"],
+                        "items": {
+                            "type": ["string", "object"],
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                },
+                                "features": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    }
+                                }
+                            },
+                            "required": ["name", "features"],
+                        }
                     },
                     "retain_resources": {
                         "type": "boolean"

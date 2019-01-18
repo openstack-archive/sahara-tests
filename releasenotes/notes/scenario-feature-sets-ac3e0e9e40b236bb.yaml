@@ -1,0 +1,11 @@
+---
+features:
+  - |
+    sahara-scenario supports feature sets. When passing specific
+    feature tags to sahara-scenario, additional job templates and
+    EDP jobs marked with those tags will be loaded.
+fixes:
+  - |
+    When passing the plugin/version parameters to sahara-scenario,
+    users can now specify additional YAML templates which will be merged
+    to the default YAMLs, instead of being ignored.

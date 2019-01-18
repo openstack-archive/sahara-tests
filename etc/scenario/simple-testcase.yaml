@@ -71,3 +71,17 @@ edp_jobs_flow:
           configs:
               edp.streaming.mapper: /bin/cat
               edp.streaming.reducer: /usr/bin/wc
+        - type: Pig
+          features:
+              - manila
+          input_datasource:
+              type: manila
+              source: etc/edp-examples/edp-pig/top-todoers/data/input
+          output_datasource:
+              type: manila
+              destination: /user/hadoop/edp-output
+          main_lib:
+              type: manila
+              source: etc/edp-examples/edp-pig/top-todoers/example.pig
+          configs:
+              dfs.replication: 1
