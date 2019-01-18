@@ -60,6 +60,21 @@ SCHEMA = {
                     "type": "string",
                     "minLength": 1
                 },
+                "s3_accesskey": {
+                    "type": "string",
+                },
+                "s3_secretkey": {
+                    "type": "string",
+                },
+                "s3_endpoint": {
+                    "type": "string",
+                },
+                "s3_endpoint_ssl": {
+                    "type": "boolean",
+                },
+                "s3_bucket_path": {
+                    "type": "boolean",
+                },
             },
             "additionalProperties": False
         },
@@ -370,7 +385,8 @@ SCHEMA = {
                                 "properties": {
                                     "type": {
                                         "type": "string",
-                                        "enum": ["swift", "hdfs", "maprfs"]
+                                        "enum": ["swift", "hdfs", "maprfs",
+                                                 "s3"]
                                     },
                                     "source": {
                                         "type": "string"
@@ -384,7 +400,8 @@ SCHEMA = {
                                 "properties": {
                                     "type": {
                                         "type": "string",
-                                        "enum": ["swift", "hdfs", "maprfs"]
+                                        "enum": ["swift", "hdfs", "maprfs",
+                                                 "s3"]
                                     },
                                     "destination": {
                                         "type": "string"
@@ -398,7 +415,7 @@ SCHEMA = {
                                 "properties": {
                                     "type": {
                                         "type": "string",
-                                        "enum": ["swift", "database"]
+                                        "enum": ["swift", "s3", "database"]
                                     },
                                     "source": {
                                         "type": "string"
@@ -414,7 +431,7 @@ SCHEMA = {
                                     "properties": {
                                         "type": {
                                             "type": "string",
-                                            "enum": ["swift", "database"]
+                                            "enum": ["swift", "s3", "database"]
                                         },
                                         "source": {
                                             "type": "string"

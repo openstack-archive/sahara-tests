@@ -1,0 +1,29 @@
+- name: create the S3 credentials
+  shell: |
+    ACCESS_KEY=$(openstack --os-cloud {{ sahara_cloud_demo }} ec2 credentials list -f value -c Access | head -n1)
+    if [ -z "${ACCESS_KEY}" ]; then
+       ACCESS_KEY=$(openstack --os-cloud {{ sahara_cloud_demo }} ec2 credentials create -f value -c access)
+    fi
+    SECRET_KEY=$(openstack --os-cloud {{ sahara_cloud_demo }} ec2 credentials list -f value -c Secret | head -n1)
+    printf "${ACCESS_KEY}\n${SECRET_KEY}"
+  register: sahara_s3_credentials_out
+
+# This task should not be needed normally and the endpoint should be discovered by default
+- name: find the swift endpoint for S3
+  shell: |
+    ENDPOINT=$(openstack --os-cloud {{ sahara_cloud_admin }} endpoint list --service swift --interface public -c URL -f value)
+    ENDPOINT_PREFIX=$(awk -F'//' '{print $1}')
+    ENDPOINT_SSL="False"
+    if [ "${ENDPOINT_PREFIX}" = "https" ]; then
+       ENDPOINT_SSL="True"
+    fi
+    printf "${ENDPOINT}\n${ENDPOINT_SSL}"
+  register: sahara_s3_endpoint_out
+
+- name: save the S3 access data
+  set_fact:
+    sahara_s3_accesskey: "{{ sahara_s3_credentials_out.stdout_lines[0] }}"
+    sahara_s3_secretkey: "{{ sahara_s3_credentials_out.stdout_lines[1] }}"
+    sahara_s3_endpoint: "{{ sahara_s3_endpoint_out.stdout_lines[0] }}"
+    sahara_s3_endpoint_ssl: "{{ sahara_s3_endpoint_out.stdout_lines[1] }}"
+    sahara_s3_bucket_path: True

@@ -33,6 +33,7 @@ from sahara_tests.scenario import clients
 from sahara_tests.scenario import timeouts
 from sahara_tests.scenario import utils
 from sahara_tests.utils import crypto as ssh
+from sahara_tests.utils import url as utils_url
 
 logger = logging.getLogger('swiftclient')
 logger.setLevel(logging.CRITICAL)
@@ -150,6 +151,13 @@ class BaseTestCase(base.BaseTestCase):
             cacert=self.credentials.get('ssl_cert'),
             tenant_name=tenant_name)
         self.glance = clients.GlanceClient(session=session)
+        # boto is not an OpenStack client, but we can handle it as well
+        self.boto = None
+        if self.credentials.get("s3_endpoint", None):
+            self.boto = clients.BotoClient(
+                endpoint=self.credentials["s3_endpoint"],
+                accesskey=self.credentials["s3_accesskey"],
+                secretkey=self.credentials["s3_secretkey"])
 
     def create_cluster(self):
         self.cluster_id = self.sahara.get_cluster_id(
@@ -239,17 +247,34 @@ class BaseTestCase(base.BaseTestCase):
 
     def _create_datasources(self, job):
         def create(ds, name):
+            credential_vars = {}
             source = ds.get('source', None)
             destination = None if source else utils.rand_name(
                 ds['destination'])
             if ds['type'] == 'swift':
                 url = self._create_swift_data(source, destination)
-            if ds['type'] == 'hdfs':
+                credential_vars = {
+                    'credential_user': self.credentials['os_username'],
+                    'credential_pass': self.credentials['os_password']
+                }
+            elif ds['type'] == 's3':
+                url = self._create_s3_data(source, destination)
+                credential_vars = {
+                    's3_credentials': {
+                        'accesskey': self.credentials['s3_accesskey'],
+                        'secretkey': self.credentials['s3_secretkey'],
+                        'endpoint': utils_url.url_schema_remover(
+                            self.credentials['s3_endpoint']),
+                        'ssl': self.credentials['s3_endpoint_ssl'],
+                        'bucket_in_path': self.credentials['s3_bucket_path']
+                    }
+                }
+            elif ds['type'] == 'hdfs':
                 url = self._create_dfs_data(source, destination,
                                             self.testcase.get('hdfs_username',
                                                               'hadoop'),
                                             ds['type'])
-            if ds['type'] == 'maprfs':
+            elif ds['type'] == 'maprfs':
                 url = self._create_dfs_data(source, destination,
                                             ds.get('maprfs_username', 'mapr'),
                                             ds['type'])
@@ -257,8 +282,7 @@ class BaseTestCase(base.BaseTestCase):
                 name=utils.rand_name(name),
                 description='',
                 data_source_type=ds['type'], url=url,
-                credential_user=self.credentials['os_username'],
-                credential_pass=self.credentials['os_password'])
+                **credential_vars)
 
         input_id, output_id = None, None
         if job.get('input_datasource'):
@@ -289,7 +313,12 @@ class BaseTestCase(base.BaseTestCase):
             url = self._create_swift_data(job_binary['source'])
             extra['user'] = self.credentials['os_username']
             extra['password'] = self.credentials['os_password']
-        if job_binary['type'] == 'database':
+        elif job_binary['type'] == 's3':
+            url = self._create_s3_data(job_binary['source'])
+            extra['accesskey'] = self.credentials['s3_accesskey']
+            extra['secretkey'] = self.credentials['s3_secretkey']
+            extra['endpoint'] = self.credentials['s3_endpoint']
+        elif job_binary['type'] == 'database':
             url = self._create_internal_db_data(job_binary['source'])
 
         job_binary_name = '%s-%s' % (
@@ -383,6 +412,15 @@ class BaseTestCase(base.BaseTestCase):
 
         return 'swift://%s.sahara/%s' % (container, path)
 
+    def _create_s3_data(self, source=None, destination=None):
+        bucket = self._get_s3_bucket()
+        path = utils.rand_name(destination if destination else 'test')
+        data = self._read_source_file(source)
+
+        self.__upload_to_bucket(bucket, path, data)
+
+        return 's3://%s/%s' % (bucket, path)
+
     def _create_dfs_data(self, source, destination, hdfs_username, fs):
 
         def to_hex_present(string):
@@ -429,6 +467,12 @@ class BaseTestCase(base.BaseTestCase):
             self.__swift_container = self.__create_container(
                 utils.rand_name('sahara-tests'))
         return self.__swift_container
+
+    def _get_s3_bucket(self):
+        if not getattr(self, '__s3_bucket', None):
+            self.__s3_bucket = self.__create_bucket(
+                utils.rand_name('sahara-tests'))
+        return self.__s3_bucket
 
     @track_result("Cluster scaling", False)
     def check_scale(self):
@@ -790,6 +834,19 @@ class BaseTestCase(base.BaseTestCase):
             self.swift.upload_data(container_name, object_name, data)
         if not self.testcase['retain_resources']:
             self.addCleanup(self.swift.delete_object, container_name,
+                            object_name)
+
+    def __create_bucket(self, bucket_name):
+        self.boto.create_bucket(bucket_name)
+        if not self.testcase['retain_resources']:
+            self.addCleanup(self.boto.delete_bucket, bucket_name)
+        return bucket_name
+
+    def __upload_to_bucket(self, bucket_name, object_name, data=None):
+        if data:
+            self.boto.upload_data(bucket_name, object_name, data)
+        if not self.testcase['retain_resources']:
+            self.addCleanup(self.boto.delete_object, bucket_name,
                             object_name)
 
     def __create_keypair(self):

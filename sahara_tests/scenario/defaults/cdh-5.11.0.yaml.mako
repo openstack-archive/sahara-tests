@@ -89,6 +89,9 @@ clusters:
     edp_jobs_flow:
       - pig_job
       - mapreduce_job
+      - name: mapreduce_job_s3
+        features:
+          - s3
       - mapreduce_streaming_job
       - java_job
       - spark_wordcount

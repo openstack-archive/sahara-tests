@@ -28,6 +28,10 @@
     openstack --os-cloud {{ sahara_cloud_demo }}  dataprocessing image tags add {{ sahara_image_name }} --tags \
         {{ sahara_plugin_version }} {{ sahara_plugin }}
 
+- name: S3 configuration
+  import_tasks: setup_s3.yaml
+  when: sahara_enable_s3
+
 # we cannot use os_nova_flavor as well (see above)
 - name: create the required flavor(s)
   command: |
