@@ -301,7 +301,7 @@ class BaseTestCase(base.BaseTestCase):
             for param, value in six.iteritems(job['configs']):
                 configs['configs'][param] = str(value)
         if job.get('args'):
-            configs['args'] = map(str, job['args'])
+            configs['args'] = list(map(str, job['args']))
         return configs
 
     def _run_job(self, job_id, input_id, output_id, configs):
@@ -557,7 +557,7 @@ class BaseTestCase(base.BaseTestCase):
 
     @track_result("Set flavor")
     def _get_flavor_id(self, flavor):
-        if isinstance(flavor, str):
+        if isinstance(flavor, six.string_types):
             return self.nova.get_flavor_id(flavor)
         else:
             # if the name already exists, use it

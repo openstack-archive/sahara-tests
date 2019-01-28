@@ -26,6 +26,7 @@ from novaclient import exceptions as nova_exc
 from oslo_utils import uuidutils
 from saharaclient.api import base as saharaclient_base
 from saharaclient import client as sahara_client
+import six
 from swiftclient import client as swift_client
 from swiftclient import exceptions as swift_exc
 from tempest.lib import exceptions as exc
@@ -206,7 +207,8 @@ class NovaClient(Client):
 
     def get_flavor_id(self, flavor_name):
         if (uuidutils.is_uuid_like(flavor_name) or
-                (isinstance(flavor_name, str) and flavor_name.isdigit())):
+                (isinstance(flavor_name, six.string_types) and
+                 flavor_name.isdigit())):
             return flavor_name
         for flavor in self.nova_client.flavors.list():
             if flavor.name == flavor_name:
