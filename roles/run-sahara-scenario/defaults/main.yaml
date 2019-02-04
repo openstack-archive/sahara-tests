@@ -3,3 +3,4 @@ sahara_tests_src_dir: "{{ zuul.projects['git.openstack.org/openstack/sahara-test
 sahara_cloud_demo: 'devstack-admin'
 sahara_scenario_conf: '{{ ansible_user_dir }}/template_vars.ini'
 sahara_scenario_test_template: 'fake.yaml.mako'
+sahara_scenario_tox_env: 'venv'
