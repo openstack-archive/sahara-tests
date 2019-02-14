@@ -11,7 +11,7 @@
             voting: false
         - openstack-tox-pylint:
             voting: false
-        - sahara-tests-scenario
+        - sahara-tests-scenario-runner-py3
         - sahara-tests-tempest
         - sahara-tests-scenario-rocky
         - sahara-tests-scenario-queens
@@ -19,7 +19,7 @@
     gate:
       queue: sahara
       jobs:
-        - sahara-tests-scenario
+        - sahara-tests-scenario-runner-py3
         - sahara-tests-tempest
     experimental:
       jobs:
@@ -134,6 +134,7 @@
       sahara_plugin: fake
       sahara_plugin_version: '0.1'
       sahara_scenario_test_template: fake.yaml.mako
+      sahara_scenario_tox_env: venv-py2
     irrelevant-files:
       - ^.*\.rst$
       - ^api-ref/.*$
@@ -142,19 +143,34 @@
       - ^sahara_tempest_plugin/.*$
 
 - job:
+    name: sahara-tests-scenario-runner-py3
+    parent: sahara-tests-scenario
+    description: |
+      Run scenario tests for Sahara which use Python 3
+      to run sahara-scenario (but not the OpenStack deployment)
+    vars:
+      sahara_scenario_tox_env: venv-py3
+
+- job:
     name: sahara-tests-scenario-rocky
     parent: sahara-tests-scenario
     override-checkout: stable/rocky
+    vars:
+      sahara_scenario_tox_env: venv-py2
 
 - job:
     name: sahara-tests-scenario-queens
     parent: sahara-tests-scenario
     override-checkout: stable/queens
+    vars:
+      sahara_scenario_tox_env: venv-py2
 
 - job:
     name: sahara-tests-scenario-pike
     parent: sahara-tests-scenario
     override-checkout: stable/pike
+    vars:
+      sahara_scenario_tox_env: venv-py2
 
 - job:
     name: sahara-tests-scenario-modwsgi
