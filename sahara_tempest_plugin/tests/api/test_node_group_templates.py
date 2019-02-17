@@ -46,9 +46,17 @@ class NodeGroupTemplateTest(dp_base.BaseDataProcessingTest):
             # generate random name if it's not specified
             template_name = data_utils.rand_name('sahara-ng-template')
 
+        # hack the arguments: keep the compatibility with the signature
+        # of self.create_node_group_template
+        node_group_template_w = self.node_group_template.copy()
+        if 'plugin_version' in node_group_template_w:
+            plugin_version_value = node_group_template_w['plugin_version']
+            del node_group_template_w['plugin_version']
+            node_group_template_w['hadoop_version'] = plugin_version_value
+
         # create node group template
         resp_body = self.create_node_group_template(template_name,
-                                                    **self.node_group_template)
+                                                    **node_group_template_w)
 
         # ensure that template created successfully
         self.assertEqual(template_name, resp_body['name'])

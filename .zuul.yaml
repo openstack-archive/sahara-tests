@@ -13,6 +13,7 @@
             voting: false
         - sahara-tests-scenario-runner-py3
         - sahara-tests-tempest
+        - sahara-tests-tempest-v2
         - sahara-tests-scenario-rocky
         - sahara-tests-scenario-queens
         - sahara-tests-scenario-pike
@@ -69,6 +70,22 @@
       - ^etc/.*$
       - ^releasenotes/.*$
       - ^sahara_tests/.*$
+
+- job:
+    name: sahara-tests-tempest-v2
+    description: |
+      Run Tempest tests from the Sahara plugin against Sahara APIv2.
+    parent: sahara-tests-tempest
+    required-projects:
+      - openstack/python-saharaclient
+    branches: master
+    vars:
+      devstack_local_conf:
+        test-config:
+          $TEMPEST_CONFIG:
+            data-processing:
+              api_version_saharaclient: '2'
+              use_api_v2: 'True'
 
 # variant for pre-Rocky branches (no S3)
 - job:

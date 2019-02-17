@@ -29,21 +29,27 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
             'Url'
         ])
 
-    def openstack_job_binary_create(self):
-        fd, script_name = tempfile.mkstemp()
-        with fdopen(fd, 'w+') as jb:
-            jb.write('test-script')
+    def openstack_job_binary_create(self, job_internal=True):
         job_binary_name = data_utils.rand_name('job-fake')
-        flag = ("%(jb_name)s %(data)s "
-                % {'jb_name': ('--name %s' % job_binary_name),
-                   'data': ' --data %s' % script_name})
+        if job_internal:
+            fd, script_name = tempfile.mkstemp()
+            with fdopen(fd, 'w+') as jb:
+                jb.write('test-script')
+            flag = ("%(jb_name)s %(data)s "
+                    % {'jb_name': ('--name %s' % job_binary_name),
+                       'data': ' --data %s' % script_name})
+        else:
+            flag = ("%(jb_name)s --url swift://mybucket.sahara/foo "
+                    "--username foo --password bar"
+                    % {'jb_name': ('--name %s' % job_binary_name)})
         self.assertTableStruct(
             self.listing_result('job binary create %s' % flag),
             [
                 'Field',
                 'Value'
             ])
-        remove(script_name)
+        if job_internal:
+            remove(script_name)
         return job_binary_name
 
     def openstack_job_binary_download(self, job_binary_name):

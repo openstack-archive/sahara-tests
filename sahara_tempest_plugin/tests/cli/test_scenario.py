@@ -10,6 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import testtools
+
 from tempest import config
 from tempest.lib import decorators
 
@@ -154,6 +156,8 @@ class Scenario(images.SaharaImageCLITest,
         self.openstack_image_unregister(image_name)
         self.negative_unregister_not_existing_image(image_name)
 
+    @testtools.skipIf(TEMPEST_CONF.data_processing.api_version_saharaclient !=
+                      '1.1', "Full job binaries testing requires API v1.1")
     def test_job_binary_cli(self):
         job_binary_name = self.openstack_job_binary_create()
         self.addCleanup(self.delete_resource, 'job binary', job_binary_name)
@@ -169,7 +173,7 @@ class Scenario(images.SaharaImageCLITest,
         self.negative_delete_removed_job_binary(job_binary_name)
 
     def test_job_template_cli(self):
-        job_binary_name = self.openstack_job_binary_create()
+        job_binary_name = self.openstack_job_binary_create(job_internal=False)
         self.addCleanup(self.delete_resource, 'job binary', job_binary_name)
 
         job_template_name = self.openstack_job_template_create(job_binary_name)

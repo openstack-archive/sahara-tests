@@ -104,10 +104,13 @@ class JobExecutionTest(base.BaseDataProcessingTest):
         self.cluster_info = {
             'name': cluster_name,
             'plugin_name': 'fake',
-            'hadoop_version': '0.1',
             'cluster_template_id': cluster_template.id,
             'default_image_id': self.test_image_id
         }
+        plugin_version_option = 'plugin_version'
+        if CONF.data_processing.api_version_saharaclient == '1.1':
+            plugin_version_option = 'hadoop_version'
+        self.cluster_info[plugin_version_option] = '0.1'
 
         # create cluster
         cluster = self.create_cluster(**self.cluster_info)

@@ -1,0 +1,10 @@
+---
+prelude: >
+    Tempest tests now support APIv2.
+features:
+  - |
+    The Tempest plugin provides an APIv2 DataProcessing client and
+    tempest tests can be executed against APIv2 too.
+    The type of API used is driven by a tempest.conf configuration key
+    (data_processing.use_api_v2 for API tests,
+    data_processing.api_version_saharaclient for client and CLI tests)

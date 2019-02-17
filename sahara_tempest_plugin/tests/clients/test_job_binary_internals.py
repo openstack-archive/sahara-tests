@@ -12,12 +12,23 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from tempest import config
 from tempest.lib.common.utils import data_utils
 
 from sahara_tempest_plugin.tests.clients import base
 
 
+CONF = config.CONF
+
+
 class JobBinaryInternalsTest(base.BaseDataProcessingTest):
+    @classmethod
+    def skip_checks(cls):
+        super(JobBinaryInternalsTest, cls).skip_checks()
+        if CONF.data_processing.api_version_saharaclient != '1.1':
+            raise cls.skipException('Job binaries stored on the internal db '
+                                    'are available only with API v1.1')
+
     def _check_job_binary_internal_create(self):
         name = data_utils.rand_name('sahara-internal-job-binary')
         self.job_binary_data = 'Some data'

@@ -43,7 +43,13 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
     @classmethod
     def setup_clients(cls):
         super(BaseDataProcessingTest, cls).setup_clients()
-        cls.client = cls.os_primary.data_processing.DataProcessingClient()
+        if not CONF.data_processing.use_api_v2:
+            cls.api_version = '1.1'
+            cls.client = cls.os_primary.data_processing.DataProcessingClient()
+        else:
+            cls.api_version = '2.0'
+            cls.client = \
+                cls.os_primary.data_processing_v2.DataProcessingClient()
 
     @classmethod
     def resource_setup(cls):
@@ -72,11 +78,17 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
                               cls.client.delete_cluster_template)
         cls.cleanup_resources(getattr(cls, '_node_group_templates', []),
                               cls.client.delete_node_group_template)
-        cls.cleanup_resources(getattr(cls, '_jobs', []), cls.client.delete_job)
+        if cls.api_version == '1.1':
+            cls.cleanup_resources(getattr(cls, '_jobs', []),
+                                  cls.client.delete_job)
+        else:
+            cls.cleanup_resources(getattr(cls, '_jobs', []),
+                                  cls.client.delete_job_template)
         cls.cleanup_resources(getattr(cls, '_job_binaries', []),
                               cls.client.delete_job_binary)
-        cls.cleanup_resources(getattr(cls, '_job_binary_internals', []),
-                              cls.client.delete_job_binary_internal)
+        if cls.api_version == '1.1':
+            cls.cleanup_resources(getattr(cls, '_job_binary_internals', []),
+                                  cls.client.delete_job_binary_internal)
         cls.cleanup_resources(getattr(cls, '_data_sources', []),
                               cls.client.delete_data_source)
         super(BaseDataProcessingTest, cls).resource_cleanup()
@@ -178,7 +190,7 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
 
     @classmethod
     def create_job(cls, name, job_type, mains, libs=None, **kwargs):
-        """Creates watched job with specified params.
+        """Creates watched job (v1) with specified params.
 
         It supports passing additional params using kwargs and returns created
         object. All resources created in this method will be automatically
@@ -193,10 +205,28 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         return resp_body
 
     @classmethod
+    def create_job_template(cls, name, job_type, mains, libs=None, **kwargs):
+        """Creates watched job template (v2) with specified params.
+
+        It supports passing additional params using kwargs and returns created
+        object. All resources created in this method will be automatically
+        removed in tearDownClass method.
+        """
+        resp_body = cls.client.create_job_template(name, job_type, mains,
+                                                   libs, **kwargs)
+        resp_body = resp_body['job_template']
+        # store id of created job
+        cls._jobs.append(resp_body['id'])
+
+        return resp_body
+
+    @classmethod
     def get_node_group_template(cls, nodegroup='worker1'):
         """Returns a node group template for the default plugin."""
         return plugin_utils.get_node_group_template(nodegroup,
-                                                    cls.default_version)
+                                                    cls.default_version,
+                                                    None,
+                                                    cls.api_version)
 
     @classmethod
     def get_cluster_template(cls, node_group_template_ids=None):
@@ -207,7 +237,8 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
         (instead of dynamically defining them with 'node_processes').
         """
         return plugin_utils.get_cluster_template(node_group_template_ids,
-                                                 cls.default_version)
+                                                 cls.default_version,
+                                                 cls.api_version)
 
     @classmethod
     def wait_for_resource_deletion(cls, resource_id, get_resource):
