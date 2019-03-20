@@ -12,8 +12,9 @@
             voting: false
         - openstack-tox-pylint:
             voting: false
-        - sahara-tests-scenario-runner-py3
+        - sahara-tests-scenario
         - sahara-tests-scenario-v2
+        - sahara-tests-scenario-py3
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
         - sahara-tests-scenario-rocky
@@ -22,14 +23,14 @@
     gate:
       queue: sahara
       jobs:
-        - sahara-tests-scenario-runner-py3
+        - sahara-tests-scenario
         - sahara-tests-scenario-v2
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
     experimental:
       jobs:
         - sahara-tests-scenario-multinode-spark
-        - sahara-tests-scenario-py3
+        - sahara-tests-scenario-multinode-spark-py3
 
 - job:
     name: sahara-tests-tempest
@@ -155,7 +156,7 @@
       sahara_plugin: fake
       sahara_plugin_version: '0.1'
       sahara_scenario_test_template: fake.yaml.mako
-      sahara_scenario_tox_env: venv-py2
+      sahara_scenario_tox_env: venv
     irrelevant-files:
       - ^.*\.rst$
       - ^api-ref/.*$
@@ -164,19 +165,9 @@
       - ^sahara_tempest_plugin/.*$
 
 - job:
-    name: sahara-tests-scenario-runner-py3
-    parent: sahara-tests-scenario
-    description: |
-      Run scenario tests for Sahara which use Python 3
-      to run sahara-scenario (but not the OpenStack deployment)
-    vars:
-      sahara_scenario_tox_env: venv-py3
-
-- job:
     name: sahara-tests-scenario-v2
     parent: sahara-tests-scenario
     vars:
-      sahara_scenario_tox_env: venv-py3
       sahara_scenario_use_api_v2: True
 
 - job:
@@ -243,7 +234,7 @@
     name: sahara-tests-scenario-multinode-spark
     description: |
       Run scenario tests based on Spark on a multinode Sahara deployment.
-    parent: sahara-tests-scenario
+    parent: sahara-tests-scenario-radosgw
     nodeset: openstack-two-node
     vars:
       sahara_image_name: xenial-spark
@@ -264,6 +255,15 @@
     description: |
       Run scenario tests on a Sahara deployment based on Python 3.
     parent: sahara-tests-scenario-radosgw
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: 'True'
+
+- job:
+    name: sahara-tests-scenario-multinode-spark-py3
+    description: |
+      Run scenario tests on Spark on a multinode Python 3 Sahara deployment.
+    parent: sahara-tests-scenario-multinode-spark
     vars:
       devstack_localrc:
         USE_PYTHON3: 'True'
