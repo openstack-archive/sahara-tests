@@ -13,13 +13,13 @@
     sahara_image_path: "{{ sahara_image_url }}"
   when: sahara_image_url is defined and sahara_image_url!='' and not sahara_image_url|search('^http')
 
+# we cannot use os_image because Ansible 2.7 requires a newer version of
+# openstacksdk than the one available in queens and pike.
 - name: register the required image in Glance
-  os_image:
-    cloud: "{{ sahara_cloud_demo }}"
-    state: present
-    disk_format: "{{ sahara_image_format }}"
-    filename: "{{ sahara_image_path }}"
-    name: "{{ sahara_image_name }}"
+  command: |
+    openstack --os-cloud {{ sahara_cloud_demo }} image create \
+        --disk-format {{ sahara_image_format }} --file {{ sahara_image_path }} \
+        {{ sahara_image_name }}
 
 - name: register the required image in Sahara
   shell: |
@@ -28,16 +28,19 @@
     openstack --os-cloud {{ sahara_cloud_demo }}  dataprocessing image tags add {{ sahara_image_name }} --tags \
         {{ sahara_plugin_version }} {{ sahara_plugin }}
 
+# we cannot use os_nova_flavor as well (see above)
 - name: create the required flavor(s)
-  os_nova_flavor:
-    cloud: "{{ sahara_cloud_admin }}"
-    state: present
-    name: "{{ item.key }}"
-    ram: "{{ item.value.ram }}"
-    vcpus: "{{ item.value.vcpus|default('1') }}"
-    disk: "{{ item.value.disk|default('10') }}"
-    ephemeral: "{{ item.value.disk|default(omit) }}"
+  command: |
+    openstack --os-cloud {{ sahara_cloud_demo }} flavor create \
+        --ram {{ item.value.ram }} \
+        --vcpus {{ item.value.vcpus|default('1') }} \
+        --disk {{ item.value.disk|default('10') }} \
+        {% if item.value.ephemeral|default(0) -%}
+        --ephemeral {{ item.value.ephemeral }} \
+        {% endif -%} \
+        {{ item.key }}
   with_dict: "{{ sahara_flavors }}"
+  ignore_errors: true
 
 - name: generate the configuration file for the scenario test
   template:
