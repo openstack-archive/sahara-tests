@@ -62,9 +62,9 @@
             data-processing-feature-enabled:
               s3: 'True'
       devstack_plugins:
-        sahara: git://git.openstack.org/openstack/sahara
-        heat: git://git.openstack.org/openstack/heat
-        ceilometer: git://git.openstack.org/openstack/ceilometer
+        sahara: https://git.openstack.org/openstack/sahara
+        heat: https://git.openstack.org/openstack/heat
+        ceilometer: https://git.openstack.org/openstack/ceilometer
       devstack_services:
         tls-proxy: false
     irrelevant-files:
@@ -130,10 +130,10 @@
     host-vars:
       controller:
         devstack_plugins:
-          sahara: git://git.openstack.org/openstack/sahara
-          heat: git://git.openstack.org/openstack/heat
-          ceilometer: git://git.openstack.org/openstack/ceilometer
-          shade: git://git.openstack.org/openstack-infra/shade
+          sahara: https://git.openstack.org/openstack/sahara
+          heat: https://git.openstack.org/openstack/heat
+          ceilometer: https://git.openstack.org/openstack/ceilometer
+          shade: https://git.openstack.org/openstack-infra/shade
     group-vars:
       subnode:
         devstack_services:
@@ -219,7 +219,7 @@
     host-vars:
       controller:
         devstack_plugins:
-            devstack-plugin-ceph: 'git://git.openstack.org/openstack/devstack-plugin-ceph'
+            devstack-plugin-ceph: 'https://git.openstack.org/openstack/devstack-plugin-ceph'
     vars:
       devstack_localrc:
         ENABLE_CEPH_CINDER: 'False'
