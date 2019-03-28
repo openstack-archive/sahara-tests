@@ -17,6 +17,8 @@ from __future__ import print_function
 import time
 
 import fixtures
+from botocore.exceptions import ClientError as BotoClientError
+from botocore import session as botocore_session
 from glanceclient import client as glance_client
 from keystoneauth1.identity import v3 as identity_v3
 from keystoneauth1 import session
@@ -361,6 +363,76 @@ class SwiftClient(Client):
             return ex.http_status == 404
 
         return False
+
+
+class BotoClient(Client):
+    def __init__(self, *args, **kwargs):
+        sess = botocore_session.get_session()
+        self.boto_client = sess.create_client(
+            's3',
+            endpoint_url=kwargs['endpoint'],
+            aws_access_key_id=kwargs['accesskey'],
+            aws_secret_access_key=kwargs['secretkey']
+        )
+
+    def create_bucket(self, bucket_name):
+        return self.boto_client.create_bucket(Bucket=bucket_name)
+
+    def _delete_and_check_bucket(self, bucket_name):
+        bucket_deleted = False
+        operation_parameters = {'Bucket': bucket_name}
+        try:
+            # While list_objects_v2 is the suggested function, pagination
+            # does not seems to work properly with RadosGW when it's used.
+            paginator = self.boto_client.get_paginator('list_objects')
+            page_iterator = paginator.paginate(**operation_parameters)
+            for page in page_iterator:
+                if 'Contents' not in page:
+                    continue
+                for item in page['Contents']:
+                    self.boto_client.delete_object(Bucket=bucket_name,
+                                                   Key=item['Key'])
+            self.boto_client.delete_bucket(Bucket=bucket_name)
+        except BotoClientError as ex:
+            error = ex.response.get('Error', {})
+            # without the conversion the value is a tuple
+            error_code = '%s' % (error.get('Code', ''))
+            if error_code == 'NoSuchBucket':
+                bucket_deleted = True
+        return bucket_deleted
+
+    def delete_bucket(self, bucket_name):
+        return self.delete_resource(
+            self._delete_and_check_bucket, bucket_name)
+
+    def upload_data(self, bucket_name, object_name, data):
+        return self.boto_client.put_object(
+            Bucket=bucket_name,
+            Key=object_name,
+            Body=data)
+
+    def _delete_and_check_object(self, bucket_name, object_name):
+        self.boto_client.delete_object(Bucket=bucket_name, Key=object_name)
+        object_deleted = False
+        try:
+            self.boto_client.head_object(Bucket=bucket_name, Key=object_name)
+        except BotoClientError as ex:
+            error = ex.response.get('Error', {})
+            # without the conversion the value is a tuple
+            error_code = '%s' % (error.get('Code', ''))
+            if error_code == '404':
+                object_deleted = True
+        return object_deleted
+
+    def delete_object(self, bucket_name, object_name):
+        return self.delete_resource(
+            self._delete_and_check_object,
+            bucket_name, object_name)
+
+    def is_resource_deleted(self, method, *args, **kwargs):
+        # Exceptions are handled directly inside the call to "method",
+        # because they are not the same for objects and buckets.
+        return method(*args, **kwargs)
 
 
 class GlanceClient(Client):

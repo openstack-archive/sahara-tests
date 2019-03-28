@@ -125,7 +125,7 @@ def get_base_parser():
     parser.add_argument('--report', default=False, action='store_true',
                         help='Write results of test to file')
     parser.add_argument('--feature', '-f', default=[],
-                        nargs='?', help='Set of features to enable')
+                        action='append', help='Set of features to enable')
     parser.add_argument('--count', default=1, nargs='?', type=valid_count,
                         help='Specify count of runs current cases.')
     parser.add_argument('--v2', '-2', default=False, action='store_true',

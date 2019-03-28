@@ -88,6 +88,9 @@ class TestBase(testtools.TestCase):
                                           'os_tenant': 'admin',
                                           'os_auth_url':
                                               'http://localhost:5000/v2.0',
+                                          's3_accesskey': 'very_long_key',
+                                          's3_secretkey': 'very_long_secret',
+                                          's3_endpoint': 'https://localhost',
                                           'sahara_service_type':
                                               'data-processing-local',
                                           'sahara_url':
@@ -143,7 +146,7 @@ class TestBase(testtools.TestCase):
                             "destination": "/user/hadoop/edp-output"
                         },
                         "main_lib": {
-                            "type": "swift",
+                            "type": "s3",
                             "source": "sahara_tests/scenario/defaults/"
                                       "edp-examples/edp-pig/"
                                       "top-todoers/example.pig"
@@ -350,12 +353,18 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('saharaclient.api.base.ResourceManager._create',
                 return_value=FakeResponse(set_id='id_for_job_binaries'))
+    @mock.patch('sahara_tests.scenario.clients.BotoClient.upload_data',
+                return_value={})
+    @mock.patch('sahara_tests.scenario.clients.BotoClient.create_bucket',
+                return_value={'Location': 'foo'})
     @mock.patch('swiftclient.client.Connection.put_object',
                 return_value=None)
     @mock.patch('swiftclient.client.Connection.put_container',
                 return_value=None)
     def test__create_create_job_binaries(self, mock_swiftcontainer,
                                          mock_swiftobject,
+                                         mock_create_bucket,
+                                         mock_upload_bucket_data,
                                          mock_sahara_create):
         self.base_scenario._init_clients()
         self.assertEqual((['id_for_job_binaries'], []),
@@ -364,6 +373,8 @@ class TestBase(testtools.TestCase):
 
     @mock.patch('saharaclient.api.base.ResourceManager._create',
                 return_value=FakeResponse(set_id='id_for_job_binary'))
+    @mock.patch('sahara_tests.scenario.clients.BotoClient.create_bucket',
+                return_value={'Location': 'foo'})
     @mock.patch('swiftclient.client.Connection.put_object',
                 return_value=None)
     @mock.patch('swiftclient.client.Connection.put_container',
@@ -371,7 +382,7 @@ class TestBase(testtools.TestCase):
     @mock.patch('saharaclient.client.Client', return_value=FakeSaharaClient())
     def test__create_create_job_binary(self, mock_saharaclient,
                                        mock_swiftcontainer, mock_swiftobject,
-                                       mock_sahara_create):
+                                       mock_create_bucket, mock_sahara_create):
         self.base_scenario._init_clients()
         self.assertEqual('id_for_job_binary',
                          self.base_scenario._create_job_binary(self.job.get(
@@ -431,7 +442,7 @@ class TestBase(testtools.TestCase):
             {
                 "type": "Pig",
                 "input_datasource": {
-                    "type": "swift",
+                    "type": "s3",
                     "source": "sahara_tests/scenario/defaults/edp-examples/"
                               "edp-pig/top-todoers/"
                               "data/input"

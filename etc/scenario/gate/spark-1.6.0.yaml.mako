@@ -32,6 +32,7 @@ clusters:
         node_group: worker
         size: 1
     scenario:
+      - run_jobs
       - scale
     edp_jobs_flow:
       - spark_pi

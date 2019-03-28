@@ -66,4 +66,7 @@ clusters:
         size: 1
     edp_jobs_flow:
       - java_job
+      - name: mapreduce_job_s3
+        features:
+          - s3
       - spark_pi

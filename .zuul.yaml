@@ -229,6 +229,7 @@
         s-container: false
         s-object: false
         s-proxy: false
+      sahara_enable_s3: True
 
 - job:
     name: sahara-tests-scenario-multinode-spark

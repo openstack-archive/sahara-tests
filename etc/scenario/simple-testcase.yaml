@@ -23,7 +23,10 @@ clusters:
           - operation: add
             node_group: cdh-worker
             size: 1
-      edp_jobs_flow: test_flow
+      edp_jobs_flow:
+          - test_flow
+          - name: test_manila
+            features: manila
 
 edp_jobs_flow:
     test_flow:
@@ -71,9 +74,8 @@ edp_jobs_flow:
           configs:
               edp.streaming.mapper: /bin/cat
               edp.streaming.reducer: /usr/bin/wc
+    test_manila:
         - type: Pig
-          features:
-              - manila
           input_datasource:
               type: manila
               source: etc/edp-examples/edp-pig/top-todoers/data/input

@@ -7,6 +7,7 @@ sahara_image_name: 'xenial-server'
 sahara_image_user: 'ubuntu'
 sahara_image_format: 'qcow2'
 sahara_scenario_conf: '{{ ansible_user_dir }}/template_vars.ini'
+sahara_enable_s3: False
 sahara_network_type: 'neutron'
 private_network_name: 'private'
 public_network_name: 'public'

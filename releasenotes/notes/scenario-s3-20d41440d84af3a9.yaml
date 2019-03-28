@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    sahara-scenario now supports testing the S3 API for job binaries
+    and data sources, a feature introduced in Rocky.
+    The code can be enabled using the "s3" feature and
+    various templates now runs an S3-based job too when
+    the feature is enabled from the command line.

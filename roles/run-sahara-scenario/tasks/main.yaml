@@ -4,11 +4,18 @@
     tox -e {{ sahara_scenario_tox_env }} --sitepackages -- sahara-scenario --verbose -V {{ sahara_scenario_conf }} \
         etc/scenario/gate/credentials.yaml.mako \
         etc/scenario/gate/edp.yaml.mako \
+        {% if sahara_enable_s3 -%}
+        etc/scenario/gate/credentials_s3.yaml.mako \
+        etc/scenario/gate/edp_s3.yaml.mako \
+        {% endif -%}
         etc/scenario/gate/{{ sahara_scenario_test_template }} \
         --os-cloud {{ sahara_cloud_demo }} \
         {% if sahara_scenario_use_api_v2|default(False) -%}
         --v2 \
-        {% endif %}
+        {% endif -%}
+        {% if sahara_enable_s3 -%}
+        --feature s3 \
+        {% endif -%}
         | tee scenario.log
     if grep -qE '(FAILED|ERROR:)' scenario.log; then
         exit 1
