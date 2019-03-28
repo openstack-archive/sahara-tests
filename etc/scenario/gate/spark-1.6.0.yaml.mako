@@ -35,5 +35,6 @@ clusters:
       - scale
     edp_jobs_flow:
       - spark_pi
+      - spark_wordcount
     cluster:
       name: ${cluster_name}
