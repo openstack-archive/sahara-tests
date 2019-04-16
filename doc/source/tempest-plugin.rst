@@ -51,8 +51,8 @@ Run Tempest tests using Rally
 First of all, be sure that Rally is installed and working. There should be
 a Rally deployment with correct working Sahara service in it.
 
-Full information can be found on this
-`link <https://docs.openstack.org/rally/latest/quick_start/tutorial/step_10_verifying_cloud_via_tempest_verifier.html>`_.
+Full information can be found on the
+`rally quick start guide <https://docs.openstack.org/rally/latest/quick_start/tutorial/step_9_verifying_cloud_via_tempest_verifier.html>`_.
 
 Using this information, you can install ``rally verify`` tool and plugin for
 testing Sahara. After this you are free to run Sahara Tempest tests. Here are
@@ -60,7 +60,7 @@ some examples of how to run all the tests:
 
 .. sourcecode:: console
 
-    $ rally verify start --regex sahara_tempest_plugin.tests
+    $ rally verify start --pattern sahara_tempest_plugin.tests
 
 ..
 
