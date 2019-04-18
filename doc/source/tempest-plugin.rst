@@ -18,7 +18,7 @@ same environment where Tempest is installed.
 
 .. sourcecode:: console
 
-    $ git clone https://git.openstack.org/openstack/sahara-tests
+    $ git clone https://opendev.org/openstack/sahara-tests
     $ cd sahara-tests/
     $ pip install sahara-tests/
 

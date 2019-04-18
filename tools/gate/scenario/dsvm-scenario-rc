@@ -1,6 +1,6 @@
-export DEVSTACK_LOCAL_CONFIG="enable_plugin sahara https://git.openstack.org/openstack/sahara"
-export DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer"
-export DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin heat https://git.openstack.org/openstack/heat"
+export DEVSTACK_LOCAL_CONFIG="enable_plugin sahara https://opendev.org/openstack/sahara"
+export DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin ceilometer https://opendev.org/openstack/ceilometer"
+export DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin heat https://opendev.org/openstack/heat"
 export DEVSTACK_GATE_TEMPEST=0
 export DEVSTACK_GATE_INSTALL_TESTONLY=1
 export KEEP_LOCALRC=1

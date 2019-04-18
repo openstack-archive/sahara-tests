@@ -33,6 +33,6 @@ In sahara_tests folder we have next tools:
 .. _Sahara-scenario documentation: https://docs.openstack.org/sahara-tests/latest/scenario.html
 .. _PyPi: https://pypi.org/project/sahara-tests
 .. _Storyboard project: https://storyboard.openstack.org/#!/project/940
-.. _Source: https://git.openstack.org/cgit/openstack/sahara-tests
+.. _Source: https://opendev.org/openstack/sahara-tests
 .. _Specs: https://specs.openstack.org/openstack/sahara-specs/
 .. _Release notes: https://docs.openstack.org/releasenotes/sahara-tests/unreleased.html
