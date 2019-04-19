@@ -63,9 +63,9 @@
             data-processing-feature-enabled:
               s3: 'True'
       devstack_plugins:
-        sahara: https://git.openstack.org/openstack/sahara
-        heat: https://git.openstack.org/openstack/heat
-        ceilometer: https://git.openstack.org/openstack/ceilometer
+        sahara: https://opendev.org/openstack/sahara
+        heat: https://opendev.org/openstack/heat
+        ceilometer: https://opendev.org/openstack/ceilometer
       devstack_services:
         tls-proxy: false
     irrelevant-files:
@@ -112,7 +112,7 @@
       Run scenario tests for Sahara.
     parent: devstack
     roles:
-      - zuul: openstack-dev/devstack
+      - zuul: openstack/devstack
       - zuul: openstack/sahara-image-elements
     required-projects:
       - openstack/sahara-tests
@@ -126,15 +126,15 @@
       - openstack/heat
       - openstack/ceilometer
       - openstack/sahara-image-elements
-      - openstack-infra/shade
+      - openstack/shade
     run: playbooks/sahara-tests-scenario.yaml
     host-vars:
       controller:
         devstack_plugins:
-          sahara: https://git.openstack.org/openstack/sahara
-          heat: https://git.openstack.org/openstack/heat
-          ceilometer: https://git.openstack.org/openstack/ceilometer
-          shade: https://git.openstack.org/openstack-infra/shade
+          sahara: https://opendev.org/openstack/sahara
+          heat: https://opendev.org/openstack/heat
+          ceilometer: https://opendev.org/openstack/ceilometer
+          shade: https://opendev.org/openstack/shade
     group-vars:
       subnode:
         devstack_services:
@@ -210,7 +210,7 @@
     host-vars:
       controller:
         devstack_plugins:
-            devstack-plugin-ceph: 'https://git.openstack.org/openstack/devstack-plugin-ceph'
+            devstack-plugin-ceph: 'https://opendev.org/openstack/devstack-plugin-ceph'
     vars:
       devstack_localrc:
         ENABLE_CEPH_CINDER: 'False'
@@ -239,7 +239,7 @@
     nodeset: openstack-two-node
     vars:
       sahara_image_name: xenial-spark
-      sahara_image_url: '{{ ansible_user_dir }}/{{ zuul.projects["git.openstack.org/openstack/sahara-image-elements"].src_dir }}/ubuntu_sahara_spark_latest.qcow2'
+      sahara_image_url: '{{ ansible_user_dir }}/{{ zuul.projects["opendev.org/openstack/sahara-image-elements"].src_dir }}/ubuntu_sahara_spark_latest.qcow2'
       sahara_plugin: spark
       sahara_plugin_version: 1.6.0
       sahara_scenario_test_template: spark-1.6.0.yaml.mako
