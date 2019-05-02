@@ -1,0 +1,11 @@
+---
+prelude: >
+    Stein test templates are now available, while Ocata
+    test templates have been removed.
+features:
+  - A folder with scenario templates for Stein has been added.
+    It is a subset of the templates in the main directory.
+deprecations:
+  - The Ocata-specific job templates have been removed.
+    This means that starting from this release Ocata is
+    not supported (it is under Extended Maintenance now).
