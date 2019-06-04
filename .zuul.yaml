@@ -80,18 +80,26 @@
 - job:
     name: sahara-tests-tempest-v2
     description: |
-      Run Tempest tests from the Sahara plugin against Sahara APIv2.
+      Run Tempest tests from the Sahara plugin against Sahara APIv2
+      and Python 3.
     parent: sahara-tests-tempest
     required-projects:
       - openstack/python-saharaclient
     branches: master
     vars:
+      devstack_localrc:
+        USE_PYTHON3: 'True'
       devstack_local_conf:
         test-config:
           $TEMPEST_CONFIG:
             data-processing:
               api_version_saharaclient: '2'
               use_api_v2: 'True'
+      devstack_services:
+        s-account: false
+        s-container: false
+        s-object: false
+        s-proxy: false
 
 # variant for pre-Rocky branches (no S3)
 - job:

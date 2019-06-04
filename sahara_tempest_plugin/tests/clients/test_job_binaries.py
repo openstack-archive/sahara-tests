@@ -85,7 +85,7 @@ class JobBinariesTest(base.BaseDataProcessingTest):
 
     def _check_internal_db_job_binary_create(self):
         name = data_utils.rand_name('sahara-internal-job-binary')
-        self.job_binary_data = 'Some data'
+        self.job_binary_data = b'Some data'
         job_binary_internal = (
             self.create_job_binary_internal(name, self.job_binary_data))
         self.internal_db_binary_with_extra = {

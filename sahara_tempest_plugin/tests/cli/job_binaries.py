@@ -10,6 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from filecmp import cmp
 from os import fdopen
 from os import path
 from os import remove
@@ -31,6 +32,7 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
 
     def openstack_job_binary_create(self, job_internal=True):
         job_binary_name = data_utils.rand_name('job-fake')
+        script_name = ''
         if job_internal:
             fd, script_name = tempfile.mkstemp()
             with fdopen(fd, 'w+') as jb:
@@ -48,11 +50,10 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
                 'Field',
                 'Value'
             ])
-        if job_internal:
-            remove(script_name)
-        return job_binary_name
+        return job_binary_name, script_name
 
-    def openstack_job_binary_download(self, job_binary_name):
+    def openstack_job_binary_download(self, job_binary_name,
+                                      original_file=None):
         if path.exists(job_binary_name):
             remove(job_binary_name)
 
@@ -60,6 +61,9 @@ class SaharaJobBinaryCLITest(base.ClientTestBase):
                        params=job_binary_name)
 
         self.assertTrue(path.exists(job_binary_name))
+        if original_file:
+            self.assertTrue(cmp(job_binary_name, original_file))
+            remove(original_file)
         remove(job_binary_name)
 
     def openstack_job_binary_show(self, job_binary_name):

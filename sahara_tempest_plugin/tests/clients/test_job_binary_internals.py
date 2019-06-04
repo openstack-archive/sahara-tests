@@ -31,7 +31,7 @@ class JobBinaryInternalsTest(base.BaseDataProcessingTest):
 
     def _check_job_binary_internal_create(self):
         name = data_utils.rand_name('sahara-internal-job-binary')
-        self.job_binary_data = 'Some data'
+        self.job_binary_data = b'Some data'
         # create job binary internal
         resp_body = self.create_job_binary_internal(name, self.job_binary_data)
         # check that job_binary_internal created successfully

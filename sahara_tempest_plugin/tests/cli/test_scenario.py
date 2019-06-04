@@ -159,13 +159,13 @@ class Scenario(images.SaharaImageCLITest,
     @testtools.skipIf(TEMPEST_CONF.data_processing.api_version_saharaclient !=
                       '1.1', "Full job binaries testing requires API v1.1")
     def test_job_binary_cli(self):
-        job_binary_name = self.openstack_job_binary_create()
+        job_binary_name, original_file = self.openstack_job_binary_create()
         self.addCleanup(self.delete_resource, 'job binary', job_binary_name)
 
         self.openstack_job_binary_list()
         self.openstack_job_binary_show(job_binary_name)
         self.openstack_job_binary_update(job_binary_name, flag='description')
-        self.openstack_job_binary_download(job_binary_name)
+        self.openstack_job_binary_download(job_binary_name, original_file)
         self.filter_job_binaries_in_list()
         self.negative_try_to_update_protected_jb(job_binary_name)
         self.openstack_job_binary_update(job_binary_name, flag='unprotected')
@@ -173,7 +173,8 @@ class Scenario(images.SaharaImageCLITest,
         self.negative_delete_removed_job_binary(job_binary_name)
 
     def test_job_template_cli(self):
-        job_binary_name = self.openstack_job_binary_create(job_internal=False)
+        job_binary_name, _ = self.openstack_job_binary_create(
+            job_internal=False)
         self.addCleanup(self.delete_resource, 'job binary', job_binary_name)
 
         job_template_name = self.openstack_job_template_create(job_binary_name)

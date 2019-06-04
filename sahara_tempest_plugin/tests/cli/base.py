@@ -188,18 +188,15 @@ class ClientTestBase(base.ClientTestBase):
         except exc.CommandFailed as e:
             # lower() is required because "result" string could
             # have the first letter capitalized.
-            output_msg = str(e).splitlines()
-            for msg in output_msg:
-                if msg.lower() == error_message.lower():
-                    self.assertEqual(error_message.lower(), msg.lower())
-                    msg_exist = True
+            if error_message.lower() in str(e).lower():
+                msg_exist = True
             if not msg_exist:
-                raise exc.TempestException('%s is not a part of output of '
-                                           'executed command %s'
-                                           % (error_message, cmd))
+                raise exc.TempestException('"%s" is not a part of output of '
+                                           'executed command "%s" (%s)'
+                                           % (error_message, cmd, output_msg))
         else:
-            raise exc.TempestException('%s %s in negative scenarios have been '
-                                       'executed without any errors'
+            raise exc.TempestException('"%s %s" in negative scenarios has '
+                                       'been executed without any errors'
                                        % (cmd, name))
 
     @classmethod
