@@ -39,7 +39,10 @@ from sahara_tests.scenario import utils
 
 def get_session(auth_url=None, username=None, password=None,
                 project_name=None, verify=True, cert=None):
-    auth = identity_v3.Password(auth_url=auth_url.replace('/v2.0', '/v3'),
+    auth_url_fixed = auth_url.replace('/v2.0', '/v3')
+    if not auth_url_fixed.endswith('/v3'):
+        auth_url_fixed += '/v3'
+    auth = identity_v3.Password(auth_url=auth_url_fixed,
                                 username=username,
                                 password=password,
                                 project_name=project_name,

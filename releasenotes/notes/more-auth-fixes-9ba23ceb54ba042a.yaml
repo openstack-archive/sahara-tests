@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Properly handle more use cases when only Keystone v3 is enabled and/or
+    its service URI is missing the /v3 suffix.

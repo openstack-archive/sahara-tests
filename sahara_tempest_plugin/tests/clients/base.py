@@ -46,11 +46,11 @@ class BaseDataProcessingTest(tempest.test.BaseTestCase):
 
         endpoint_type = TEMPEST_CONF.data_processing.endpoint_type
         catalog_type = TEMPEST_CONF.data_processing.catalog_type
-        auth_url = TEMPEST_CONF.identity.uri
+        auth_url = TEMPEST_CONF.identity.uri_v3
 
         credentials = cls.os_admin.credentials
 
-        auth = v3.Password(auth_url=auth_url.replace('/v2.0', '/v3'),
+        auth = v3.Password(auth_url=auth_url,
                            username=credentials.username,
                            password=credentials.password,
                            project_name=credentials.tenant_name,
