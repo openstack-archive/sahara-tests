@@ -206,6 +206,9 @@ SCHEMA = {
                                         "minLength": 1
                                     }
                                 },
+                                "boot_from_volume": {
+                                    "type": "boolean"
+                                },
                                 "auto_security_group": {
                                     "type": "boolean"
                                 },

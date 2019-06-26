@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Allow to enable boot_from_volume on node group templates
+    when running scenario tests with APIv2.
