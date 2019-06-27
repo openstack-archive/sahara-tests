@@ -2,8 +2,8 @@
 
 clusters:
   - plugin_name: ambari
-    plugin_version: '2.4'
-    image: ${ambari_22_image}
+    plugin_version: '2.6'
+    image: ${ambari_26_image}
     node_group_templates:
       - name: master
         flavor: ${medium_flavor_id}
@@ -66,4 +66,7 @@ clusters:
         size: 1
     edp_jobs_flow:
       - java_job
+      - name: mapreduce_job_s3
+        features:
+          - s3
       - spark_pi

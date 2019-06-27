@@ -2,8 +2,8 @@
 
 clusters:
   - plugin_name: cdh
-    plugin_version: 5.11.0
-    image: ${cdh_5110_image}
+    plugin_version: 5.13.0
+    image: ${cdh_5130_image}
     node_group_templates:
       - name: worker-dn
         flavor: ${ci_flavor_id}
@@ -70,7 +70,7 @@ clusters:
             HIVESERVER:
                 hiveserver2_java_heapsize: 2147483648
     cluster_template:
-      name: cdh5110
+      name: cdh5130
       node_group_templates:
         manager: 1
         master-core: 1

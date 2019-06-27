@@ -62,7 +62,7 @@ clusters:
           - HIVE_SERVER2
           - SPARK_YARN_HISTORY_SERVER
         auto_security_group: ${use_auto_security_group}
-        # In 5.11 the defaults of following configs are too large,
+        # In >=5.9 the defaults of following configs are too large,
         # restrict them to save memory for scenario testing.
         node_configs:
             HIVEMETASTORE:
