@@ -601,6 +601,12 @@ class BaseTestCase(base.BaseTestCase):
                     self.neutron.add_security_group_rule_for_neutron(
                         security_group)
                 kwargs['security_groups'] = [security_group]
+
+            # boot_from_volume requires APIv2
+            if kwargs.get('boot_from_volume', False) and not self.use_api_v2:
+                raise Exception('boot_from_volume is set for %s but it '
+                                'requires APIv2' % (kwargs['name']))
+
             ng_id = self.__create_node_group_template(**kwargs)
             ng_id_map[ng['name']] = ng_id
         return ng_id_map

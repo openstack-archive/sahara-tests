@@ -218,6 +218,16 @@ class TestBase(testtools.TestCase):
         self.assertEqual({'worker': 'id_ng', 'master': 'id_ng'},
                          self.base_scenario._create_node_group_templates())
 
+    @mock.patch('neutronclient.v2_0.client.Client.list_networks',
+                return_value={'networks': [{'id': '2314'}]})
+    def test__create_node_group_template_bootfromvolume_apiv1(self, mock_del):
+        self.base_scenario._init_clients()
+        self.base_scenario.use_api_v2 = False
+        for ng in self.base_scenario.testcase['node_group_templates']:
+            ng['boot_from_volume'] = True
+        with self.assertRaisesRegex(Exception, "^boot_from_volume is.*"):
+            self.base_scenario._create_node_group_templates()
+
     @mock.patch('saharaclient.api.node_group_templates.'
                 'NodeGroupTemplateManager.create',
                 return_value=FakeResponse(set_id='id_ng'))
