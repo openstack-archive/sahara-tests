@@ -25,8 +25,8 @@ CONF = config.CONF
 
 
 class JobBinaryInternalTest(dp_base.BaseDataProcessingTest):
-    # Link to the API documentation is https://developer.openstack.org/
-    # api-ref/data-processing/#job-binary-internals
+    # NOTE: Link to the API documentation: https://docs.openstack.org/
+    # api-ref/data-processing/v1.1/#job-binary-internals
 
     @classmethod
     def skip_checks(cls):

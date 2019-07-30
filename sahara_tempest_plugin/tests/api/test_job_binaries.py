@@ -26,8 +26,9 @@ CONF = config.CONF
 
 
 class JobBinaryTest(dp_base.BaseDataProcessingTest):
-    # Link to the API documentation is https://developer.openstack.org/
-    # api-ref/data-processing/#job-binaries
+    # NOTE: Links to the API documentation:
+    # https://docs.openstack.org/api-ref/data-processing/v1.1/#job-binaries
+    # https://docs.openstack.org/api-ref/data-processing/v2/#job-binaries
 
     @classmethod
     def resource_setup(cls):

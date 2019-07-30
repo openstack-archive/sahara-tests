@@ -89,7 +89,7 @@ by Keystone for your tenant and user in header 'X-Auth-Token'.
 For new sahara REST users, reference to the `Sahara EDP API Documentation`_
 will be useful throughout these exercises.
 
-.. _Sahara EDP API Documentation: https://developer.openstack.org/api-ref/data-processing/index.html
+.. _Sahara EDP API Documentation: https://docs.openstack.org/api-ref/data-processing/index.html
 
 
 Example 1: Pig, using swift

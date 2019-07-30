@@ -26,7 +26,7 @@ CONF = config.CONF
 
 
 class JobTemplatesTest(dp_base.BaseDataProcessingTest):
-    # NOTE: Link to the API documentation: https://developer.openstack.org/
+    # NOTE: Link to the API documentation: https://docs.openstack.org/
     # api-ref/data-processing/v2/#job-templates
 
     @classmethod

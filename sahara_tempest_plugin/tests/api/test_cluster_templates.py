@@ -21,8 +21,9 @@ from sahara_tempest_plugin.tests.api import base as dp_base
 
 
 class ClusterTemplateTest(dp_base.BaseDataProcessingTest):
-    # Link to the API documentation is https://developer.openstack.org/
-    # api-ref/data-processing/#cluster-templates
+    # NOTE: Links to the API documentation: https://docs.openstack.org/
+    # api-ref/data-processing/v1.1/#cluster-templates
+    # https://docs.openstack.org/api-ref/data-processing/v2/#cluster-templates
 
     @classmethod
     def skip_checks(cls):
