@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Force the PEM format for the generated ssh keys,
+    because paramiko does not yet support the new one
+    (https://github.com/paramiko/paramiko/issues/602).
