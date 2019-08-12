@@ -60,6 +60,12 @@ def run_tests(concurrency, test_dir_path):
     if concurrency:
         command.extend(['--concurrency=%d' % concurrency])
     new_env = os.environ.copy()
+    # Use the same python executable which has started sahara-scenario,
+    # if the PYTHON value has not been set explicitly.
+    # This is important whenever sahara-scenario is executed in a virtualenv
+    # or there are multiple Python versions around.
+    if not new_env.get('PYTHON', ''):
+        new_env['PYTHON'] = sys.executable
     tester_runner = subprocess.Popen(command, env=new_env, cwd=test_dir_path)
     tester_runner.communicate()
     return tester_runner.returncode

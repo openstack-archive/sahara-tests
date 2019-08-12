@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fix a strange error where the internally generated test does not start
+    because sahara_tests.scenario is not found when running inside a virtualenv.

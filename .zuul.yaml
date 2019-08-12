@@ -14,8 +14,7 @@
             voting: false
         - sahara-tests-scenario
         - sahara-tests-scenario-v2
-        - sahara-tests-scenario-py3:
-            voting: false
+        - sahara-tests-scenario-py3
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
         - sahara-tests-scenario-rocky
@@ -26,6 +25,7 @@
       jobs:
         - sahara-tests-scenario
         - sahara-tests-scenario-v2
+        - sahara-tests-scenario-py3
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
     experimental:
