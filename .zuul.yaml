@@ -3,8 +3,7 @@
       - openstack-python-jobs
       - publish-openstack-docs-pti
       - openstack-python35-jobs
-      - openstack-python36-jobs
-      - openstack-python37-jobs
+      - openstack-python3-ussuri-jobs
       - release-notes-jobs-python3
     check:
       jobs:
@@ -14,9 +13,10 @@
             voting: false
         - sahara-tests-scenario
         - sahara-tests-scenario-v2
-        - sahara-tests-scenario-py3
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
+        - sahara-tests-scenario-train
+        - sahara-tests-scenario-stein
         - sahara-tests-scenario-rocky
         - sahara-tests-scenario-queens
         - sahara-tests-scenario-pike
@@ -25,13 +25,11 @@
       jobs:
         - sahara-tests-scenario
         - sahara-tests-scenario-v2
-        - sahara-tests-scenario-py3
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
     experimental:
       jobs:
         - sahara-tests-scenario-multinode-spark
-        - sahara-tests-scenario-multinode-spark-py3
 
 - job:
     name: sahara-tests-tempest
@@ -55,6 +53,7 @@
       devstack_localrc:
         IMAGE_URLS: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
         TEMPEST_PLUGINS: /opt/stack/sahara-tests
+        USE_PYTHON3: True
       devstack_local_conf:
         test-config:
           $TEMPEST_CONFIG:
@@ -109,11 +108,24 @@
       - stable/pike
       - stable/queens
     vars:
+      devstack_localrc:
+        USE_PYTHON3: 'False'
       devstack_local_conf:
         test-config:
           $TEMPEST_CONFIG:
             data-processing-feature-enabled:
               s3: 'False'
+
+# variant for pre-Ussuri branches (Python 2 by default)
+- job:
+    name: sahara-tests-tempest
+    branches:
+      - stable/rocky
+      - stable/stein
+      - stable/train
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: 'False'
 
 - job:
     name: sahara-tests-scenario
@@ -155,6 +167,7 @@
         # required to contain (almost any) custom-built image
         SWIFT_LOOPBACK_DISK_SIZE: 8G
         SWIFT_MAX_FILE_SIZE: 8589934592
+        USE_PYTHON3: True
       devstack_local_conf:
         post-config:
           $SAHARA_CONF_FILE:
@@ -179,26 +192,48 @@
     vars:
       sahara_scenario_use_api_v2: True
 
+
+# pre-Ussuri scenario tests: devstack must use python 2,
+# but sahara-scenario can use python 3.
+- job:
+    name: sahara-tests-scenario-train
+    parent: sahara-tests-scenario
+    override-checkout: stable/train
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: 'False'
+
+- job:
+    name: sahara-tests-scenario-stein
+    parent: sahara-tests-scenario
+    override-checkout: stable/stein
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: 'False'
+
 - job:
     name: sahara-tests-scenario-rocky
     parent: sahara-tests-scenario
     override-checkout: stable/rocky
     vars:
-      sahara_scenario_tox_env: venv-py2
+      devstack_localrc:
+        USE_PYTHON3: 'False'
 
 - job:
     name: sahara-tests-scenario-queens
     parent: sahara-tests-scenario
     override-checkout: stable/queens
     vars:
-      sahara_scenario_tox_env: venv-py2
+      devstack_localrc:
+        USE_PYTHON3: 'False'
 
 - job:
     name: sahara-tests-scenario-pike
     parent: sahara-tests-scenario
     override-checkout: stable/pike
     vars:
-      sahara_scenario_tox_env: venv-py2
+      devstack_localrc:
+        USE_PYTHON3: 'False'
 
 - job:
     name: sahara-tests-scenario-modwsgi
@@ -241,6 +276,17 @@
       sahara_enable_s3: True
 
 - job:
+    name: sahara-tests-scenario-py3
+    description: |
+      Run scenario tests on a Sahara deployment based on Python 3.
+      Required by some pre-Ussuri branches of sahara, which also
+      needs swift (not fully ported to Python 3 at the time).
+    parent: sahara-tests-scenario-radosgw
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: 'True'
+
+- job:
     name: sahara-tests-scenario-multinode-spark
     description: |
       Run scenario tests based on Spark on a multinode Sahara deployment.
@@ -259,21 +305,3 @@
           disk: 20
           vcpus: 1
           ephemeral: 0
-
-- job:
-    name: sahara-tests-scenario-py3
-    description: |
-      Run scenario tests on a Sahara deployment based on Python 3.
-    parent: sahara-tests-scenario-radosgw
-    vars:
-      devstack_localrc:
-        USE_PYTHON3: 'True'
-
-- job:
-    name: sahara-tests-scenario-multinode-spark-py3
-    description: |
-      Run scenario tests on Spark on a multinode Python 3 Sahara deployment.
-    parent: sahara-tests-scenario-multinode-spark
-    vars:
-      devstack_localrc:
-        USE_PYTHON3: 'True'

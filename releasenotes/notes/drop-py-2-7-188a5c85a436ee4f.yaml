@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    Python 2.7 support has been dropped. Last release of sahara-tests
+    to support python 2.7 is 0.9.1, the first version that can be used
+    with OpenStack Train.
+    The minimum version of Python now supported by sahara-tests is Python 3.5.
