@@ -200,5 +200,6 @@ def main():
     testr_runner_exit_code = utils.run_tests(concurrency, test_dir_path)
     sys.exit(testr_runner_exit_code)
 
+
 if __name__ == '__main__':
     main()

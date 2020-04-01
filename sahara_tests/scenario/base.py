@@ -207,7 +207,8 @@ class BaseTestCase(base.BaseTestCase):
         if output_id is not None:
             output_url = self.sahara.get_datasource(
                 data_source_id=output_id).url
-        pl = lambda x: self._inject_datasources_data(x, input_url, output_url)
+        pl = lambda x: (  # noqa: E731
+            self._inject_datasources_data(x, input_url, output_url))
         args = list(map(pl, configs.get('args', [])))
         configs['args'] = args
         return configs

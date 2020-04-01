@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
+# flake8: noqa: E501
+
 from sahara_tempest_plugin.services.data_processing.v2.data_processing_client import \
     DataProcessingClient
 
