@@ -1,8 +1,6 @@
 - project:
     templates:
-      - openstack-python-jobs
       - publish-openstack-docs-pti
-      - openstack-python35-jobs
       - openstack-python3-ussuri-jobs
       - release-notes-jobs-python3
     check:
@@ -17,9 +15,6 @@
         - sahara-tests-tempest-v2
         - sahara-tests-scenario-train
         - sahara-tests-scenario-stein
-        - sahara-tests-scenario-rocky
-        - sahara-tests-scenario-queens
-        - sahara-tests-scenario-pike
     gate:
       queue: sahara
       jobs:
@@ -193,47 +188,18 @@
       sahara_scenario_use_api_v2: True
 
 
-# pre-Ussuri scenario tests: devstack must use python 2,
-# but sahara-scenario can use python 3.
+# pre-Ussuri scenario tests: fully-py3 based according the rules
+# (jobs running on master must use Python 3), but use RGW
+# on pre-Train branches as Swift/py3 does not work there.
 - job:
     name: sahara-tests-scenario-train
     parent: sahara-tests-scenario
     override-checkout: stable/train
-    vars:
-      devstack_localrc:
-        USE_PYTHON3: 'False'
 
 - job:
     name: sahara-tests-scenario-stein
-    parent: sahara-tests-scenario
+    parent: sahara-tests-scenario-py3
     override-checkout: stable/stein
-    vars:
-      devstack_localrc:
-        USE_PYTHON3: 'False'
-
-- job:
-    name: sahara-tests-scenario-rocky
-    parent: sahara-tests-scenario
-    override-checkout: stable/rocky
-    vars:
-      devstack_localrc:
-        USE_PYTHON3: 'False'
-
-- job:
-    name: sahara-tests-scenario-queens
-    parent: sahara-tests-scenario
-    override-checkout: stable/queens
-    vars:
-      devstack_localrc:
-        USE_PYTHON3: 'False'
-
-- job:
-    name: sahara-tests-scenario-pike
-    parent: sahara-tests-scenario
-    override-checkout: stable/pike
-    vars:
-      devstack_localrc:
-        USE_PYTHON3: 'False'
 
 - job:
     name: sahara-tests-scenario-modwsgi

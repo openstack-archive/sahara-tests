@@ -24,7 +24,7 @@
 - name: register the required image in Sahara
   shell: |
     openstack --os-cloud {{ sahara_cloud_demo }} dataprocessing image register \
-        --username {{ sahara_image_user }} {{ sahara_image_name }}
+        --username {{ sahara_image_user }} {{ sahara_image_name }};
     openstack --os-cloud {{ sahara_cloud_demo }}  dataprocessing image tags add {{ sahara_image_name }} --tags \
         {{ sahara_plugin_version }} {{ sahara_plugin }}
 
