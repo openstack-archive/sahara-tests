@@ -23,6 +23,13 @@ User guide
 
    tempest-plugin
 
+**Contributor Guide**
+
+.. toctree::
+   :maxdepth: 1
+
+   contributor/contributing
+
 Source
 ------
 
@@ -43,4 +50,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
-
