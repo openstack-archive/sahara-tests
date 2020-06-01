@@ -20,10 +20,9 @@ extensions = [
 ]
 
 # openstackdocstheme options
-repository_name = 'openstack/sahara-tests'
-bug_project = '940'
-bug_tag = 'releasenotes'
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+openstackdocs_repo_name = 'openstack/sahara-tests'
+openstackdocs_auto_name = False
+openstackdocs_use_storyboard = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -78,7 +77,7 @@ exclude_patterns = []
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
