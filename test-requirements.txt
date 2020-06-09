@@ -8,5 +8,4 @@ bandit!=1.6.0
 bashate>=0.2 # Apache-2.0
 coverage>=3.6 # Apache-2.0
 doc8 # Apache-2.0
-mock>=1.2 # BSD
 pylint==1.4.5 # GNU GPL v2

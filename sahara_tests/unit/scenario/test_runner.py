@@ -18,7 +18,7 @@ import sys
 
 from jsonschema import exceptions
 import pkg_resources as pkg
-import mock
+from unittest import mock
 import testtools
 
 from sahara_tests import version
