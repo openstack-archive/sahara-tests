@@ -6,12 +6,12 @@
       get_url:
         url: "{{ sahara_image_url }}"
         dest: "{{ sahara_image_path }}"
-  when: sahara_image_url is defined and sahara_image_url!='' and sahara_image_url|search('^http')
+  when: sahara_image_url is defined and sahara_image_url!='' and sahara_image_url is search('^http')
 
 - name: set sahara_image_path from the local file
   set_fact:
     sahara_image_path: "{{ sahara_image_url }}"
-  when: sahara_image_url is defined and sahara_image_url!='' and not sahara_image_url|search('^http')
+  when: sahara_image_url is defined and sahara_image_url!='' and not sahara_image_url is search('^http')
 
 # we cannot use os_image because Ansible 2.7 requires a newer version of
 # openstacksdk than the one available in queens and pike.
