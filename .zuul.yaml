@@ -210,6 +210,17 @@
       devstack_localrc:
         SAHARA_USE_MOD_WSGI: 'True'
 
+# variant to be used on pre-Ussuri branches (Python 2 only)
+- job:
+    name: sahara-tests-scenario
+    branches:
+      - stable/rocky
+      - stable/stein
+      - stable/train
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: 'False'
+
 - job:
     name: sahara-tests-scenario-radosgw
     description: |
