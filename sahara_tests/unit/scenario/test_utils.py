@@ -13,7 +13,7 @@
 
 import os
 
-import mock
+from unittest import mock
 import testtools
 
 from sahara_tests.scenario import utils
