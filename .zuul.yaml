@@ -194,11 +194,13 @@
 - job:
     name: sahara-tests-scenario-train
     parent: sahara-tests-scenario
+    nodeset: openstack-single-node-bionic
     override-checkout: stable/train
 
 - job:
     name: sahara-tests-scenario-stein
     parent: sahara-tests-scenario-py3
+    nodeset: openstack-single-node-bionic
     override-checkout: stable/stein
 
 - job:
