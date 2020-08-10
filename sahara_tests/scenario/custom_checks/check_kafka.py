@@ -89,7 +89,7 @@ class CustomCheckKafka(object):
     def _prepare_spark_kafka_job_running(self, shs):
         ip = self._get_node_ip(shs)
         utils_url = (
-            "http://central.maven.org/maven2/org/apache/spark"
+            "https://repo1.maven.org/maven2/org/apache/spark"
             "/spark-streaming-kafka-assembly_2.10/1.4.1"
             "/spark-streaming-kafka-assembly_2.10-1.4.1.jar")
         # try to search spark-kafka assembly utils
