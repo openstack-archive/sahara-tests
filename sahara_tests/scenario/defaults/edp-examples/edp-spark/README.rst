@@ -54,7 +54,7 @@ Launching spark-kafka-example
    and ``path`` with your own values.
 2. Download the Spark Streaming utils to the node with your
    ``Spark History Server`` from this URL:
-   ``http://central.maven.org/maven2/org/apache/spark/spark-streaming-kafka-assembly_2.10/1.4.1/spark-streaming-kafka-assembly_2.10-1.4.1.jar``.
+   ``https://repo1.maven.org/maven2/org/apache/spark/spark-streaming-kafka-assembly_2.10/1.4.1/spark-streaming-kafka-assembly_2.10-1.4.1.jar``.
    Now you are ready to launch your job from sahara UI.
 3. Create a job binary that points to ``spark-kafka-example.py``.
    Also you need to create a job that uses this job binary as a main binary.
