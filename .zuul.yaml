@@ -41,7 +41,7 @@
       - openstack/sahara-plugin-storm
       - openstack/sahara-plugin-vanilla
       - openstack/heat
-      - openstack/ceilometer
+      # - openstack/ceilometer
     vars:
       tempest_test_regex: ^(sahara_tempest_plugin.tests.)
       tox_envlist: all
@@ -60,7 +60,7 @@
       devstack_plugins:
         sahara: https://opendev.org/openstack/sahara
         heat: https://opendev.org/openstack/heat
-        ceilometer: https://opendev.org/openstack/ceilometer
+        # ceilometer: https://opendev.org/openstack/ceilometer
       devstack_services:
         tls-proxy: false
     irrelevant-files:
@@ -140,7 +140,7 @@
       - openstack/sahara-plugin-storm
       - openstack/sahara-plugin-vanilla
       - openstack/heat
-      - openstack/ceilometer
+      # - openstack/ceilometer
       - openstack/sahara-image-elements
       - openstack/shade
     run: playbooks/sahara-tests-scenario.yaml
@@ -149,7 +149,7 @@
         devstack_plugins:
           sahara: https://opendev.org/openstack/sahara
           heat: https://opendev.org/openstack/heat
-          ceilometer: https://opendev.org/openstack/ceilometer
+          # ceilometer: https://opendev.org/openstack/ceilometer
           shade: https://opendev.org/openstack/shade
     group-vars:
       subnode:
