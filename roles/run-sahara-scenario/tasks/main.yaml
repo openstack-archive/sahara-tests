@@ -1,7 +1,7 @@
 ---
 - name: run sahara-scenario
   shell: |
-    tox -e {{ sahara_scenario_tox_env }} --sitepackages -- sahara-scenario --verbose -V {{ sahara_scenario_conf }} \
+    {{ tox_executable }} -e {{ sahara_scenario_tox_env }} --sitepackages -- sahara-scenario --verbose -V {{ sahara_scenario_conf }} \
         etc/scenario/gate/credentials.yaml.mako \
         etc/scenario/gate/edp.yaml.mako \
         {% if sahara_enable_s3 -%}

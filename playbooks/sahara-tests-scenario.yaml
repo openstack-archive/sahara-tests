@@ -12,6 +12,8 @@
     - name: setup the sahara Scenario test environment
       include_role:
         name: setup-sahara-scenario-env
+    - include_role:
+        name: ensure-tox
     - name: run the Sahara scenario tests
       include_role:
         name: run-sahara-scenario

@@ -5,3 +5,4 @@ sahara_scenario_conf: '{{ ansible_user_dir }}/template_vars.ini'
 sahara_scenario_test_template: 'fake.yaml.mako'
 sahara_scenario_tox_env: 'venv'
 sahara_enable_s3: False
+tox_executable: 'tox'
