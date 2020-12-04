@@ -13,6 +13,8 @@
         - sahara-tests-scenario-v2
         - sahara-tests-tempest
         - sahara-tests-tempest-v2
+        - sahara-tests-scenario-victoria
+        - sahara-tests-scenario-ussuri
         - sahara-tests-scenario-train
         - sahara-tests-scenario-stein
     gate:
@@ -187,6 +189,16 @@
     vars:
       sahara_scenario_use_api_v2: True
 
+- job:
+    name: sahara-tests-scenario-victoria
+    parent: sahara-tests-scenario-py3
+    override-checkout: stable/victoria
+
+- job:
+    name: sahara-tests-scenario-ussuri
+    parent: sahara-tests-scenario-py3
+    nodeset: openstack-single-node-bionic
+    override-checkout: stable/ussuri
 
 # pre-Ussuri scenario tests: fully-py3 based according the rules
 # (jobs running on master must use Python 3), but use RGW
