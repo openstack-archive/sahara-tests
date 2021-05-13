@@ -18,6 +18,8 @@
             voting: false
         - sahara-tests-tempest-v2:
             voting: false
+        - sahara-tests-scenario-wallaby:
+            voting: false
         - sahara-tests-scenario-victoria:
             voting: false
         - sahara-tests-scenario-ussuri:
@@ -208,6 +210,11 @@
     parent: sahara-tests-scenario
     vars:
       sahara_scenario_use_api_v2: True
+
+- job:
+    name: sahara-tests-scenario-wallaby
+    parent: sahara-tests-scenario-py3
+    override-checkout: stable/wallaby
 
 - job:
     name: sahara-tests-scenario-victoria
