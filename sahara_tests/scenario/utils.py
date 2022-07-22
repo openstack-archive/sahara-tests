@@ -278,7 +278,7 @@ def read_template_variables(variable_file=None, verbose=False,
         # key-sensitive keys
         if variable_file:
             cp.optionxform = lambda option: option
-            cp.readfp(open(variable_file))
+            cp.read_file(open(variable_file))
         variables = cp.defaults()
         if scenario_args:
             variables.update(scenario_args)
