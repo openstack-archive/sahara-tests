@@ -1,4 +1,5 @@
 - project:
+    queue: sahara
     templates:
       - publish-openstack-docs-pti
       - openstack-python3-ussuri-jobs
@@ -18,7 +19,6 @@
         - sahara-tests-scenario-train
         - sahara-tests-scenario-stein
     gate:
-      queue: sahara
       jobs:
         - sahara-tests-scenario
         - sahara-tests-scenario-v2
