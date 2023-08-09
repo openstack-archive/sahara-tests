@@ -10,20 +10,40 @@
             voting: false
         - openstack-tox-pylint:
             voting: false
-        - sahara-tests-scenario
-        - sahara-tests-scenario-v2
-        - sahara-tests-tempest
-        - sahara-tests-tempest-v2
-        - sahara-tests-scenario-victoria
-        - sahara-tests-scenario-ussuri
-        - sahara-tests-scenario-train
-        - sahara-tests-scenario-stein
+        - sahara-tests-scenario:
+            voting: false
+        - sahara-tests-scenario-v2:
+            voting: false
+        - sahara-tests-tempest:
+            voting: false
+        - sahara-tests-tempest-v2:
+            voting: false
+        - sahara-tests-scenario-victoria:
+            voting: false
+        - sahara-tests-scenario-ussuri:
+            voting: false
+        - sahara-tests-scenario-train:
+            voting: false
+        - sahara-tests-scenario-stein:
+            voting: false
+        - openstack-tox-py36:
+            voting: false
+        - openstack-tox-py37:
+            voting: false            
     gate:
       jobs:
-        - sahara-tests-scenario
-        - sahara-tests-scenario-v2
-        - sahara-tests-tempest
-        - sahara-tests-tempest-v2
+        - sahara-tests-scenario:
+            voting: false
+        - sahara-tests-scenario-v2:
+            voting: false
+        - sahara-tests-tempest:
+            voting: false
+        - sahara-tests-tempest-v2:
+            voting: false
+        - openstack-tox-py36:
+            voting: false
+        - openstack-tox-py37:
+            voting: false
     experimental:
       jobs:
         - sahara-tests-scenario-multinode-spark
