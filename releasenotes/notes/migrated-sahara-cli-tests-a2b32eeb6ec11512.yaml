@@ -1,3 +1,0 @@
----
-prelude: >
-    Migrate sahara cli tests from saharaclient to sahara-tests

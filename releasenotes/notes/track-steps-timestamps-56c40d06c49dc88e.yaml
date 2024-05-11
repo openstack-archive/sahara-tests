@@ -1,4 +1,0 @@
----
-features:
-  - Capture and report the timestamp in scenario tests when
-    an event starts and when an exception is triggered.

@@ -1,6 +1,0 @@
----
-prelude: >
-  Create new cli tests in Sahara Tempest plugin for job types
-features:
-  - Now we can filter job types with column flag and also save config file of
-    any job type to the specified file.

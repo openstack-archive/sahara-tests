@@ -1,6 +1,0 @@
----
-prelude: >
-  Yaml-files for deprecated plugins was removed
-fixes:
-  - Removed yaml-files for Kilo release
-  - Removed unused yaml-files for master branch

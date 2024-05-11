@@ -1,9 +1,0 @@
-{
-    "name": "edp-pig-udf-stringcleaner.jar",
-    "description": "An example pig UDF library",
-    "url": "swift://edp-examples/edp-pig/cleanup-string/edp-pig-udf-stringcleaner.jar",
-    "extra": {
-        "user": "demo",
-        "password": "password"
-    }
-}
